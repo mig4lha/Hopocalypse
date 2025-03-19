@@ -1077,7 +1077,6 @@ GameObject:
   - component: {fileID: 1863830241}
   - component: {fileID: 1863830240}
   - component: {fileID: 1863830244}
-  - component: {fileID: 1863830246}
   - component: {fileID: 1863830245}
   - component: {fileID: 1863830243}
   m_Layer: 0
@@ -1240,18 +1239,6 @@ MonoBehaviour:
   mouseSensitivityY: 2
   minY: -60
   maxY: 60
---- !u!114 &1863830246
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1863830235}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30e2600485e9ea541a442d082b1a2d4a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1931661048
 GameObject:
   m_ObjectHideFlags: 0

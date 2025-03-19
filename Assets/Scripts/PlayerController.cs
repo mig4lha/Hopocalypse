@@ -127,13 +127,12 @@ public class PlayerController : MonoBehaviour
 
         //Debug.Log(isSprinting + " | " + Keyboard.current.leftShiftKey.isPressed);
 
-        // Fix esquisito por puro desespero: Verificar release da key especificamente porque unity nao deteta o release da key????
+        //// Fix esquisito por puro desespero: Verificar release da key especificamente porque unity nao deteta o release da key????
         if (isSprinting && !Keyboard.current.leftShiftKey.isPressed)
         {
             isSprinting = false;
             Debug.Log("Sprint Stopped");
         }
-
 
         HandleMovement();
         HandleBunnyHopping();
@@ -253,7 +252,7 @@ public class PlayerController : MonoBehaviour
         // Debug log, retirar na build final!
         if (consecutiveJumps > 0)
         {
-            Debug.Log($"BHop: {consecutiveJumps} jumps, {currentBhopMultiplier:F2}x multiplier");
+            //Debug.Log($"BHop: {consecutiveJumps} jumps, {currentBhopMultiplier:F2}x multiplier");
         }
     }
 
