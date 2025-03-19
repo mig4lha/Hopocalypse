@@ -1,7 +1,10 @@
+using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.DebugUI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -15,17 +18,36 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Tooltip("Valor de força do salto")]
     private float gravity = -80f;
 
-
     // Permite ao player saltar mesmo depois de sair do chão, basicamente facilita platforming no futuro
     // Valor default, deve ainda ser testado
     [SerializeField, Tooltip("Tempo (em segundos) para o jump buffer (coyote time)")]
     private float coyoteTime = 0.2f;
 
+    // Player variables
     private CharacterController characterController;
     private Vector3 velocity;
     private Vector2 moveInput;
     private float coyoteTimeCounter;
     private bool isSprinting = false;
+    private bool isMoving;
+
+
+    // Hop variables
+    private float currentBhopMultiplier = 1.0f;
+    private float lastJumpTime;
+    private int consecutiveJumps = 0;
+    private bool wasGrounded;
+    private float timeSinceGrounded;
+    private float landingTime;
+    private Vector3 moveDirection;
+
+    // Debug UI variables
+    [SerializeField]
+    private TMP_Text currentSpeedText;
+    [SerializeField]
+    private TMP_Text currentHopMultiplierText;
+    [SerializeField]
+    private TMP_Text currentConsecutiveJumpsText;
 
     [Header("Bunny Hop Settings")]
     [SerializeField, Tooltip("Tempo máximo entre saltos para considerar como consecutivos")]
@@ -39,15 +61,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Tooltip("Controla o quão bem o jogador mantém a velocidade em curvas durante o bhop")]
     [Range(0f, 1f)] private float airControl = 0.7f;
 
-    // Hop variables
-    private float currentBhopMultiplier = 1.0f;
-    private float lastJumpTime;
-    private int consecutiveJumps = 0;
-    private bool wasGrounded;
-    private float timeSinceGrounded;
-    private float landingTime;
-    private Vector3 moveDirection;
-
     [Header("Mouse Camera Settings")]
     [SerializeField, Tooltip("Sensibilidade da camera eixo X")]
     private float mouseSensitivityX = 2f;
@@ -57,7 +70,6 @@ public class PlayerController : MonoBehaviour
     private float minY = -60f;
     [SerializeField, Tooltip("Ângulo máximo de rotação vertical")]
     private float maxY = 60f;
-
     private float rotationX = 0f;
     private float rotationY = 0f;
 
@@ -70,7 +82,6 @@ public class PlayerController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-
 
     // Player Input behavior tá set para 'Send Messages' (métodos usam InputValue e não o CallbackContext)
     #region Métodos_InputSystem
@@ -99,6 +110,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    //public void OnSprint(InputValue value)
+    //{
+    //    Debug.Log("Get(): " + value.Get());
+    //    isSprinting = value.Get<float>() > 0;
+    //}
+
     #endregion
 
     void Update()
@@ -106,7 +123,9 @@ public class PlayerController : MonoBehaviour
         // O movimento do player está no Update pois não inclui um RigidBody nem cálculos de física precisos
         // logo não vi a necessidade de o colocar no FixedUpdate
         // Caso problemas surjam, mudar para FixedUpdate e testar
-    
+
+        //Debug.Log(isSprinting + " | " + Keyboard.current.leftShiftKey.isPressed);
+
         // Fix esquisito por puro desespero: Verificar release da key especificamente porque unity nao deteta o release da key????
         if (isSprinting && !Keyboard.current.leftShiftKey.isPressed)
         {
@@ -193,22 +212,22 @@ public class PlayerController : MonoBehaviour
         Vector3 finalMove = new Vector3(moveDirection.x, velocity.y, moveDirection.z) * Time.deltaTime;
         characterController.Move(finalMove);
 
+        isMoving = characterController.velocity.magnitude > 0.1f;
+
+        // Update no UI
+        currentSpeedText.text = $"Speed: {characterController.velocity.magnitude:F2} m/s";
+        currentHopMultiplierText.text = $"Hop Mult: {currentBhopMultiplier:F2}x";
+        currentConsecutiveJumpsText.text = $"Jumps: {consecutiveJumps}";
+
         // Atualizar velocity para manter o momentum horizontal
         velocity = new Vector3(moveDirection.x, velocity.y, moveDirection.z);
     }
 
     void HandleBunnyHopping()
     {
-        // Reseta saltos se o player nao saltar durante o tempo definido
+        // Reseta saltos e hop mult se o player nao saltar durante o tempo definido
         if (Time.time - lastJumpTime > consecutiveJumpWindow * 2)
         {
-            consecutiveJumps = 0;
-        }
-
-        // Se o player estiver no chão e não se mexer, o multiplicador de bhop reseta
-        if (characterController.isGrounded && moveInput.magnitude < 0.1f)
-        {
-            // Resetar o multiplier se o player parar
             currentBhopMultiplier = 1;
             consecutiveJumps = 0;
         }
@@ -227,7 +246,7 @@ public class PlayerController : MonoBehaviour
         // Bonus effects para pensar no futuro
         if (currentBhopMultiplier > 1.3f)
         {
-            // Pensar em bonus para manter o player a saltar...
+            // Pensar em bonus de gameplay para persuadir o player a saltar...
         }
 
         // Debug log, retirar na build final!
