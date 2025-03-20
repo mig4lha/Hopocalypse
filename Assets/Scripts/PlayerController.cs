@@ -74,6 +74,9 @@ public class PlayerController : MonoBehaviour
     private float rotationX = 0f;
     private float rotationY = 0f;
 
+    [SerializeField]
+    private AxeGunController axeGunController;
+
     void Awake()
     {
         // Inicializar o CharacterController
@@ -101,21 +104,29 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void OnSprint(InputValue value)
+    //public void OnSprint(InputValue value)
+    //{
+    //    // Mudar estado de sprinting baseado no valor do input (0 ou 1)
+    //    if (value.Get<float>() > 0)
+    //    {
+    //        isSprinting = true;
+    //        Debug.Log("Sprint Started");
+    //    }
+    //}
+
+    public void OnShoot(InputValue value)
     {
-        // Mudar estado de sprinting baseado no valor do input (0 ou 1)
         if (value.Get<float>() > 0)
         {
-            isSprinting = true;
-            Debug.Log("Sprint Started");
+            axeGunController.Shoot();
         }
     }
 
-    //public void OnSprint(InputValue value)
-    //{
-    //    Debug.Log("Get(): " + value.Get());
-    //    isSprinting = value.Get<float>() > 0;
-    //}
+    public void OnSprint(InputValue value)
+    {
+        //Debug.Log("Get(): " + value.Get());
+        isSprinting = value.Get<float>() > 0;
+    }
 
     #endregion
 
@@ -128,11 +139,11 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(isSprinting + " | " + Keyboard.current.leftShiftKey.isPressed);
 
         //// Fix esquisito por puro desespero: Verificar release da key especificamente porque unity nao deteta o release da key????
-        if (isSprinting && !Keyboard.current.leftShiftKey.isPressed)
-        {
-            isSprinting = false;
-            Debug.Log("Sprint Stopped");
-        }
+        //if (isSprinting && !Keyboard.current.leftShiftKey.isPressed)
+        //{
+        //    isSprinting = false;
+        //    Debug.Log("Sprint Stopped");
+        //}
 
         HandleMovement();
         HandleBunnyHopping();
