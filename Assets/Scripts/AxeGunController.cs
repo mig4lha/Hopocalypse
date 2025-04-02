@@ -1,8 +1,109 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class AxeGunController : MonoBehaviour
 {
+    #region Tentativa Raycasts
+    [Header("AxeGun Settings")]
+    [SerializeField, Tooltip("Number of pellets per shot (should equal gridRows * gridColumns)")]
+    private int pelletCount = 30;
+    [SerializeField, Tooltip("Maximum horizontal spread angle in degrees")]
+    private float spreadAngleX = 50f;
+    [SerializeField, Tooltip("Maximum vertical spread angle in degrees")]
+    private float spreadAngleY = 25f;
+    [SerializeField, Tooltip("Maximum range for each pellet")]
+    private float maxRange = 15f;
+
+    [Header("Muzzle Settings")]
+    [SerializeField, Tooltip("Transform representing the muzzle point of the weapon")]
+    private Transform muzzleTransform;
+    [SerializeField, Tooltip("Particle system for the muzzle flash")]
+    private ParticleSystem muzzleFlash;
+
+    [Header("AxeGun SFX")]
+    [SerializeField]
+    private AudioSource gunFire;
+
+    [SerializeField]
+    private DebugLine debugLine;
+
+    public void Shoot()
+    {
+        // Play the muzzle flash particle system
+        if (muzzleFlash != null)
+        {
+            muzzleFlash.Play();
+        }
+
+        Vector3 origin = muzzleTransform.position;
+
+        // Cast a ray from the center of the screen
+        Ray centerRay = Camera.main.ScreenPointToRay(new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0));
+
+        // Determine a target point along the center ray.
+        // You might want to use your maxRange, or perform a Physics.Raycast from the camera to see what you hit.
+        Vector3 targetPoint = centerRay.origin + centerRay.direction * maxRange;
+
+        // Calculate the center direction from the muzzle to the target point
+        Vector3 centerDirection = (targetPoint - origin).normalized;
+
+        // Fire the center pellet ensuring it goes exactly where the crosshair is pointing
+        {
+            float currentRange = maxRange;
+            Vector3 pelletDirection = centerDirection;
+            Vector3 endPoint = origin + pelletDirection * currentRange;
+
+            debugLine.DrawLine(origin, endPoint, 1f);
+            Debug.DrawRay(origin, pelletDirection * currentRange, Color.red, 1f);
+
+            if (Physics.Raycast(origin, pelletDirection, out RaycastHit hit, currentRange))
+            {
+                if (hit.transform.CompareTag("Enemy"))
+                {
+                    Debug.Log($"Center pellet hit: {hit.transform.name} at distance {hit.distance}");
+                }
+                // Process hit (damage, effects, etc.) here.
+            }
+        }
+
+        // Fire remaining pellets randomly around the center
+        for (int pelletIndex = 1; pelletIndex < pelletCount; pelletIndex++)
+        {
+            // Randomize angles for yaw (horizontal) and pitch (vertical)
+            float randomYaw = Random.Range(-spreadAngleX, spreadAngleX);
+            float randomPitch = Random.Range(-spreadAngleY, spreadAngleY);
+
+            // Apply the random rotation to the center direction
+            Vector3 pelletDirection = Quaternion.Euler(randomPitch, randomYaw, 0) * centerDirection;
+
+            float currentRange = maxRange;
+            Vector3 endPoint = origin + pelletDirection * currentRange;
+
+            debugLine.DrawLine(origin, endPoint, 1f);
+            Debug.DrawRay(origin, pelletDirection * currentRange, Color.red, 1f);
+
+            if (Physics.Raycast(origin, pelletDirection, out RaycastHit hit, currentRange))
+            {
+                if (hit.transform.CompareTag("Enemy"))
+                {
+                    Debug.Log($"Pellet {pelletIndex} hit: {hit.transform.name} at distance {hit.distance}");
+                    Destroy(hit.transform.gameObject);
+                }
+                // Process hit (damage, effects, etc.) here.
+            }
+        }
+
+        if (gunFire != null)
+        {
+            gunFire.Play();
+        }
+    }
+
+
+    #endregion
+
+    #region Tentativa Cone Mesh
     //    [Header("Shotgun Settings")]
     //    [SerializeField] private float coneAngleX = 20f; // Horizontal cone angle (wider)
     //    [SerializeField] private float coneAngleY = 10f; // Vertical cone angle (narrower)
@@ -266,83 +367,5 @@ public class AxeGunController : MonoBehaviour
     //        return mesh;
     //    }
     //}
-
-    [Header("AxeGun Settings")]
-    [SerializeField, Tooltip("Number of pellets per shot (should equal gridRows * gridColumns)")]
-    private int pelletCount = 20;
-    [SerializeField, Tooltip("Number of rows in the pellet grid")]
-    private int gridRows = 5;
-    [SerializeField, Tooltip("Number of columns in the pellet grid")]
-    private int gridColumns = 5;
-    [SerializeField, Tooltip("Maximum horizontal spread angle in degrees")]
-    private float spreadAngleX = 10f;
-    [SerializeField, Tooltip("Maximum vertical spread angle in degrees")]
-    private float spreadAngleY = 5f;
-    [SerializeField, Tooltip("Maximum range for each pellet")]
-    private float maxRange = 25f;
-    [SerializeField, Tooltip("Optional: Random range variability factor (0 means fixed range)")]
-    private float rangeVariance = 0f;
-
-    [Header("Muzzle Settings")]
-    [SerializeField, Tooltip("Transform representing the muzzle point of the weapon")]
-    private Transform muzzleTransform;
-
-    [Header("AxeGun SFX")]
-    [SerializeField]
-    private AudioSource gunFire;
-
-    public void Shoot()
-    {
-        // Usar o muzzleTransform para obter a posição de origem do tiro.
-        Vector3 origin = muzzleTransform.position;
-        Vector3 forward = Camera.main.transform.forward;
-
-        float xStep = (gridColumns > 1) ? (spreadAngleX * 2f) / (gridColumns - 1) : 0;
-        float yStep = (gridRows > 1) ? (spreadAngleY * 2f) / (gridRows - 1) : 0;
-
-        // Offsets para o spread
-        float startX = -spreadAngleX;
-        float startY = -spreadAngleY;
-
-        int pelletIndex = 0;
-        for (int row = 0; row < gridRows; row++)
-        {
-            float currentPitch = startY + yStep * row;
-            for (int col = 0; col < gridColumns; col++)
-            {
-                if (pelletIndex >= pelletCount)
-                    break;
-                float currentYaw = startX + xStep * col;
-
-                // Calcular a direção do pellet aplicando o pitch e yaw fixos à direção para frente.
-                Vector3 pelletDirection = Quaternion.Euler(currentPitch, currentYaw, 0) * forward;
-
-                float currentRange = maxRange;
-                if (rangeVariance > 0)
-                {
-                    currentRange += Random.Range(-rangeVariance, rangeVariance);
-                }
-
-                // Debugging: desenhar um o raycast
-                Debug.DrawRay(origin, pelletDirection * currentRange, Color.red, 1f);
-                if (Physics.Raycast(origin, pelletDirection, out RaycastHit hit, currentRange))
-                {
-                    //if (hit.transform.name == "Target Cube")
-                    //{
-                    //    Debug.Log($"Pellet {pelletIndex} hit: {hit.transform.name} at distance {hit.distance}");
-                    //}
-
-                    // Process hit (damage, effects, etc.) here.
-                }
-                pelletIndex++;
-            }
-        }
-
-        Debug.Log("------------------------------------------------");
-
-        if (gunFire != null)
-        {
-            gunFire.Play();
-        }
-    }
+    #endregion
 }
