@@ -11,11 +11,11 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField, Tooltip("Valor de velocidade ao andar")]
-    private float moveSpeed = 10f;
+    private float moveSpeed = 6f;
     [SerializeField, Tooltip("Multiplicador de velocidade de sprint")]
     private float sprintSpeedMultiplier = 1.5f;
     [SerializeField, Tooltip("Valor de força do salto")]
-    private float jumpForce = 3f;
+    private float jumpForce = 2.5f;
     [SerializeField, Tooltip("Valor de força do salto")]
     private float gravity = -80f;
 
