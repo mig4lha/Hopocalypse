@@ -7620,7 +7620,7 @@ Transform:
   m_GameObject: {fileID: 1863830235}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.307, z: 3}
+  m_LocalPosition: {x: 0, y: 1.13, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -7708,14 +7708,12 @@ MonoBehaviour:
   bhopMultiplierIncrement: 0.1
   jumpCooldown: 0.1
   airControl: 0.7
-  mouseSensitivityX: 2
-  mouseSensitivityY: 2
-  controllerSensitivityX: 100
-  controllerSensitivityY: 100
-  innerDeadzone: 0.1
-  outerDeadzone: 0.9
-  minY: -60
-  maxY: 60
+  mouseSensitivity: 0.1
+  controllerSensitivity: 5
+  controllerDeadzone: 0.5
+  controllerSmoothing: 0.15
+  minPitch: -60
+  maxPitch: 60
   axeGunController: {fileID: 3469287838632551789}
 --- !u!1 &1918335956
 GameObject:

@@ -62,30 +62,30 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Tooltip("Controla o quão bem o jogador mantém a velocidade em curvas durante o bhop")]
     [Range(0f, 1f)] private float airControl = 0.7f;
 
-    [Header("Camera Settings")]
-    [SerializeField, Range(0.01f, 1f), Tooltip("Sensibilidade da camera eixo X - Rato")]
-    private float mouseSensitivityX = 0.1f;
-    [SerializeField, Range(0.01f, 1f), Tooltip("Sensibilidade da camera eixo Y - Rato")]
-    private float mouseSensitivityY = 0.1f;
+    [Header("Mouse Settings")]
+    [Tooltip("Mouse sensitivity multiplier (applied directly to delta pixels).")]
+    [SerializeField] private float mouseSensitivity = 0.1f;
 
-    [SerializeField, Range(10f, 200f), Tooltip("Sensibilidade da camera eixo X - Controller")]
-    private float controllerSensitivityX = 50f;
-    [SerializeField, Range(10f, 200f), Tooltip("Sensibilidade da camera eixo Y - Controller")]
-    private float controllerSensitivityY = 50f;
+    [Header("Controller Settings")]
+    [Tooltip("Controller sensitivity multiplier.")]
+    [SerializeField] private float controllerSensitivity = 5f;
+    [Tooltip("Deadzone threshold for the controller stick.")]
+    [SerializeField, Range(0f, 0.5f)] private float controllerDeadzone = 0.15f;
+    [Tooltip("Smoothing factor for controller input (0 = max smoothing, 1 = no smoothing).")]
+    [SerializeField, Range(0.01f, 1f)] private float controllerSmoothing = 0.15f;
 
-    // Alternative deadzone implementation
-    [SerializeField, Range(0.01f, 0.3f), Tooltip("Inner deadzone for controller stick")]
-    private float innerDeadzone = 0.1f;
+    [Header("Camera Limits")]
+    [Tooltip("Minimum vertical angle (in degrees).")]
+    [SerializeField] private float minPitch = -60f;
+    [Tooltip("Maximum vertical angle (in degrees).")]
+    [SerializeField] private float maxPitch = 60f;
 
-    [SerializeField, Range(0.8f, 1f), Tooltip("Outer deadzone for controller stick")]
-    private float outerDeadzone = 0.9f;
+    // Internal state for the camera rotation
+    private float yaw = 0f;
+    private float pitch = 0f;
 
-    [SerializeField, Tooltip("Ângulo mínimo de rotação vertical")]
-    private float minY = -60f;
-    [SerializeField, Tooltip("Ângulo máximo de rotação vertical")]
-    private float maxY = 60f;
-    private float rotationX = 0f;
-    private float rotationY = 0f;
+    // Used to smooth controller input
+    private Vector2 smoothedControllerInput = Vector2.zero;
 
     [SerializeField]
     private AxeGunController axeGunController;
@@ -100,6 +100,8 @@ public class PlayerController : MonoBehaviour
 
         // Inicializar o PlayerInput
         playerInput = GetComponent<PlayerInput>();
+        // Initialize the smoothed input to zero
+        smoothedControllerInput = Vector2.zero;
 
         // Lock e hide do cursor do rato no jogo
         Cursor.lockState = CursorLockMode.Locked;
@@ -120,6 +122,70 @@ public class PlayerController : MonoBehaviour
         if (value.Get<float>() > 0)
         {
             coyoteTimeCounter = coyoteTime;
+        }
+    }
+
+    public void OnLook(InputValue value)
+    {
+        Vector2 rawInput = value.Get<Vector2>();
+
+        // Determine the current control scheme via the PlayerInput component
+        string currentScheme = playerInput.currentControlScheme;
+
+        // Temporary variables for calculated deltas
+        float deltaX = 0f;
+        float deltaY = 0f;
+
+        if (currentScheme.Contains("Mouse") || currentScheme.Contains("Keyboard"))
+        {
+            // Mouse input is given in pixel deltas
+            deltaX = rawInput.x * mouseSensitivity;
+            deltaY = rawInput.y * mouseSensitivity;
+        }
+        else if (currentScheme.Contains("Gamepad") || currentScheme.Contains("Controller"))
+        {
+            // For controller input, first check against the deadzone.
+            // If the magnitude is below the deadzone, ignore the input.
+            if (rawInput.magnitude < controllerDeadzone)
+            {
+                rawInput = Vector2.zero;
+            }
+            else
+            {
+                // Remap the input so that it starts from zero at the deadzone boundary
+                float adjustedMagnitude = (rawInput.magnitude - controllerDeadzone) / (1f - controllerDeadzone);
+                rawInput = rawInput.normalized * Mathf.Clamp01(adjustedMagnitude);
+            }
+
+            // Smooth the controller input to reduce stutter
+            smoothedControllerInput = Vector2.Lerp(smoothedControllerInput, rawInput, controllerSmoothing);
+
+            // Calculate delta values using the controller sensitivity.
+            // (Since the input is normalized and now smoothed, no Time.deltaTime is needed here.)
+            deltaX = smoothedControllerInput.x * controllerSensitivity;
+            deltaY = smoothedControllerInput.y * controllerSensitivity;
+        }
+        else
+        {
+            // Fallback to mouse input behavior if no recognized control scheme is found.
+            deltaX = rawInput.x * mouseSensitivity;
+            deltaY = rawInput.y * mouseSensitivity;
+        }
+
+        // Update the yaw and pitch values.
+        yaw += deltaX;
+        pitch -= deltaY;
+
+        // Clamp the pitch so the camera cannot flip over.
+        pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
+
+        // Apply the rotations.
+        // The player's body rotates around the Y axis.
+        transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
+        // The camera (child of this object) rotates around the X axis.
+        if (Camera.main != null)
+        {
+            Camera.main.transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);
         }
     }
 
@@ -155,17 +221,7 @@ public class PlayerController : MonoBehaviour
         // logo não vi a necessidade de o colocar no FixedUpdate
         // Caso problemas surjam, mudar para FixedUpdate e testar
 
-        //Debug.Log(isSprinting + " | " + Keyboard.current.leftShiftKey.isPressed);
-
-        //// Fix esquisito por puro desespero: Verificar release da key especificamente porque unity nao deteta o release da key????
-        //if (isSprinting && !Keyboard.current.leftShiftKey.isPressed)
-        //{
-        //    isSprinting = false;
-        //    Debug.Log("Sprint Stopped");
-        //}
-
-        currentControlScheme = playerInput.currentControlScheme; // Get the first active device
-        Debug.Log(currentControlScheme);
+        currentControlScheme = playerInput.currentControlScheme;
 
         HandleMovement();
         HandleBunnyHopping();
@@ -307,61 +363,4 @@ public class PlayerController : MonoBehaviour
     //    // Aplicar a rotação à câmera (somente em X para rotação vertical)
     //    Camera.main.transform.localRotation = Quaternion.Euler(rotationY, 0f, 0f);
     //}
-
-    public void OnLook(InputValue value)
-    {
-        // Get the raw input value
-        Vector2 rawInput = value.Get<Vector2>();
-
-        // Debug log to see what's happening
-        Debug.Log($"OnLook: Scheme={currentControlScheme}, RawInput={rawInput}, Time={Time.time}");
-
-        // Variables to hold the final delta values
-        float deltaX = 0f;
-        float deltaY = 0f;
-
-        // Process input differently based on control scheme
-        if (currentControlScheme == "KeyboardMouse" || currentControlScheme.Contains("Keyboard") || currentControlScheme.Contains("Mouse"))
-        {
-            // Mouse input - be more flexible with the scheme name matching
-            Debug.Log("Using mouse sensitivity: " + mouseSensitivityX);
-            deltaX = rawInput.x * mouseSensitivityX;
-            deltaY = rawInput.y * mouseSensitivityY;
-        }
-        else if (currentControlScheme == "Gamepad" || currentControlScheme.Contains("Controller") || currentControlScheme.Contains("Gamepad"))
-        {
-            // Controller input with deadzone
-            Debug.Log("Using controller sensitivity: " + controllerSensitivityX);
-            float inputMagnitude = rawInput.magnitude;
-
-            if (inputMagnitude > innerDeadzone)
-            {
-                float rescaledMagnitude = Mathf.InverseLerp(innerDeadzone, 1f, inputMagnitude);
-                Vector2 normalizedInput = (inputMagnitude > 0.0001f) ? rawInput / inputMagnitude : Vector2.zero;
-                Vector2 processedInput = normalizedInput * rescaledMagnitude;
-
-                deltaX = processedInput.x * controllerSensitivityX * Time.deltaTime;
-                deltaY = processedInput.y * controllerSensitivityY * Time.deltaTime;
-            }
-        }
-        else
-        {
-            // Fallback for any other control scheme
-            Debug.Log("Using fallback sensitivity");
-            deltaX = rawInput.x * mouseSensitivityX;
-            deltaY = rawInput.y * mouseSensitivityY;
-        }
-
-        // Always log the calculated deltas
-        Debug.Log($"Calculated deltaX={deltaX}, deltaY={deltaY}");
-
-        // Apply the rotation regardless of input source
-        rotationX += deltaX;
-        rotationY -= deltaY;
-        rotationY = Mathf.Clamp(rotationY, minY, maxY);
-
-        // Apply rotations
-        transform.localRotation = Quaternion.Euler(0f, rotationX, 0f);
-        Camera.main.transform.localRotation = Quaternion.Euler(rotationY, 0f, 0f);
-    }
 }
