@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51688d7b6c88afc4687aefa2e79e57df, type: 3}
+  m_Name: level1
+  m_EditorClassIdentifier: 
+  levelName: Level1
+  enemyCount: 20
+  timeUntilBoss: 60
+  enemyPrefab: {fileID: 6856189763890583861, guid: 17c39cef546803b45b1da29519b04f82, type: 3}
+  bossPrefab: {fileID: 6856189763890583861, guid: 17c39cef546803b45b1da29519b04f82, type: 3}

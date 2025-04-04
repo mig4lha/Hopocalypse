@@ -21,7 +21,7 @@ public class AxeGunController : MonoBehaviour
     [SerializeField, Tooltip("Max Ammo da AxeGun")]
     private int maxAmmo = 12;
     [SerializeField, Tooltip("Número de balas atuais da AxeGun")]
-    private int currentAmmo;
+    public int currentAmmo;
     [SerializeField, Tooltip("AxeGun Reload Time")]
     private float reloadTime = 2f;
     private bool isReloading = false;
@@ -41,65 +41,40 @@ public class AxeGunController : MonoBehaviour
     [SerializeField]
     private AudioSource gunFire;
 
-    [Header("UI Elements")]
-    [SerializeField, Tooltip("TextMesh da Ammo Count")]
-    private TMP_Text ammoTextMesh;
-    [SerializeField, Tooltip("Crosshair GameObject")]
-    private GameObject crosshair;
-    [SerializeField, Tooltip("TextMesh do Reload Countdown")]
-    private TMP_Text reloadCountdownText;
-
     [SerializeField]
     private DebugLine debugLine;
+
+    [Header("UI Controller Data")]
+    [SerializeField] private UIController UIController;
 
     private void Start()
     {
         // Inicializar ammmo = maxAmmo
         currentAmmo = maxAmmo;
-        UpdateAmmoUI();
+        UIController.UpdateAmmoUI(currentAmmo);
 
-        // Esconder reload text
-        if (reloadCountdownText != null)
-            reloadCountdownText.gameObject.SetActive(false);
-    }
-
-    // Atualiza o UI de ammo a cada frame pro valor atual de ammo
-    private void UpdateAmmoUI()
-    {
-        if (ammoTextMesh != null)
-            ammoTextMesh.text = currentAmmo.ToString();
+        UIController.HideReloadElement();
     }
 
     // Corotina pra reload da arma
-    private IEnumerator Reload()
+    public IEnumerator Reload()
     {
         isReloading = true;
 
-        // Tirar crosshair durante relaod e meter countdown de reload
-        if (crosshair != null)
-            crosshair.SetActive(false);
-        if (reloadCountdownText != null)
-            reloadCountdownText.gameObject.SetActive(true);
+        UIController.HideCrosshairShowReload();
 
         float reloadTimer = reloadTime;
         while (reloadTimer > 0)
         {
-            // Atualizar timer de reload no ecrã
-            reloadCountdownText.text = reloadTimer.ToString("F2");
+            UIController.UpdateReloadTimer(reloadTimer);
             yield return null;
             reloadTimer -= Time.deltaTime;
         }
 
-        // Reset do UI de relaod e ammo
-        reloadCountdownText.text = "";
-        if (reloadCountdownText != null)
-            reloadCountdownText.gameObject.SetActive(false);
         currentAmmo = maxAmmo;
-        UpdateAmmoUI();
         isReloading = false;
 
-        if (crosshair != null)
-            crosshair.SetActive(true);
+        UIController.ResetAmmoAndReloadUI();
     }
 
 
@@ -124,7 +99,7 @@ public class AxeGunController : MonoBehaviour
         nextTimeToFire = Time.time + fireRate;
 
         currentAmmo--;
-        UpdateAmmoUI();
+        UIController.UpdateAmmoUI(currentAmmo);
 
         // Se o último tiro foi disparado, iniciar reload automaticamente
         if (currentAmmo == 0 && !isReloading)
@@ -160,7 +135,7 @@ public class AxeGunController : MonoBehaviour
             {
                 if (hit.transform.CompareTag("Enemy"))
                 {
-                    Debug.Log($"Center pellet hit: {hit.transform.name} at distance {hit.distance}");
+                    //Debug.Log($"Center pellet hit: {hit.transform.name} at distance {hit.distance}");
                 }
             }
         }
@@ -187,7 +162,7 @@ public class AxeGunController : MonoBehaviour
             {
                 if (hit.transform.CompareTag("Enemy"))
                 {
-                    Debug.Log($"Pellet {pelletIndex} hit: {hit.transform.name} at distance {hit.distance}");
+                    //Debug.Log($"Pellet {pelletIndex} hit: {hit.transform.name} at distance {hit.distance}");
                     Destroy(hit.transform.gameObject);
                 }
             }
@@ -199,7 +174,6 @@ public class AxeGunController : MonoBehaviour
             gunFire.Play();
         }
     }
-
 
     #endregion
 

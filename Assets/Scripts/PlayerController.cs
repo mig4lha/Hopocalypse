@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
     private PlayerInput playerInput;
     private string currentControlScheme;
 
-    void Awake()
+    private void Awake()
     {
         // Inicializar o CharacterController
         player.characterController = GetComponent<CharacterController>();
@@ -57,12 +57,12 @@ public class PlayerController : MonoBehaviour
     // Player Input behavior tá set para 'Send Messages' (métodos usam InputValue e não o CallbackContext)
     #region Métodos_InputSystem
 
-    public void OnMove(InputValue value)
+    private void OnMove(InputValue value)
     {
         player.moveInput = value.Get<Vector2>();
     }
 
-    public void OnJump(InputValue value)
+    private void OnJump(InputValue value)
     {
         // Resetar o coyote time counter quando o player salta
         if (value.Get<float>() > 0)
@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void OnLook(InputValue value)
+    private void OnLook(InputValue value)
     {
         Vector2 rawInput = value.Get<Vector2>();
 
@@ -128,7 +128,7 @@ public class PlayerController : MonoBehaviour
     //    }
     //}
 
-    public void OnShoot(InputValue value)
+    private void OnShoot(InputValue value)
     {
         if (value.Get<float>() > 0)
         {
@@ -136,7 +136,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void OnSprint(InputValue value)
+    private void OnSprint(InputValue value)
     {
         //Debug.Log("Get(): " + value.Get());
         player.isSprinting = value.Get<float>() > 0;
@@ -144,7 +144,7 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    void Update()
+    private void Update()
     {
         // O movimento do player está no Update pois não inclui um RigidBody nem cálculos de física precisos
         // logo não vi a necessidade de o colocar no FixedUpdate
