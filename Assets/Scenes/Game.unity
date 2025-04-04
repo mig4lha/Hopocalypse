@@ -7791,6 +7791,7 @@ GameObject:
   - component: {fileID: 1863830241}
   - component: {fileID: 1863830240}
   - component: {fileID: 1863830244}
+  - component: {fileID: 1863830246}
   - component: {fileID: 1863830245}
   - component: {fileID: 1863830243}
   m_Layer: 0
@@ -7937,26 +7938,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fe8e2975efc0d146a2b4639a4b9e712, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 8
-  sprintSpeedMultiplier: 1.5
-  jumpForce: 3
-  gravity: -80
-  coyoteTime: 0.2
-  currentSpeedText: {fileID: 1630215885}
-  currentHopMultiplierText: {fileID: 1403798428}
-  currentConsecutiveJumpsText: {fileID: 417639114}
-  consecutiveJumpWindow: 0.4
-  maxBhopMultiplier: 1.8
-  bhopMultiplierIncrement: 0.1
-  jumpCooldown: 0.1
-  airControl: 0.7
+  player: {fileID: 1863830246}
   mouseSensitivity: 0.1
   controllerSensitivity: 5
   controllerDeadzone: 0.5
   controllerSmoothing: 0.15
   minPitch: -60
   maxPitch: 60
+--- !u!114 &1863830246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1863830235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a34ce8176b3e0448aa46c2914926e1d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  moveSpeed: 6
+  sprintSpeedMultiplier: 1.5
+  jumpForce: 2.5
+  gravity: -80
+  coyoteTime: 0.1
+  consecutiveJumpWindow: 0.4
+  maxBhopMultiplier: 2
+  bhopMultiplierIncrement: 0.1
+  jumpCooldown: 0.1
+  airControl: 0.7
+  characterController: {fileID: 0}
+  moveInput: {x: 0, y: 0}
+  coyoteTimeCounter: 0
+  isSprinting: 0
+  isMoving: 0
+  wasGrounded: 0
   axeGunController: {fileID: 3469287838632551789}
+  currentSpeedText: {fileID: 1630215885}
+  currentHopMultiplierText: {fileID: 1403798428}
+  currentConsecutiveJumpsText: {fileID: 417639114}
 --- !u!1 &1918335956
 GameObject:
   m_ObjectHideFlags: 0
