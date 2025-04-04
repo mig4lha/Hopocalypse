@@ -63,9 +63,10 @@ public class PlayerController : MonoBehaviour
     [Range(0f, 1f)] private float airControl = 0.7f;
 
     [Header("Mouse Settings")]
-    [Tooltip("Mouse sensitivity multiplier (applied directly to delta pixels).")]
+    [Tooltip("Sensibilidade do Rato")]
     [SerializeField] private float mouseSensitivity = 0.1f;
 
+    // Não funciona direito
     [Header("Controller Settings")]
     [Tooltip("Controller sensitivity multiplier.")]
     [SerializeField] private float controllerSensitivity = 5f;
@@ -73,6 +74,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField, Range(0f, 0.5f)] private float controllerDeadzone = 0.15f;
     [Tooltip("Smoothing factor for controller input (0 = max smoothing, 1 = no smoothing).")]
     [SerializeField, Range(0.01f, 1f)] private float controllerSmoothing = 0.15f;
+    private Vector2 smoothedControllerInput = Vector2.zero;
 
     [Header("Camera Limits")]
     [Tooltip("Minimum vertical angle (in degrees).")]
@@ -80,12 +82,8 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Maximum vertical angle (in degrees).")]
     [SerializeField] private float maxPitch = 60f;
 
-    // Internal state for the camera rotation
     private float yaw = 0f;
     private float pitch = 0f;
-
-    // Used to smooth controller input
-    private Vector2 smoothedControllerInput = Vector2.zero;
 
     [SerializeField]
     private AxeGunController axeGunController;
@@ -100,7 +98,7 @@ public class PlayerController : MonoBehaviour
 
         // Inicializar o PlayerInput
         playerInput = GetComponent<PlayerInput>();
-        // Initialize the smoothed input to zero
+
         smoothedControllerInput = Vector2.zero;
 
         // Lock e hide do cursor do rato no jogo
@@ -129,60 +127,43 @@ public class PlayerController : MonoBehaviour
     {
         Vector2 rawInput = value.Get<Vector2>();
 
-        // Determine the current control scheme via the PlayerInput component
         string currentScheme = playerInput.currentControlScheme;
 
-        // Temporary variables for calculated deltas
         float deltaX = 0f;
         float deltaY = 0f;
 
         if (currentScheme.Contains("Mouse") || currentScheme.Contains("Keyboard"))
         {
-            // Mouse input is given in pixel deltas
             deltaX = rawInput.x * mouseSensitivity;
             deltaY = rawInput.y * mouseSensitivity;
         }
+        // Não funciona direito pra controller...
         else if (currentScheme.Contains("Gamepad") || currentScheme.Contains("Controller"))
         {
-            // For controller input, first check against the deadzone.
-            // If the magnitude is below the deadzone, ignore the input.
             if (rawInput.magnitude < controllerDeadzone)
             {
                 rawInput = Vector2.zero;
             }
             else
             {
-                // Remap the input so that it starts from zero at the deadzone boundary
                 float adjustedMagnitude = (rawInput.magnitude - controllerDeadzone) / (1f - controllerDeadzone);
                 rawInput = rawInput.normalized * Mathf.Clamp01(adjustedMagnitude);
             }
-
-            // Smooth the controller input to reduce stutter
             smoothedControllerInput = Vector2.Lerp(smoothedControllerInput, rawInput, controllerSmoothing);
-
-            // Calculate delta values using the controller sensitivity.
-            // (Since the input is normalized and now smoothed, no Time.deltaTime is needed here.)
             deltaX = smoothedControllerInput.x * controllerSensitivity;
             deltaY = smoothedControllerInput.y * controllerSensitivity;
         }
         else
         {
-            // Fallback to mouse input behavior if no recognized control scheme is found.
+            // Fallback pra rato caso seja outro control scheme
             deltaX = rawInput.x * mouseSensitivity;
             deltaY = rawInput.y * mouseSensitivity;
         }
-
-        // Update the yaw and pitch values.
         yaw += deltaX;
         pitch -= deltaY;
-
-        // Clamp the pitch so the camera cannot flip over.
         pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
 
-        // Apply the rotations.
-        // The player's body rotates around the Y axis.
         transform.localRotation = Quaternion.Euler(0f, yaw, 0f);
-        // The camera (child of this object) rotates around the X axis.
         if (Camera.main != null)
         {
             Camera.main.transform.localRotation = Quaternion.Euler(pitch, 0f, 0f);

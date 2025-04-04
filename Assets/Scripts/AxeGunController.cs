@@ -1,36 +1,131 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class AxeGunController : MonoBehaviour
 {
     #region Tentativa Raycasts
     [Header("AxeGun Settings")]
-    [SerializeField, Tooltip("Number of pellets per shot (should equal gridRows * gridColumns)")]
+    [SerializeField, Tooltip("Número balas por tiro")]
     private int pelletCount = 30;
-    [SerializeField, Tooltip("Maximum horizontal spread angle in degrees")]
+    [SerializeField, Tooltip("Ângulo máximo do spread em X")]
     private float spreadAngleX = 50f;
-    [SerializeField, Tooltip("Maximum vertical spread angle in degrees")]
+    [SerializeField, Tooltip("Ângulo máximo do spread em Y")]
     private float spreadAngleY = 25f;
-    [SerializeField, Tooltip("Maximum range for each pellet")]
+    [SerializeField, Tooltip("Range máximo de cada bala do tiro")]
     private float maxRange = 15f;
 
+    [Header("Ammo and Reload Settings")]
+    [SerializeField, Tooltip("Max Ammo da AxeGun")]
+    private int maxAmmo = 12;
+    [SerializeField, Tooltip("Número de balas atuais da AxeGun")]
+    private int currentAmmo;
+    [SerializeField, Tooltip("AxeGun Reload Time")]
+    private float reloadTime = 2f;
+    private bool isReloading = false;
+
+    [Header("Fire Rate Settings")]
+    [SerializeField, Tooltip("Tempo de delay entre cada tiro")]
+    private float fireRate = 0.3f; // Customizable time between shots
+    private float nextTimeToFire = 0f;
+
     [Header("Muzzle Settings")]
-    [SerializeField, Tooltip("Transform representing the muzzle point of the weapon")]
+    [SerializeField, Tooltip("Transform da muzzle")]
     private Transform muzzleTransform;
-    [SerializeField, Tooltip("Particle system for the muzzle flash")]
+    [SerializeField, Tooltip("Particle system para muzzle flash")]
     private ParticleSystem muzzleFlash;
 
     [Header("AxeGun SFX")]
     [SerializeField]
     private AudioSource gunFire;
 
+    [Header("UI Elements")]
+    [SerializeField, Tooltip("TextMesh da Ammo Count")]
+    private TMP_Text ammoTextMesh;
+    [SerializeField, Tooltip("Crosshair GameObject")]
+    private GameObject crosshair;
+    [SerializeField, Tooltip("TextMesh do Reload Countdown")]
+    private TMP_Text reloadCountdownText;
+
     [SerializeField]
     private DebugLine debugLine;
 
+    private void Start()
+    {
+        // Inicializar ammmo = maxAmmo
+        currentAmmo = maxAmmo;
+        UpdateAmmoUI();
+
+        // Esconder reload text
+        if (reloadCountdownText != null)
+            reloadCountdownText.gameObject.SetActive(false);
+    }
+
+    // Atualiza o UI de ammo a cada frame pro valor atual de ammo
+    private void UpdateAmmoUI()
+    {
+        if (ammoTextMesh != null)
+            ammoTextMesh.text = currentAmmo.ToString();
+    }
+
+    // Corotina pra reload da arma
+    private IEnumerator Reload()
+    {
+        isReloading = true;
+
+        // Tirar crosshair durante relaod e meter countdown de reload
+        if (crosshair != null)
+            crosshair.SetActive(false);
+        if (reloadCountdownText != null)
+            reloadCountdownText.gameObject.SetActive(true);
+
+        float reloadTimer = reloadTime;
+        while (reloadTimer > 0)
+        {
+            // Atualizar timer de reload no ecrã
+            reloadCountdownText.text = reloadTimer.ToString("F2");
+            yield return null;
+            reloadTimer -= Time.deltaTime;
+        }
+
+        // Reset do UI de relaod e ammo
+        reloadCountdownText.text = "";
+        if (reloadCountdownText != null)
+            reloadCountdownText.gameObject.SetActive(false);
+        currentAmmo = maxAmmo;
+        UpdateAmmoUI();
+        isReloading = false;
+
+        if (crosshair != null)
+            crosshair.SetActive(true);
+    }
+
+
     public void Shoot()
     {
-        // Play the muzzle flash particle system
+        // Não permitir tiros enquanto realoading
+        if (isReloading)
+            return;
+
+        // Se sem ammo, começar corotina de reload
+        if (currentAmmo <= 0)
+        {
+            StartCoroutine(Reload());
+            return;
+        }
+
+        // Prevenir tiros antes do delay da fire rate
+        if (Time.time < nextTimeToFire)
+            return;
+
+        nextTimeToFire = Time.time + fireRate;
+
+        currentAmmo--;
+        UpdateAmmoUI();
+
+        // Muzzle flash effect do tiro
         if (muzzleFlash != null)
         {
             muzzleFlash.Play();
@@ -38,17 +133,14 @@ public class AxeGunController : MonoBehaviour
 
         Vector3 origin = muzzleTransform.position;
 
-        // Cast a ray from the center of the screen
+        // Ray cast pro centro da crosshair (centro do ecrã)
         Ray centerRay = Camera.main.ScreenPointToRay(new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0));
 
-        // Determine a target point along the center ray.
-        // You might want to use your maxRange, or perform a Physics.Raycast from the camera to see what you hit.
         Vector3 targetPoint = centerRay.origin + centerRay.direction * maxRange;
 
-        // Calculate the center direction from the muzzle to the target point
         Vector3 centerDirection = (targetPoint - origin).normalized;
 
-        // Fire the center pellet ensuring it goes exactly where the crosshair is pointing
+        // Disparar a primeira bala no centro (assegurar que pelo menos uma das balas acerta onde a crosshair está)
         {
             float currentRange = maxRange;
             Vector3 pelletDirection = centerDirection;
@@ -63,26 +155,27 @@ public class AxeGunController : MonoBehaviour
                 {
                     Debug.Log($"Center pellet hit: {hit.transform.name} at distance {hit.distance}");
                 }
-                // Process hit (damage, effects, etc.) here.
             }
         }
 
-        // Fire remaining pellets randomly around the center
+        // Disparar as restantes balas do tiro
         for (int pelletIndex = 1; pelletIndex < pelletCount; pelletIndex++)
         {
-            // Randomize angles for yaw (horizontal) and pitch (vertical)
+            // Randomizar angulos X e Y pro spread
             float randomYaw = Random.Range(-spreadAngleX, spreadAngleX);
             float randomPitch = Random.Range(-spreadAngleY, spreadAngleY);
 
-            // Apply the random rotation to the center direction
+            // Aplicar pequena rotação random aos tiros
             Vector3 pelletDirection = Quaternion.Euler(randomPitch, randomYaw, 0) * centerDirection;
 
             float currentRange = maxRange;
             Vector3 endPoint = origin + pelletDirection * currentRange;
 
+            // Debug lines pra ver trajetoria das balas
             debugLine.DrawLine(origin, endPoint, 1f);
             Debug.DrawRay(origin, pelletDirection * currentRange, Color.red, 1f);
 
+            // Verificar se os raycasts colidem com inimigos e processar interação
             if (Physics.Raycast(origin, pelletDirection, out RaycastHit hit, currentRange))
             {
                 if (hit.transform.CompareTag("Enemy"))
@@ -90,10 +183,10 @@ public class AxeGunController : MonoBehaviour
                     Debug.Log($"Pellet {pelletIndex} hit: {hit.transform.name} at distance {hit.distance}");
                     Destroy(hit.transform.gameObject);
                 }
-                // Process hit (damage, effects, etc.) here.
             }
         }
 
+        // Som do tiro
         if (gunFire != null)
         {
             gunFire.Play();
