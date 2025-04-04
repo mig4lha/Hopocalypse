@@ -112,7 +112,8 @@ public class AxeGunController : MonoBehaviour
         // Se sem ammo, começar corotina de reload
         if (currentAmmo <= 0)
         {
-            StartCoroutine(Reload());
+            if (!isReloading)
+                StartCoroutine(Reload());
             return;
         }
 
@@ -124,6 +125,12 @@ public class AxeGunController : MonoBehaviour
 
         currentAmmo--;
         UpdateAmmoUI();
+
+        // Se o último tiro foi disparado, iniciar reload automaticamente
+        if (currentAmmo == 0 && !isReloading)
+        {
+            StartCoroutine(Reload());
+        }
 
         // Muzzle flash effect do tiro
         if (muzzleFlash != null)
