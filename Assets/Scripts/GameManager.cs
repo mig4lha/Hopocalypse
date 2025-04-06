@@ -5,8 +5,6 @@ using System.Collections.Generic;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-
-    // A list of all level configurations you want to support (assign your LevelData assets in the Inspector)
     public List<LevelData> levels;
     public int currentLevelIndex = 0;
 
@@ -30,8 +28,7 @@ public class GameManager : MonoBehaviour
     }
 
     // Returns the current level's data
-    public LevelData GetCurrentLevelData()
-    {
+    public LevelData GetCurrentLevelData(){
         return levels[currentLevelIndex];
     }
 
@@ -40,7 +37,7 @@ public class GameManager : MonoBehaviour
         return currentLevelIndex;
     }
 
-    // Load a level by index (assumes your scenes are named according to LevelData.levelName)
+    // Load a level by index
     public void LoadLevel(int levelIndex)
     {
         if (levelIndex >= 0 && levelIndex < levels.Count)
