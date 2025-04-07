@@ -4,7 +4,7 @@ public class Enemy : MonoBehaviour
 {
 
     [Header("Player Data")]
-    [SerializeField] private Player player;
+    [SerializeField] private Transform player;
 
     [Header("Enemy Stats")]
     [SerializeField] private float moveSpeed = 5f;
@@ -14,7 +14,16 @@ public class Enemy : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
+
+        if (playerGO != null)
+        {
+            player = playerGO.transform;
+        }
+        else
+        {
+            Debug.LogWarning("Jogador não encontrado! Verifica se tem a tag 'Player'");
+        }
     }
 
     // Update is called once per frame
@@ -24,8 +33,7 @@ public class Enemy : MonoBehaviour
         if (player == null) return;
 
         // Direction to the player
-        Vector3 playerPosition = player.transform.position;
-        Vector3 direction = playerPosition - transform.position;
+        Vector3 direction = player.position - transform.position;
         direction.y = 0; // Ignore vertical difference (optional)
 
         // Rotate toward the player
