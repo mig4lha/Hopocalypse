@@ -34,33 +34,33 @@ public class Player : MonoBehaviour
     [Range(0f, 1f)] private float airControl = 0.7f;
 
     // Player variables
-    public CharacterController characterController;
+    internal CharacterController characterController;
     private Vector3 velocity;
-    public Vector2 moveInput;
-    public float coyoteTimeCounter;
-    public bool isSprinting = false;
-    public bool isMoving;
+    internal Vector2 moveInput;
+    internal float coyoteTimeCounter;
+    internal bool isSprinting = false;
+    private bool isMoving;
 
 
     // Hop variables
     private float currentBhopMultiplier = 1.0f;
     private float lastJumpTime;
     private int consecutiveJumps = 0;
-    public bool wasGrounded;
+    internal bool wasGrounded;
     private float timeSinceGrounded;
     private float landingTime;
     private Vector3 moveDirection;
 
+    // Buffs
+    public bool hasReloadBuff = false;
+
+    [Header("AxeGun Data")]
     [SerializeField]
     private AxeGunController axeGunController;
 
-    // Debug UI variables
-    [SerializeField]
-    private TMP_Text currentSpeedText;
-    [SerializeField]
-    private TMP_Text currentHopMultiplierText;
-    [SerializeField]
-    private TMP_Text currentConsecutiveJumpsText;
+    [Header("UI Controller Data")]
+    [SerializeField] 
+    private UIController UIController;
 
     public void TakeDamage(float damage)
     {
@@ -88,7 +88,7 @@ public class Player : MonoBehaviour
 
     public void HandleMovement()
     {
-        // Guardar o ultimo time que o player tocou no chao
+        // Guardar o ultimo tempo que o player tocou no chao
         if (characterController.isGrounded)
         {
             timeSinceGrounded = 0;
@@ -158,7 +158,7 @@ public class Player : MonoBehaviour
 
         isMoving = characterController.velocity.magnitude > 0.1f;
 
-        UpdateMovementUI();
+        UIController.UpdateMovementUI(characterController.velocity.magnitude, currentBhopMultiplier, consecutiveJumps);
 
         // Atualizar velocity para manter o momentum horizontal
         velocity = new Vector3(moveDirection.x, velocity.y, moveDirection.z);
@@ -185,23 +185,13 @@ public class Player : MonoBehaviour
         }
 
         // Bonus effects para pensar no futuro
-        if (currentBhopMultiplier > 1.3f)
+        if (currentBhopMultiplier >= 2f)
         {
-            // Pensar em bonus de gameplay para persuadir o player a saltar...
+            hasReloadBuff = true;
         }
-
-        // Debug log, retirar na build final!
-        if (consecutiveJumps > 0)
+        else
         {
-            //Debug.Log($"BHop: {consecutiveJumps} jumps, {currentBhopMultiplier:F2}x multiplier");
+            hasReloadBuff = false;
         }
-    }
-
-    private void UpdateMovementUI()
-    {
-        // Update no UI
-        currentSpeedText.text = $"Speed: {characterController.velocity.magnitude:F2} m/s";
-        currentHopMultiplierText.text = $"Hop Mult: {currentBhopMultiplier:F2}x";
-        currentConsecutiveJumpsText.text = $"Jumps: {consecutiveJumps}";
     }
 }
