@@ -44,11 +44,42 @@ public class AxeGunController : MonoBehaviour
     [SerializeField]
     private DebugLine debugLine;
 
-    [Header("UI Controller Data")]
-    [SerializeField] private UIController UIController;
+    private UIController UIController;
+
+    private WaveController waveController;
+
+    private Player player;
 
     private void Start()
     {
+        UIController = FindAnyObjectByType<UIController>();
+        if (UIController == null)
+        {
+            Debug.LogError("UIController not found in the scene.");
+        }
+
+        // get the Player GameObject
+        GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
+        if (playerGO != null)
+        {
+            player = playerGO.GetComponent<Player>();
+        }
+        else
+        {
+            Debug.LogError("Player GameObject not found!");
+        }
+
+        // get the WaveController GameObject
+        GameObject waveControllerGO = GameObject.Find("WaveController");
+        if (waveControllerGO != null)
+        {
+            waveController = waveControllerGO.GetComponent<WaveController>();
+        }
+        else
+        {
+            Debug.LogError("WaveController GameObject not found!");
+        }
+
         // Inicializar ammmo = maxAmmo
         currentAmmo = maxAmmo;
         UIController.UpdateAmmoUI(currentAmmo);
@@ -64,6 +95,14 @@ public class AxeGunController : MonoBehaviour
         UIController.HideCrosshairShowReload();
 
         float reloadTimer = reloadTime;
+
+        if (player.hasReloadBuff) {
+            reloadTimer *= 0.5f;
+        } else
+        {
+            reloadTimer = reloadTime;
+        }
+
         while (reloadTimer > 0)
         {
             UIController.UpdateReloadTimer(reloadTimer);
@@ -74,6 +113,7 @@ public class AxeGunController : MonoBehaviour
         currentAmmo = maxAmmo;
         isReloading = false;
 
+        UIController.UpdateAmmoUI(currentAmmo);
         UIController.ResetAmmoAndReloadUI();
     }
 
@@ -88,6 +128,7 @@ public class AxeGunController : MonoBehaviour
         if (currentAmmo <= 0)
         {
             if (!isReloading)
+
                 StartCoroutine(Reload());
             return;
         }
@@ -135,7 +176,15 @@ public class AxeGunController : MonoBehaviour
             {
                 if (hit.transform.CompareTag("Enemy"))
                 {
-                    //Debug.Log($"Center pellet hit: {hit.transform.name} at distance {hit.distance}");
+                    // Attempt to get the Enemy component
+                    Enemy enemyComponent = hit.transform.GetComponent<Enemy>();
+                    if (enemyComponent != null && !enemyComponent.isDefeated)
+                    {
+                        // Mark the enemy as defeated so further pellets don't count it again
+                        enemyComponent.isDefeated = true;
+                        Destroy(hit.transform.gameObject);
+                        waveController.OnEnemyDefeated();
+                    }
                 }
             }
         }
@@ -162,8 +211,15 @@ public class AxeGunController : MonoBehaviour
             {
                 if (hit.transform.CompareTag("Enemy"))
                 {
-                    //Debug.Log($"Pellet {pelletIndex} hit: {hit.transform.name} at distance {hit.distance}");
-                    Destroy(hit.transform.gameObject);
+                    // Attempt to get the Enemy component
+                    Enemy enemyComponent = hit.transform.GetComponent<Enemy>();
+                    if (enemyComponent != null && !enemyComponent.isDefeated)
+                    {
+                        // Mark the enemy as defeated so further pellets don't count it again
+                        enemyComponent.isDefeated = true;
+                        Destroy(hit.transform.gameObject);
+                        waveController.OnEnemyDefeated();
+                    }
                 }
             }
         }

@@ -12,6 +12,12 @@ public class UIController : MonoBehaviour
     private TMP_Text currentHopMultiplierText;
     [SerializeField, Tooltip("TextMesh de Saltos")]
     private TMP_Text currentConsecutiveJumpsText;
+    [SerializeField, Tooltip("TextMesh de Enemies Defeated")]
+    private TMP_Text currentEnemiesDefeated;
+    [SerializeField, Tooltip("TextMesh de Enemies Spawned")]
+    private TMP_Text currentEnemiesSpawned;
+    [SerializeField, Tooltip("TextMesh de Time Passed")]
+    private TMP_Text currentTimePassed;
 
     [Header("UI Elements")]
     [SerializeField, Tooltip("TextMesh da Ammo Count")]
@@ -26,12 +32,38 @@ public class UIController : MonoBehaviour
     [Header("AxeGun Data")]
     [SerializeField] private AxeGunController axeGunController;
 
+    public void UpdateTimePassed(float timePassed)
+    {
+        // Atualizar tempo passado no ecrã no fomarto "Time: MM:SS"
+        TimeSpan time = TimeSpan.FromSeconds(timePassed);
+        string formattedTime = string.Format("{0:D2}:{1:D2}", (int)time.TotalMinutes, time.Seconds);
+        if (currentTimePassed != null)
+            currentTimePassed.text = $"Time Passed:\n{formattedTime}";
+    }
+
+    public void UpdateEnemiesSpawned(int enemiesSpawned)
+    {
+        // Atualizar enemies spawned no ecrã
+        if (currentEnemiesSpawned != null)
+            currentEnemiesSpawned.text = $"Enemies Spawned: {enemiesSpawned}";
+    }
+
+    public void UpdateEnemiesDefeated(int enemiesDefeated)
+    {
+        // Atualizar enemies defeated no ecrã
+        if (currentEnemiesDefeated != null)
+            currentEnemiesDefeated.text = $"Enemies Defeated: {enemiesDefeated}";
+    }
+
     public void UpdateMovementUI(float velocity, float currentBhopMultiplier, int consecutiveJumps)
     {
+        consecutiveJumps--; // Decrementar para que o primeiro salto seja 0
+        if (consecutiveJumps == -1) consecutiveJumps = 0;
+
         // Update no UI
         currentSpeedText.text = $"Speed: {velocity:F2} m/s";
         currentHopMultiplierText.text = $"Hop Mult: {currentBhopMultiplier:F2}x";
-        currentConsecutiveJumpsText.text = $"Jumps: {consecutiveJumps}";
+        currentConsecutiveJumpsText.text = $"Consecutive Jumps: {consecutiveJumps}";
     }
 
     public void UpdateAmmoUI(float currentAmmo)

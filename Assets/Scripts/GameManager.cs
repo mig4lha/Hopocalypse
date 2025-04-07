@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System;
 
 public class GameManager : MonoBehaviour
 {
@@ -24,7 +25,17 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // Automatically load the first level (index 0)
-        LoadLevel(0);
+        LoadMainMenu();
+        //LoadLevel(0);
+    }
+
+    private void LoadMainMenu()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        // Load the main menu scene
+        SceneManager.LoadScene("MainMenu");
     }
 
     // Returns the current level's data
@@ -49,5 +60,10 @@ public class GameManager : MonoBehaviour
         {
             Debug.LogWarning("Invalid level index.");
         }
+    }
+
+    internal void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
     }
 }

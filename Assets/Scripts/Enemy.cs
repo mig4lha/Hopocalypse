@@ -4,12 +4,14 @@ public class Enemy : MonoBehaviour
 {
 
     [Header("Player Data")]
-    [SerializeField] private Transform player;
+    private Transform player;
 
     [Header("Enemy Stats")]
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float rotationSpeed = 5f;
-    [SerializeField] private float stoppingDistance = 2f;
+    [SerializeField] private float stoppingDistance = 4f;
+
+    public bool isDefeated = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

@@ -3,6 +3,17 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
+    private GameManager gameManager;
+
+    private void Awake()
+    {
+        gameManager = GameManager.instance;
+        if (gameManager == null)
+        {
+            Debug.LogError("GameManager not found in the scene.");
+        }
+    }
+
     public void OpenCredits()
     {
         SceneManager.LoadScene("Credits");
@@ -10,7 +21,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void PlayGame()
     {
-        SceneManager.LoadScene("Game");
+        gameManager.LoadLevel(0);
     }
 
     public void OpenOptions()

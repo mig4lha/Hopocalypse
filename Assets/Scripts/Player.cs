@@ -51,6 +51,9 @@ public class Player : MonoBehaviour
     private float landingTime;
     private Vector3 moveDirection;
 
+    // Buffs
+    public bool hasReloadBuff = false;
+
     [Header("AxeGun Data")]
     [SerializeField]
     private AxeGunController axeGunController;
@@ -182,15 +185,13 @@ public class Player : MonoBehaviour
         }
 
         // Bonus effects para pensar no futuro
-        if (currentBhopMultiplier > 1.3f)
+        if (currentBhopMultiplier >= 2f)
         {
-            // Pensar em bonus de gameplay para persuadir o player a saltar...
+            hasReloadBuff = true;
         }
-
-        // Debug log, retirar na build final!
-        if (consecutiveJumps > 0)
+        else
         {
-            //Debug.Log($"BHop: {consecutiveJumps} jumps, {currentBhopMultiplier:F2}x multiplier");
+            hasReloadBuff = false;
         }
     }
 }
