@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using static UnityEngine.Rendering.DebugUI;
 
 [RequireComponent(typeof(CharacterController))]
@@ -39,6 +40,8 @@ public class PlayerController : MonoBehaviour
     private PlayerInput playerInput;
     private string currentControlScheme;
 
+    private GameManager gameManager;
+
     private void Awake()
     {
         // Inicializar o CharacterController
@@ -52,6 +55,8 @@ public class PlayerController : MonoBehaviour
         // Lock e hide do cursor do rato no jogo
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        gameManager = GameManager.instance;
     }
 
     // Player Input behavior tá set para 'Send Messages' (métodos usam InputValue e não o CallbackContext)
@@ -140,6 +145,14 @@ public class PlayerController : MonoBehaviour
     {
         //Debug.Log("Get(): " + value.Get());
         player.isSprinting = value.Get<float>() > 0;
+    }
+
+    private void OnReturnToMainMenu(InputValue value)
+    {
+        if (value.Get<float>() > 0)
+        {
+            gameManager.LoadScene("MainMenu");
+        }
     }
 
     #endregion
