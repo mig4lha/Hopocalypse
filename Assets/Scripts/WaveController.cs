@@ -5,69 +5,187 @@ public class WaveController : MonoBehaviour
 {
     private LevelData levelData;
 
-    private int enemiesSpawned = 0;
-    private int enemiesDefeated = 0;
+    // Wave tracking variables
+    private int currentWaveNumber = 0;
+    private int enemiesSpawnedInCurrentWave = 0;
+    private int enemiesDefeatedInCurrentWave = 0;
+    private int totalEnemiesDefeated = 0;
+    private int totalEnemiesSpawned = 0;
     private float timePassed = 0;
     private bool timerStopped = false;
+    private int currentLevel = 0; // Current level index (1-based for display purposes)
 
+    // Configurable delays (could also be stored in LevelData)
+    [SerializeField] private float timeBeforeWavesStart = 3f;
+    [SerializeField] private float timeBetweenWaves = 5f;
+    [SerializeField] private float spawnDelay = 1f; // Delay between spawning individual enemies
+
+    // Reference to UIController for updating any UI elements
     private UIController UIController;
+
+    // Flag to determine if the boss is defeated (set this from your boss enemy when it dies)
+    private bool isBossDefeated = false;
+
 
     void Start()
     {
+        // Locate and assign UIController (if not assigned via Inspector)
         UIController = FindAnyObjectByType<UIController>();
         if (UIController == null)
         {
             Debug.LogError("UIController not found in the scene.");
         }
 
+        // Retrieve the level data from the GameManager singleton
         levelData = GameManager.instance.GetCurrentLevelData();
+        currentLevel = GameManager.instance.GetCurrentLevelIndex()+1;
+
+        // Begin the wave system
         StartCoroutine(RunWaveSystem());
     }
 
     IEnumerator RunWaveSystem()
     {
-        while (enemiesDefeated < levelData.enemyCount && timePassed < levelData.timeUntilBoss)
+        // Wait before starting the waves (for instance, to allow players to get ready)
+        yield return new WaitForSeconds(timeBeforeWavesStart);
+
+        // For each wave as defined in LevelData
+        for (int wave = 1; wave <= levelData.waveCount; wave++)
         {
-            SpawnEnemy();
-            enemiesSpawned++;
-            yield return new WaitForSeconds(1f);
+            currentWaveNumber = wave;
+
+            // Calculate the enemy count for this wave.
+            // For example: baseWaveEnemyCount + (wave - 1) * enemyPerWaveIncrementMult
+            int enemyCountForThisWave = levelData.baseWaveEnemyCount + (wave - 1) * levelData.enemyPerWaveIncrementMult;
+
+            // Reset counters for the new wave
+            enemiesSpawnedInCurrentWave = 0;
+            enemiesDefeatedInCurrentWave = 0;
+
+            Debug.Log($"Starting Wave {wave} with {enemyCountForThisWave} enemies.");
+
+            // Spawn enemies one by one until you reach the required count for this wave
+            while (enemiesSpawnedInCurrentWave < enemyCountForThisWave)
+            {
+                SpawnEnemy();
+                yield return new WaitForSeconds(spawnDelay);
+            }
+
+            // Wait until all the enemies spawned in this wave have been defeated
+            yield return new WaitUntil(() => enemiesDefeatedInCurrentWave >= enemyCountForThisWave);
+            Debug.Log($"Wave {wave} completed!");
+
+            // If there are additional waves, wait for a bit before starting the next one
+            if (wave < levelData.waveCount)
+            {
+                yield return new WaitForSeconds(timeBetweenWaves);
+            }
         }
+
+        // All waves are complete—now spawn the boss if it's assigned
         if (levelData.bossPrefab != null)
         {
-            enemiesSpawned++;
+            // Level 1 specific mechanic - open the 2nd floor for boss fight
+            if (currentLevel == 1)
+            {
+                // Call a specific mechanic for this wave
+                Level1SpecificMechanic();
+            }
+
+            yield return new WaitForSeconds(timeBetweenWaves);
             SpawnBoss();
+            // Wait until the boss is defeated.
+            yield return new WaitUntil(() => isBossDefeated);
         }
+
+        // Wave system for this level has ended.
+        Debug.Log("All waves and boss completed for this level!");
+        EndWaveSystem();
         yield return null;
+    }
+
+    private void Level1SpecificMechanic()
+    {
+        //get gameobject called "NextStage2"
+        Transform nextStageTransform = GameObject.Find("NextStage2").transform;
+        //get a collider called "NextStageWallCollider"
+        Collider nextStageCollider = GameObject.Find("NextStageWallCollider").GetComponent<Collider>();
+
+        //rotate the nextStageTransform to -90 degrees on the z axis
+        nextStageTransform.rotation = Quaternion.Euler(0, 0, -90);
+
+        //set the nextStageCollider off
+        nextStageCollider.enabled = false;
+
+        Debug.Log("Opened the 2nd floor!");
     }
 
     void SpawnEnemy()
     {
-        int currentLevel = GameManager.instance.GetCurrentLevelIndex() + 1;
-
-        // Debug apenas para level1
+        // Example: Find the ground object (assumed to be the same across levels) by name.
+        // Here it searches for a GameObject called "floor0_ground".
         GameObject groundObject = GameObject.Find("floor0_ground");
-
         if (groundObject == null)
         {
-            Debug.LogError("Ground object is null. Cannot spawn enemy.");
+            Debug.LogError("Ground object not found. Cannot spawn enemy.");
             return;
         }
 
-        GameObject spawnArea = groundObject;
-        Collider spawnAreaCollider = spawnArea.GetComponent<Collider>();
-
+        Collider spawnAreaCollider = groundObject.GetComponent<Collider>();
         if (spawnAreaCollider == null)
         {
             Debug.LogError("Spawn area does not have a Collider component.");
             return;
         }
 
-        Vector3 randomPosition = GetRandomPositionInCollider(spawnAreaCollider);
-        Instantiate(levelData.enemyPrefab, randomPosition, Quaternion.identity);
+        Vector3 spawnPosition = GetRandomPositionInCollider(spawnAreaCollider);
 
-        UIController.UpdateEnemiesSpawned(enemiesSpawned);
+        // Instantiate the enemy. Optionally, you could apply the enemy stat multipliers here,
+        // e.g., by passing them to an enemy component on the spawned prefab.
+        GameObject enemy = Instantiate(levelData.enemyPrefab, spawnPosition, Quaternion.identity);
 
-        Debug.Log("Spawned enemy at position: " + randomPosition);
+        // Example of applying multipliers if your enemy script supports it.
+        Enemy enemyScript = enemy.GetComponent<Enemy>();
+        if (enemyScript != null)
+        {
+            //enemyScript.ApplyMultipliers(levelData.enemyHealthMult, levelData.enemyDamageMult, levelData.enemySpeedMult);
+        }
+
+        enemiesSpawnedInCurrentWave++;
+        totalEnemiesSpawned++;
+
+        UIController.UpdateEnemiesSpawned(totalEnemiesSpawned);
+        //Debug.Log("Spawned enemy at position: " + spawnPosition);
+    }
+
+    void SpawnBoss()
+    {
+        // Find the same ground object to pick a spawn area
+        GameObject groundObject = GameObject.Find("floor1_ground");
+        if (groundObject == null)
+        {
+            Debug.LogError("Ground object not found. Cannot spawn boss.");
+            return;
+        }
+
+        Collider spawnAreaCollider = groundObject.GetComponent<Collider>();
+        if (spawnAreaCollider == null)
+        {
+            Debug.LogError("Spawn area does not have a Collider component.");
+            return;
+        }
+
+        Vector3 spawnPosition = GetRandomPositionInCollider(spawnAreaCollider);
+        // Adjust boss spawn position if necessary
+        spawnPosition.y += 0.9f;
+
+        Instantiate(levelData.bossPrefab, spawnPosition, Quaternion.identity);
+
+        enemiesSpawnedInCurrentWave++;
+        totalEnemiesSpawned++;
+
+        UIController.UpdateEnemiesSpawned(totalEnemiesSpawned);
+        Debug.Log("Spawned Boss at position: " + spawnPosition);
     }
 
     Vector3 GetRandomPositionInCollider(Collider collider)
@@ -75,40 +193,17 @@ public class WaveController : MonoBehaviour
         Vector3 boundsMin = collider.bounds.min;
         Vector3 boundsMax = collider.bounds.max;
         float randomX = Random.Range(boundsMin.x, boundsMax.x);
-        float randomY = boundsMax.y + 2; // Spawn above the ground
         float randomZ = Random.Range(boundsMin.z, boundsMax.z);
+        // Spawn slightly above the ground
+        float randomY = boundsMax.y + 2f;
         return new Vector3(randomX, randomY, randomZ);
     }
 
-    void SpawnBoss()
+    void EndWaveSystem()
     {
-        int currentLevel = GameManager.instance.GetCurrentLevelIndex() + 1;
-
-        // Debug apenas para level1
-        GameObject groundObject = GameObject.Find("floor0_ground");
-
-        if (groundObject == null)
-        {
-            Debug.LogError("Ground object is null. Cannot spawn enemy.");
-            return;
-        }
-
-        GameObject spawnArea = groundObject;
-        Collider spawnAreaCollider = spawnArea.GetComponent<Collider>();
-
-        if (spawnAreaCollider == null)
-        {
-            Debug.LogError("Spawn area does not have a Collider component.");
-            return;
-        }
-
-        Vector3 randomPosition = GetRandomPositionInCollider(spawnAreaCollider);
-        randomPosition.y += 0.9f;
-        Instantiate(levelData.bossPrefab, randomPosition, Quaternion.identity);
-
-        UIController.UpdateEnemiesSpawned(enemiesSpawned);
-
-        Debug.Log("Spawned Boss at position: " + randomPosition);
+        // Place any logic here that should run when the wave system ends,
+        // for example, progressing to the next level or displaying a victory screen.
+        Debug.Log("Wave system complete for this level!");
     }
 
     private void Update()
@@ -121,20 +216,27 @@ public class WaveController : MonoBehaviour
         }
     }
 
-    public void OnEnemyDefeated()
+    public void OnEnemyDefeated(Enemy enemy)
     {
-        enemiesDefeated++;
-        UIController.UpdateEnemiesDefeated(enemiesDefeated);
+        enemiesDefeatedInCurrentWave++;
+        totalEnemiesDefeated++;
+        UIController.UpdateEnemiesDefeated(totalEnemiesDefeated);
 
-        // check if enemiesdefeated == enemiesSpawned and stop timer
-        if (enemiesDefeated >= enemiesSpawned)
+        //if the enemy defeated is the boss
+        if (enemy.isBoss)
         {
-            timerStopped = true;
-            Debug.Log("All enemies defeated. Stopping timer.");
-
-            // after 5 seconds, load scene "PrototipoEndScene"
-            StartCoroutine(LoadEndScene());
+            OnBossDefeated();
         }
+        
+    }
+
+    public void OnBossDefeated()
+    {
+        isBossDefeated = true;
+
+        // Stop the timer
+        timerStopped = true;
+        StartCoroutine(LoadEndScene());
     }
 
     IEnumerator LoadEndScene()

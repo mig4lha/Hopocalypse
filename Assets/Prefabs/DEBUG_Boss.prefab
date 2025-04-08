@@ -127,3 +127,4 @@ MonoBehaviour:
   rotationSpeed: 5
   stoppingDistance: 4
   isDefeated: 0
+  isBoss: 1

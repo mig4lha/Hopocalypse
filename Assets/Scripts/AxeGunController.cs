@@ -183,7 +183,7 @@ public class AxeGunController : MonoBehaviour
                         // Mark the enemy as defeated so further pellets don't count it again
                         enemyComponent.isDefeated = true;
                         Destroy(hit.transform.gameObject);
-                        waveController.OnEnemyDefeated();
+                        waveController.OnEnemyDefeated(enemyComponent);
                     }
                 }
             }
@@ -218,7 +218,7 @@ public class AxeGunController : MonoBehaviour
                         // Mark the enemy as defeated so further pellets don't count it again
                         enemyComponent.isDefeated = true;
                         Destroy(hit.transform.gameObject);
-                        waveController.OnEnemyDefeated();
+                        waveController.OnEnemyDefeated(enemyComponent);
                     }
                 }
             }

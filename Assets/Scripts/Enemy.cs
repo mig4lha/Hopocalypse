@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -12,6 +13,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float stoppingDistance = 4f;
 
     public bool isDefeated = false;
+    public bool isBoss = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -59,6 +61,6 @@ public class Enemy : MonoBehaviour
 
     void enemyAttack()
     {
-        Debug.Log("Enemy attacked player");
+        //Debug.Log("Enemy attacked player");
     }
 }
