@@ -26,6 +26,8 @@ public class WaveController : MonoBehaviour
     // Flag to determine if the boss is defeated (set this from your boss enemy when it dies)
     private bool isBossDefeated = false;
 
+    private bool checkpointTriggered = false;
+
 
     void Start()
     {
@@ -82,6 +84,8 @@ public class WaveController : MonoBehaviour
             }
         }
 
+        Debug.Log("All waves done. Waiting on checkpoint...");
+
         // All waves are complete—now spawn the boss if it's assigned
         if (levelData.bossPrefab != null)
         {
@@ -92,8 +96,11 @@ public class WaveController : MonoBehaviour
                 Level1SpecificMechanic();
             }
 
-            yield return new WaitForSeconds(timeBetweenWaves);
+            yield return new WaitUntil(() => checkpointTriggered);
+            Debug.Log("Checkpoint reached! Spawning boss.");
             SpawnBoss();
+
+
             // Wait until the boss is defeated.
             yield return new WaitUntil(() => isBossDefeated);
         }
@@ -110,6 +117,9 @@ public class WaveController : MonoBehaviour
         Transform nextStageTransform = GameObject.Find("NextStage2").transform;
         //get a collider called "NextStageWallCollider"
         Collider nextStageCollider = GameObject.Find("NextStageWallCollider").GetComponent<Collider>();
+
+        //get a collider called "Floor1TriggerCollider"
+        Collider floor1TriggerCollider = GameObject.Find("Floor1TriggerCollider").GetComponent<Collider>();
 
         //rotate the nextStageTransform to -90 degrees on the z axis
         nextStageTransform.rotation = Quaternion.Euler(0, 0, -90);
@@ -179,7 +189,7 @@ public class WaveController : MonoBehaviour
         // Adjust boss spawn position if necessary
         spawnPosition.y += 0.9f;
 
-        Instantiate(levelData.bossPrefab, spawnPosition, Quaternion.identity);
+        GameObject boss = Instantiate(levelData.bossPrefab, spawnPosition, Quaternion.identity);
 
         enemiesSpawnedInCurrentWave++;
         totalEnemiesSpawned++;
@@ -244,4 +254,10 @@ public class WaveController : MonoBehaviour
         yield return new WaitForSeconds(5f);
         GameManager.instance.LoadScene("PrototipoEndScene");
     }
+
+    public void OnCheckpointReached()
+    {
+        checkpointTriggered = true;
+    }
+
 }
