@@ -154,6 +154,13 @@ public class PlayerController : MonoBehaviour
             gameManager.LoadScene("MainMenu");
         }
     }
+    private void OnFlashlight(InputValue value)
+    {
+        if (value.Get<float>() > 0)
+        {
+            player.ToggleFlashlight();
+        }
+    }
 
     #endregion
 

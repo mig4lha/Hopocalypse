@@ -62,6 +62,13 @@ public class Player : MonoBehaviour
     [SerializeField] 
     private UIController UIController;
 
+    [Header("Flashlight Data")]
+    [SerializeField, Tooltip("Flashlight GameObject")]
+    private Light flashLight;
+
+    // public float batteryLife = 100f;
+    // public float drainRate = 5f;
+
     public void TakeDamage(float damage)
     {
         health -= damage;
@@ -193,5 +200,24 @@ public class Player : MonoBehaviour
         {
             hasReloadBuff = false;
         }
+    }
+
+    public void ToggleFlashlight()
+    {
+        // Toggling the flashlight
+        flashLight.enabled = !flashLight.enabled;
+
+        Debug.Log("Flashlight toggled: " + flashLight.enabled);
+
+        //if(flashLight.enabled)
+        //{
+        //    batteryLife -= drainRate * Time.deltaTime;
+        //    if(batteryLife <= 0)
+        //    {
+        //        batteryLife = 0;
+        //        flashLight.enabled = false;
+        //        // Optionally: trigger a low battery warning or recharge behavior.
+        //    }
+        //}
     }
 }
