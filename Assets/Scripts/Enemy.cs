@@ -9,11 +9,11 @@ public class Enemy : MonoBehaviour
     private Player player;
 
     [Header("Enemy Stats")]
-    [SerializeField] private float health = 100f;
+    [SerializeField] private float health, maxHealth = 100f;
     [SerializeField] private float attackDamage = 5f;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float rotationSpeed = 5f;
-    [SerializeField] private float stoppingDistance = 1f;
+    [SerializeField] private float stoppingDistance = 4f;
 
     [SerializeField, Tooltip("Tempo de delay entre cada ataque")]
     private float fireRateEnemy = 2.0f; // Customizable time between attacks
@@ -24,6 +24,8 @@ public class Enemy : MonoBehaviour
     private bool isGrounded = false;                   // Flag for checking if on ground
 
 
+    [SerializeField] FloatingHealthBar healthBar;
+
     public bool isDefeated = false;
     public bool isBoss = false;
 
@@ -33,6 +35,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        healthBar = GetComponent<FloatingHealthBar>();
 
         GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
 
@@ -57,7 +60,7 @@ public class Enemy : MonoBehaviour
 
         // Direction to the player
         Vector3 direction = player.transform.position - transform.position;
-        //direction.y = 0; // Ignore vertical difference (optional)
+        direction.y = 0; // Ignore vertical difference (optional)
 
         // Rotate toward the player
         if (direction.magnitude > 0)
@@ -107,7 +110,8 @@ public class Enemy : MonoBehaviour
     {
         // Cast a ray or use a boxcast to detect obstacles ahead
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, transform.forward, out hit, 100, groundLayer))
+
+        if (Physics.Raycast(transform.position, transform.forward, out hit, stoppingDistance, groundLayer))
         {
             Debug.Log("jump over obstacle");
             // If an obstacle is detected, jump
@@ -130,10 +134,10 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public void enemyTakeDmg( float amount)
+    public void TakeDmg( float amount)
     {
         health -= amount;
-
+        healthBar.UpdateHealthBar(health, maxHealth);
         if (health <= 0)
         {
             isDefeated = true;
