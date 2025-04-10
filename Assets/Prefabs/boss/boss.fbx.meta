@@ -18,22 +18,22 @@ ModelImporter:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: eyeball_texture
-    second: {fileID: 2800000, guid: 934067ac1931783448f3a2080389b645, type: 3}
+    second: {fileID: 2800000, guid: 9d4c2e9a5fd3e77408c3294c01441302, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: ring_standardSurface1_BaseColor
-    second: {fileID: 2800000, guid: 10c886d0cd92ccf44b3215c082b4affd, type: 3}
+    second: {fileID: 2800000, guid: d358a9e9437845c4a8e41858fd5ed043, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: ring_standardSurface1_Emissive
-    second: {fileID: 2800000, guid: 21ea0710f166b8645b7d3e429ed4d4cf, type: 3}
+    second: {fileID: 2800000, guid: bbc98ce12befa9044b61f707a375988a, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: ring_standardSurface1_Roughness
-    second: {fileID: 2800000, guid: 6e6ed9e2c64ff9e4db8362341af1e633, type: 3}
+    second: {fileID: 2800000, guid: 2dc86395648c64d4cb8af2b015fd9acc, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -61,7 +61,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Take001
+      name: Idle
       takeName: Take 001
       internalID: 1827226128182048838
       firstFrame: 0
@@ -73,6 +73,64 @@ ModelImporter:
       loop: 0
       hasAdditiveReferencePose: 0
       loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Attack1
+      takeName: Take 001
+      internalID: 9067093048684652814
+      firstFrame: 121
+      lastFrame: 130
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Attack2
+      takeName: Take 001
+      internalID: -8481709605947105597
+      firstFrame: 140
+      lastFrame: 160
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
