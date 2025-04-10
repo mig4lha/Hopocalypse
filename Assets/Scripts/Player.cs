@@ -4,34 +4,20 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [Header("Player Stats")]
-    [SerializeField, Tooltip("Vida do player")]
-    private float health = 100f;
-    [SerializeField, Tooltip("Valor de velocidade ao andar")]
-    private float moveSpeed = 6f;
-    [SerializeField, Tooltip("Multiplicador de velocidade de sprint")]
-    private float sprintSpeedMultiplier = 1.5f;
-    [SerializeField, Tooltip("Valor de força do salto")]
-    private float jumpForce = 2.5f;
-    [SerializeField, Tooltip("Valor de força do salto")]
-    private float gravity = -80f;
+    [Header("Player Stats (moved to PlayerStats)")]
+    // Removed: private float health = 100f;
+    // Removed: private float moveSpeed = 6f;
+    // Removed: private float sprintSpeedMultiplier = 1.5f;
+    // Removed: private float jumpForce = 2.5f;
+    // Removed: private float gravity = -80f;
+    // Removed: public float coyoteTime = 0.1f;
 
-    // Permite ao player saltar mesmo depois de sair do chão, basicamente facilita platforming no futuro
-    // Valor default, deve ainda ser testado
-    [SerializeField, Tooltip("Tempo (em segundos) para o jump buffer (coyote time)")]
-    public float coyoteTime = 0.1f;
-
-    [Header("Bunny Hop Settings")]
-    [SerializeField, Tooltip("Tempo máximo entre saltos para considerar como consecutivos")]
-    private float consecutiveJumpWindow = 0.4f;
-    [SerializeField, Tooltip("Multiplicador máximo de velocidade por bunny hopping")]
-    private float maxBhopMultiplier = 2f;
-    [SerializeField, Tooltip("Aumento de multiplicador por salto consecutivo")]
-    private float bhopMultiplierIncrement = 0.1f;
-    [SerializeField, Tooltip("Tempo necessário no chão para iniciar um salto (evita spam de salto)")]
-    private float jumpCooldown = 0.1f;
-    [SerializeField, Tooltip("Controla o quão bem o jogador mantém a velocidade em curvas durante o bhop")]
-    [Range(0f, 1f)] private float airControl = 0.7f;
+    [Header("Bunny Hop Settings (moved to PlayerStats)")]
+    // Removed: private float consecutiveJumpWindow = 0.4f;
+    // Removed: private float maxBhopMultiplier = 2f;
+    // Removed: private float bhopMultiplierIncrement = 0.1f;
+    // Removed: private float jumpCooldown = 0.1f;
+    // Removed: [Range(0f, 1f)] private float airControl = 0.7f;
 
     // Player variables
     internal CharacterController characterController;
@@ -40,7 +26,6 @@ public class Player : MonoBehaviour
     internal float coyoteTimeCounter;
     internal bool isSprinting = false;
     private bool isMoving;
-
 
     // Hop variables
     private float currentBhopMultiplier = 1.0f;
@@ -59,13 +44,24 @@ public class Player : MonoBehaviour
     private AxeGunController axeGunController;
 
     [Header("UI Controller Data")]
-    [SerializeField] 
+    [SerializeField]
     private UIController UIController;
+
+    // Reference to the PlayerStats component, which holds all the base stat values.
+    public PlayerStats stats;
+
+    private void Awake()
+    {
+        if (stats == null)
+        {
+            stats = GetComponent<PlayerStats>();
+        }
+    }
 
     public void TakeDamage(float damage)
     {
-        health -= damage;
-        if (health <= 0)
+        stats.health -= damage;
+        if (stats.health <= 0)
         {
             Die();
         }
@@ -73,7 +69,7 @@ public class Player : MonoBehaviour
 
     public void Heal(float amount)
     {
-        health = Mathf.Min(health + amount, 100f);
+        stats.health = Mathf.Min(stats.health + amount, 100f);
     }
 
     public void Shoot()
@@ -106,7 +102,7 @@ public class Player : MonoBehaviour
         if (coyoteTimeCounter > 0) { coyoteTimeCounter -= Time.deltaTime; }
 
         // Calcular base speed com sprint multiplier
-        float baseSpeed = isSprinting ? moveSpeed * sprintSpeedMultiplier : moveSpeed;
+        float baseSpeed = isSprinting ? stats.moveSpeed * stats.sprintSpeedMultiplier : stats.moveSpeed;
 
         // Aplicar o multiplicador de hop atual SE O MULTIPLIER FOR MAIOR QUE 1 ( fiquei preso no chão sem entender porque :) )
         float currentSpeed = baseSpeed * currentBhopMultiplier;
@@ -125,21 +121,21 @@ public class Player : MonoBehaviour
         if (!characterController.isGrounded)
         {
             // Preserva algum momentum da velocidade durante o hop ao interpolar entre a velocidade atual e a direção do movimento
-            moveDirection = Vector3.Lerp(velocity, moveDirection, airControl * Time.deltaTime * 10f);
+            moveDirection = Vector3.Lerp(velocity, moveDirection, stats.airControl * Time.deltaTime * 10f);
             moveDirection.y = 0; // Manter apenas o componente horizontal
         }
 
         // Processar o salto APENAS se estiver no chão e o tempo desde o último salto for maior que o cooldown definido!
-        bool canJump = characterController.isGrounded && (Time.time - landingTime) >= jumpCooldown;
-        if ((canJump || timeSinceGrounded <= coyoteTime) && coyoteTimeCounter > 0)
+        bool canJump = characterController.isGrounded && (Time.time - landingTime) >= stats.jumpCooldown;
+        if ((canJump || timeSinceGrounded <= stats.coyoteTime) && coyoteTimeCounter > 0)
         {
             // Aplicar força de salto
-            velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
+            velocity.y = Mathf.Sqrt(stats.jumpForce * -2f * stats.gravity);
             coyoteTimeCounter = 0; // Resetar o coyote time
             lastJumpTime = Time.time;
 
             // Incrementar contagem de saltos consecutivos (dentro do range cooldown)
-            if (Time.time - lastJumpTime < consecutiveJumpWindow)
+            if (Time.time - lastJumpTime < stats.consecutiveJumpWindow)
             {
                 consecutiveJumps++;
             }
@@ -150,7 +146,7 @@ public class Player : MonoBehaviour
         }
 
         // Gravidade
-        velocity.y += gravity * Time.deltaTime;
+        velocity.y += stats.gravity * Time.deltaTime;
 
         // Combinar movimento horizontal e vertical
         Vector3 finalMove = new Vector3(moveDirection.x, velocity.y, moveDirection.z) * Time.deltaTime;
@@ -167,7 +163,7 @@ public class Player : MonoBehaviour
     public void HandleBunnyHopping()
     {
         // Reseta saltos e hop mult se o player nao saltar durante o tempo definido
-        if (Time.time - lastJumpTime > consecutiveJumpWindow * 2)
+        if (Time.time - lastJumpTime > stats.consecutiveJumpWindow * 2)
         {
             currentBhopMultiplier = 1;
             consecutiveJumps = 0;
@@ -177,8 +173,8 @@ public class Player : MonoBehaviour
         if (consecutiveJumps > 1)
         {
             // Limitar o aumento do multiplier com base no maxBhopMultiplier
-            float targetMultiplier = 1.0f + (consecutiveJumps - 1) * bhopMultiplierIncrement;
-            targetMultiplier = Mathf.Min(targetMultiplier, maxBhopMultiplier);
+            float targetMultiplier = 1.0f + (consecutiveJumps - 1) * stats.bhopMultiplierIncrement;
+            targetMultiplier = Mathf.Min(targetMultiplier, stats.maxBhopMultiplier);
 
             // Interpolar o multiplier gradualmente (se for isntantâneo, o bhop fica muito rígido e difícil de controlar)
             currentBhopMultiplier = Mathf.Lerp(currentBhopMultiplier, targetMultiplier, 0.5f);

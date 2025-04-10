@@ -10,13 +10,6 @@ public class SlotMachineController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-
-        // Começa em posição elevada
-        transform.position = new Vector3(dropPoint.position.x, 100f, dropPoint.position.z);
-
-        // Ativa a física real
-        rb.isKinematic = false;
-        rb.useGravity = true;
     }
 
 
