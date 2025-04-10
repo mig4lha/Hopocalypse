@@ -5,15 +5,19 @@ public class Enemy : MonoBehaviour
 {
 
     [Header("Player Data")]
-    private Transform player;
+    private Player player;
 
     [Header("Enemy Stats")]
+    [SerializeField] private float health = 100f;
+    [SerializeField] private float attackDamage = 5f;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float rotationSpeed = 5f;
     [SerializeField] private float stoppingDistance = 4f;
 
     public bool isDefeated = false;
     public bool isBoss = false;
+
+ 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -22,7 +26,7 @@ public class Enemy : MonoBehaviour
 
         if (playerGO != null)
         {
-            player = playerGO.transform;
+            player = playerGO.GetComponent<Player>();
         }
         else
         {
@@ -37,7 +41,7 @@ public class Enemy : MonoBehaviour
         if (player == null) return;
 
         // Direction to the player
-        Vector3 direction = player.position - transform.position;
+        Vector3 direction = player.transform.position - transform.position;
         direction.y = 0; // Ignore vertical difference (optional)
 
         // Rotate toward the player
@@ -62,5 +66,7 @@ public class Enemy : MonoBehaviour
     void enemyAttack()
     {
         //Debug.Log("Enemy attacked player");
+        player.TakeDamage(attackDamage);
+        
     }
 }
