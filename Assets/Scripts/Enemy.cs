@@ -14,6 +14,10 @@ public class Enemy : MonoBehaviour
     [SerializeField] private float rotationSpeed = 5f;
     [SerializeField] private float stoppingDistance = 4f;
 
+    [SerializeField, Tooltip("Tempo de delay entre cada ataque")]
+    private float fireRateEnemy = 2.0f; // Customizable time between attacks
+    private static float nextTimeToFire = 0f;
+
     public bool isDefeated = false;
     public bool isBoss = false;
 
@@ -65,9 +69,19 @@ public class Enemy : MonoBehaviour
 
     private void enemyAttack()
     {
-        //Debug.Log("Enemy attacked player");
+        
+        // Prevenir tiros antes do delay da fire rate
+        if (Time.time < nextTimeToFire)
+        {
+            //Debug.Log("Enemy NOT attacked");
+            
+            return;
+        }
+
+        nextTimeToFire = Time.time + fireRateEnemy;
         player.TakeDamage(attackDamage);
         
+
     }
 
     public void enemyTakeDmg( float amount)
