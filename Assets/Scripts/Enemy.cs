@@ -63,10 +63,20 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    void enemyAttack()
+    private void enemyAttack()
     {
         //Debug.Log("Enemy attacked player");
         player.TakeDamage(attackDamage);
         
+    }
+
+    public void enemyTakeDmg( float amount)
+    {
+        health -= amount;
+
+        if (health <= 0)
+        {
+            isDefeated = true;
+        }
     }
 }
