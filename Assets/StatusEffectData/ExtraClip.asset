@@ -15,6 +15,6 @@ MonoBehaviour:
   effectName: Extra Clip
   effectType: 4
   duration: 0
-  magnitude: 0
+  magnitude: 2
   description: 
   icon: {fileID: 0}
