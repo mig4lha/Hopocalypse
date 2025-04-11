@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class Enemy : MonoBehaviour
 {
@@ -7,6 +8,9 @@ public class Enemy : MonoBehaviour
 
     [Header("Player Data")]
     private Player player;
+
+    [Header("Wave Controller")]
+    private WaveController waveController;
 
     [Header("Enemy Stats")]
     [SerializeField] private float health, maxHealth = 100f;
@@ -23,8 +27,8 @@ public class Enemy : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;    // Layer mask to check for ground
     private bool isGrounded = false;                   // Flag for checking if on ground
 
-
-    [SerializeField] FloatingHealthBar healthBar;
+    FloatingHealthBar healthBar;
+    Transform healthBarTransform;
 
     public bool isDefeated = false;
     public bool isBoss = false;
@@ -35,7 +39,30 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        healthBar = GetComponent<FloatingHealthBar>();
+        waveController = FindAnyObjectByType<WaveController>();
+
+        // Find the canvas first
+        Transform canvas = transform.Find("Canvas");
+
+        if (canvas != null)
+        {
+            // Now find the floating health bar inside the canvas
+            healthBarTransform = canvas.Find("healthBar");
+            healthBar = healthBarTransform.GetComponent<FloatingHealthBar>();
+
+            if (healthBar != null)
+            {
+                Debug.Log("Floating Health Bar Component found!");
+            }
+            else
+            {
+                Debug.LogWarning("Floating Health Bar not found under Canvas.");
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Canvas not found.");
+        }
 
         GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
 
@@ -52,7 +79,6 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (player == null) return;
 
         // Ground check (raycast or spherecast)
@@ -137,10 +163,26 @@ public class Enemy : MonoBehaviour
     public void TakeDmg( float amount)
     {
         health -= amount;
+
         healthBar.UpdateHealthBar(health, maxHealth);
+
+        Debug.Log("Enemy took damage: " + amount + ", current health: " + health);
+
         if (health <= 0)
         {
+            Debug.Log("Enemy defeated!");
+
+            // Mark the enemy as defeated so further pellets don't count it again
             isDefeated = true;
+
+            Destroy(this.gameObject);
+            waveController.OnEnemyDefeated();
+
+            //if the enemy defeated is the boss
+            if (isBoss)
+            {
+                waveController.OnBossDefeated();
+            }
         }
     }
 }

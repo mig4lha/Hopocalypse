@@ -201,14 +201,22 @@ public class WaveController : MonoBehaviour
 
     Vector3 GetRandomPositionInCollider(Collider collider)
     {
+        float margin = 2f;  // Adjust as needed to ensure enemies spawn safely away from edges.
+
+        // Ensure we don't sample too close to the edges by offsetting the bounds.
         Vector3 boundsMin = collider.bounds.min;
         Vector3 boundsMax = collider.bounds.max;
-        float randomX = Random.Range(boundsMin.x, boundsMax.x);
-        float randomZ = Random.Range(boundsMin.z, boundsMax.z);
-        // Spawn slightly above the ground
+
+        // Clamp the random range within the shrunk bounds.
+        float randomX = Random.Range(boundsMin.x + margin, boundsMax.x - margin);
+        float randomZ = Random.Range(boundsMin.z + margin, boundsMax.z - margin);
+
+        // Spawn slightly above the ground (you might adjust the Y offset as needed).
         float randomY = boundsMax.y + 2f;
+
         return new Vector3(randomX, randomY, randomZ);
     }
+
 
     void EndWaveSystem()
     {
@@ -254,18 +262,11 @@ public class WaveController : MonoBehaviour
         }
     }
 
-    public void OnEnemyDefeated(Enemy enemy)
+    public void OnEnemyDefeated()
     {
         enemiesDefeatedInCurrentWave++;
         totalEnemiesDefeated++;
         UIController.UpdateEnemiesDefeated(totalEnemiesDefeated);
-
-        //if the enemy defeated is the boss
-        if (enemy.isBoss)
-        {
-            OnBossDefeated();
-        }
-        
     }
 
     public void OnBossDefeated()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using static UnityEngine.UI.Image;
 
 public class AxeGunController : MonoBehaviour
 {
@@ -106,6 +107,22 @@ public class AxeGunController : MonoBehaviour
         UIController.ResetAmmoAndReloadUI();
     }
 
+    private void CheckIfEnemyIsHitAndApplyDamage(Vector3 origin, Vector3 pelletDirection, float currentRange)
+    {
+        if (Physics.Raycast(origin, pelletDirection, out RaycastHit hit, currentRange))
+        {
+            if (hit.transform.CompareTag("Enemy"))
+            {
+                // Attempt to get the Enemy component
+                Enemy enemyComponent = hit.transform.GetComponent<Enemy>();
+                if (enemyComponent != null && !enemyComponent.isDefeated)
+                {
+                    enemyComponent.TakeDmg(stats.pelletDamage);
+                }
+            }
+        }
+    }
+
 
     public void Shoot()
     {
@@ -161,21 +178,7 @@ public class AxeGunController : MonoBehaviour
             debugLine.DrawLine(origin, endPoint, 1f);
             Debug.DrawRay(origin, pelletDirection * currentRange, Color.red, 1f);
 
-            if (Physics.Raycast(origin, pelletDirection, out RaycastHit hit, currentRange))
-            {
-                if (hit.transform.CompareTag("Enemy"))
-                {
-                    // Attempt to get the Enemy component
-                    Enemy enemyComponent = hit.transform.GetComponent<Enemy>();
-                    if (enemyComponent != null && !enemyComponent.isDefeated)
-                    {
-                        // Mark the enemy as defeated so further pellets don't count it again
-                        enemyComponent.isDefeated = true;
-                        Destroy(hit.transform.gameObject);
-                        waveController.OnEnemyDefeated(enemyComponent);
-                    }
-                }
-            }
+            CheckIfEnemyIsHitAndApplyDamage(origin, pelletDirection, currentRange);
         }
 
         // Disparar as restantes balas do tiro
@@ -196,21 +199,7 @@ public class AxeGunController : MonoBehaviour
             Debug.DrawRay(origin, pelletDirection * currentRange, Color.red, 1f);
 
             // Verificar se os raycasts colidem com inimigos e processar interação
-            if (Physics.Raycast(origin, pelletDirection, out RaycastHit hit, currentRange))
-            {
-                if (hit.transform.CompareTag("Enemy"))
-                {
-                    // Attempt to get the Enemy component
-                    Enemy enemyComponent = hit.transform.GetComponent<Enemy>();
-                    if (enemyComponent != null && !enemyComponent.isDefeated)
-                    {
-                        // Mark the enemy as defeated so further pellets don't count it again
-                        enemyComponent.isDefeated = true;
-                        Destroy(hit.transform.gameObject);
-                        waveController.OnEnemyDefeated(enemyComponent);
-                    }
-                }
-            }
+            CheckIfEnemyIsHitAndApplyDamage(origin, pelletDirection, currentRange);
         }
 
         // Som do tiro
