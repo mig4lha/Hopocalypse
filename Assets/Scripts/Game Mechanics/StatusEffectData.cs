@@ -1,9 +1,16 @@
 using UnityEngine;
 
+public enum EffectStrengthType
+{
+    Additive,            // Add to the base value
+    Multiplicative,      // Multiply the base value by this amount
+    None                 // No effect
+}
+
 public enum EffectType
 {
     // PowerUps
-    HopFury,             // Boost hop speed
+    HopFury,             // Boost hop speed multiplier
     ReloadBoost,         // Reduced reload time
     ShotgunOvercharge,   // Increase shotgun damage
     PelletIncrease,      // Extra pellets per shot
@@ -44,6 +51,10 @@ public class StatusEffectData : ScriptableObject
     [Header("Effect Strength")]
     [Tooltip("The magnitude of the effect. For a boost, use a positive value (e.g. +1.5 to increase hop speed). For a debuff that reduces a value, you might use a multiplier below 1 (e.g. 0.8 to reduce reload speed by 20%) or a negative addition.")]
     public float magnitude;
+
+    [Header("Effect Strenght Type")]
+    [Tooltip("The type of magnitude of the effect. Is it additive or multipicative?")]
+    public EffectStrengthType effectStrengthType;
 
     [Header("Optional UI Info")]
     [Tooltip("A description of what the effect does (shown in UI or tooltips).")]

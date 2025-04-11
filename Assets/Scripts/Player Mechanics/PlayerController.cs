@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Player Data")]
     [SerializeField] private Player player;
+    private PlayerStats stats;
 
     [Header("Camera Settings")]
     [Header("Mouse Settings")]
@@ -41,8 +42,16 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        if(player == null)
+        {
+            Debug.LogError("PlayerController requires a Player GameObject!");
+        }
+
         // Inicializar o CharacterController
         player.characterController = GetComponent<CharacterController>();
+
+        // Inicializar o PlayerStats
+        stats = player.stats;
 
         // Inicializar o PlayerInput
         playerInput = GetComponent<PlayerInput>();
@@ -67,7 +76,7 @@ public class PlayerController : MonoBehaviour
         // Resetar o coyote time counter quando o player salta
         if (value.Get<float>() > 0)
         {
-            player.coyoteTimeCounter = player.coyoteTime;
+            player.coyoteTimeCounter = stats.coyoteTime;
         }
     }
 

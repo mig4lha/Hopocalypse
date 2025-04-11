@@ -16,5 +16,6 @@ MonoBehaviour:
   effectType: 4
   duration: 0
   magnitude: 2
+  effectStrengthType: 1
   description: 
   icon: {fileID: 0}

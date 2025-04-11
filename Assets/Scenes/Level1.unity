@@ -1667,6 +1667,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d764075713c58bd47a1015a475a8b260, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  health: 100
+  moveSpeed: 6
+  sprintSpeedMultiplier: 1.5
+  jumpForce: 2.5
+  gravity: -80
+  coyoteTime: 0.1
+  consecutiveJumpWindow: 0.4
+  maxBhopMultiplier: 2
+  bhopMultiplierIncrement: 0.1
+  jumpCooldown: 0.1
+  airControl: 0.7
+  pelletCount: 30
+  spreadAngleX: 50
+  spreadAngleY: 25
+  maxRange: 15
+  fireRate: 0.8
+  maxAmmo: 12
+  reloadTime: 2
 --- !u!1 &278221855
 GameObject:
   m_ObjectHideFlags: 0
@@ -13305,21 +13323,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a34ce8176b3e0448aa46c2914926e1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 100
-  moveSpeed: 6
-  sprintSpeedMultiplier: 1.5
-  jumpForce: 2.5
-  gravity: -80
-  coyoteTime: 0.1
-  consecutiveJumpWindow: 0.4
-  maxBhopMultiplier: 2
-  bhopMultiplierIncrement: 0.1
-  jumpCooldown: 0.1
-  airControl: 0.7
   hasReloadBuff: 0
   axeGunController: {fileID: 3469287838632551789}
   UIController: {fileID: 1042447942}
-  stats: {fileID: 0}
+  stats: {fileID: 274065432}
 --- !u!1 &1911618469
 GameObject:
   m_ObjectHideFlags: 0
@@ -35682,18 +35689,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cf3fbc44a374924aa7e23030b16d343, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pelletCount: 30
-  spreadAngleX: 50
-  spreadAngleY: 25
-  maxRange: 15
-  maxAmmo: 12
   currentAmmo: 0
-  reloadTime: 2
-  fireRate: 0.5
+  nextTimeToFire: 0
   muzzleTransform: {fileID: 244341812}
   muzzleFlash: {fileID: 1107788618}
   gunFire: {fileID: 1835363036}
   debugLine: {fileID: 560808669}
+  stats: {fileID: 0}
 --- !u!1 &3471615747860226878
 GameObject:
   m_ObjectHideFlags: 0

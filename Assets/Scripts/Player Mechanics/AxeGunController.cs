@@ -7,29 +7,11 @@ using UnityEngine.Rendering.Universal;
 public class AxeGunController : MonoBehaviour
 {
     #region Tentativa Raycasts
-    [Header("AxeGun Settings")]
-    [SerializeField, Tooltip("Número balas por tiro")]
-    private int pelletCount = 30;
-    [SerializeField, Tooltip("Ângulo máximo do spread em X")]
-    private float spreadAngleX = 50f;
-    [SerializeField, Tooltip("Ângulo máximo do spread em Y")]
-    private float spreadAngleY = 25f;
-    [SerializeField, Tooltip("Range máximo de cada bala do tiro")]
-    private float maxRange = 15f;
 
-    [Header("Ammo and Reload Settings")]
-    [SerializeField, Tooltip("Max Ammo da AxeGun")]
-    private int maxAmmo = 12;
-    [SerializeField, Tooltip("Número de balas atuais da AxeGun")]
     public int currentAmmo;
-    [SerializeField, Tooltip("AxeGun Reload Time")]
-    private float reloadTime = 2f;
-    private bool isReloading = false;
+    public float nextTimeToFire = 0f;
 
-    [Header("Fire Rate Settings")]
-    [SerializeField, Tooltip("Tempo de delay entre cada tiro")]
-    private float fireRate = 0.3f; // Customizable time between shots
-    private float nextTimeToFire = 0f;
+    private bool isReloading = false;
 
     [Header("Muzzle Settings")]
     [SerializeField, Tooltip("Transform da muzzle")]
@@ -50,6 +32,9 @@ public class AxeGunController : MonoBehaviour
 
     private Player player;
 
+    // Reference to the PlayerStats component, which holds all the base stat values.
+    public PlayerStats stats;
+
     private void Start()
     {
         UIController = FindAnyObjectByType<UIController>();
@@ -63,6 +48,10 @@ public class AxeGunController : MonoBehaviour
         if (playerGO != null)
         {
             player = playerGO.GetComponent<Player>();
+            if (stats == null)
+            {
+                stats = player.stats;
+            }
         }
         else
         {
@@ -81,7 +70,7 @@ public class AxeGunController : MonoBehaviour
         }
 
         // Inicializar ammmo = maxAmmo
-        currentAmmo = maxAmmo;
+        currentAmmo = stats.maxAmmo;
         UIController.UpdateAmmoUI(currentAmmo);
 
         UIController.HideReloadElement();
@@ -94,13 +83,13 @@ public class AxeGunController : MonoBehaviour
 
         UIController.HideCrosshairShowReload();
 
-        float reloadTimer = reloadTime;
+        float reloadTimer = stats.reloadTime;
 
         if (player.hasReloadBuff) {
             reloadTimer *= 0.5f;
         } else
         {
-            reloadTimer = reloadTime;
+            reloadTimer = stats.reloadTime;
         }
 
         while (reloadTimer > 0)
@@ -110,7 +99,7 @@ public class AxeGunController : MonoBehaviour
             reloadTimer -= Time.deltaTime;
         }
 
-        currentAmmo = maxAmmo;
+        currentAmmo = stats.maxAmmo;
         isReloading = false;
 
         UIController.UpdateAmmoUI(currentAmmo);
@@ -137,7 +126,7 @@ public class AxeGunController : MonoBehaviour
         if (Time.time < nextTimeToFire)
             return;
 
-        nextTimeToFire = Time.time + fireRate;
+        nextTimeToFire = Time.time + stats.fireRate;
 
         currentAmmo--;
         UIController.UpdateAmmoUI(currentAmmo);
@@ -159,13 +148,13 @@ public class AxeGunController : MonoBehaviour
         // Ray cast pro centro da crosshair (centro do ecrã)
         Ray centerRay = Camera.main.ScreenPointToRay(new Vector3(Screen.width * 0.5f, Screen.height * 0.5f, 0));
 
-        Vector3 targetPoint = centerRay.origin + centerRay.direction * maxRange;
+        Vector3 targetPoint = centerRay.origin + centerRay.direction * stats.maxRange;
 
         Vector3 centerDirection = (targetPoint - origin).normalized;
 
         // Disparar a primeira bala no centro (assegurar que pelo menos uma das balas acerta onde a crosshair está)
         {
-            float currentRange = maxRange;
+            float currentRange = stats.maxRange;
             Vector3 pelletDirection = centerDirection;
             Vector3 endPoint = origin + pelletDirection * currentRange;
 
@@ -190,16 +179,16 @@ public class AxeGunController : MonoBehaviour
         }
 
         // Disparar as restantes balas do tiro
-        for (int pelletIndex = 1; pelletIndex < pelletCount; pelletIndex++)
+        for (int pelletIndex = 1; pelletIndex < stats.pelletCount; pelletIndex++)
         {
             // Randomizar angulos X e Y pro spread
-            float randomYaw = Random.Range(-spreadAngleX, spreadAngleX);
-            float randomPitch = Random.Range(-spreadAngleY, spreadAngleY);
+            float randomYaw = Random.Range(-stats.spreadAngleX, stats.spreadAngleX);
+            float randomPitch = Random.Range(-stats.spreadAngleY, stats.spreadAngleY);
 
             // Aplicar pequena rotação random aos tiros
             Vector3 pelletDirection = Quaternion.Euler(randomPitch, randomYaw, 0) * centerDirection;
 
-            float currentRange = maxRange;
+            float currentRange = stats.maxRange;
             Vector3 endPoint = origin + pelletDirection * currentRange;
 
             // Debug lines pra ver trajetoria das balas

@@ -4,21 +4,6 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [Header("Player Stats (moved to PlayerStats)")]
-    // Removed: private float health = 100f;
-    // Removed: private float moveSpeed = 6f;
-    // Removed: private float sprintSpeedMultiplier = 1.5f;
-    // Removed: private float jumpForce = 2.5f;
-    // Removed: private float gravity = -80f;
-    // Removed: public float coyoteTime = 0.1f;
-
-    [Header("Bunny Hop Settings (moved to PlayerStats)")]
-    // Removed: private float consecutiveJumpWindow = 0.4f;
-    // Removed: private float maxBhopMultiplier = 2f;
-    // Removed: private float bhopMultiplierIncrement = 0.1f;
-    // Removed: private float jumpCooldown = 0.1f;
-    // Removed: [Range(0f, 1f)] private float airControl = 0.7f;
-
     // Player variables
     internal CharacterController characterController;
     private Vector3 velocity;
@@ -54,7 +39,7 @@ public class Player : MonoBehaviour
     {
         if (stats == null)
         {
-            stats = GetComponent<PlayerStats>();
+            stats = FindAnyObjectByType<PlayerStats>();
         }
     }
 

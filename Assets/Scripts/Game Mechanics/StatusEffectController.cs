@@ -67,8 +67,7 @@ public class StatusEffectController : MonoBehaviour
                 playerStats.AdjustHopSpeed(effectData.magnitude);
                 break;
             case EffectType.ReloadBoost:
-                // Assuming a reduced reload time means subtracting time.
-                playerStats.AdjustReloadTime(-effectData.magnitude);
+                playerStats.AdjustReloadTime(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.ShotgunOvercharge:
                 playerStats.AdjustShotgunDamage(effectData.magnitude);
@@ -100,7 +99,7 @@ public class StatusEffectController : MonoBehaviour
                 playerStats.AdjustMovementSpeed(-effectData.magnitude);
                 break;
             case EffectType.HeavyReload:
-                playerStats.AdjustReloadTime(effectData.magnitude);
+                playerStats.AdjustReloadTime(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.LessDamage:
                 playerStats.AdjustShotgunDamage(-effectData.magnitude);
@@ -140,7 +139,7 @@ public class StatusEffectController : MonoBehaviour
                 playerStats.AdjustHopSpeed(-effectData.magnitude);
                 break;
             case EffectType.ReloadBoost:
-                playerStats.AdjustReloadTime(effectData.magnitude);
+                playerStats.AdjustReloadTime(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.ShotgunOvercharge:
                 playerStats.AdjustShotgunDamage(-effectData.magnitude);
@@ -172,7 +171,7 @@ public class StatusEffectController : MonoBehaviour
                 playerStats.AdjustMovementSpeed(effectData.magnitude);
                 break;
             case EffectType.HeavyReload:
-                playerStats.AdjustReloadTime(-effectData.magnitude);
+                playerStats.AdjustReloadTime(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.LessDamage:
                 playerStats.AdjustShotgunDamage(effectData.magnitude);
