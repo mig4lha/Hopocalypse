@@ -50,11 +50,7 @@ public class Enemy : MonoBehaviour
             healthBarTransform = canvas.Find("healthBar");
             healthBar = healthBarTransform.GetComponent<FloatingHealthBar>();
 
-            if (healthBar != null)
-            {
-                Debug.Log("Floating Health Bar Component found!");
-            }
-            else
+            if (healthBar == null)
             {
                 Debug.LogWarning("Floating Health Bar not found under Canvas.");
             }
@@ -166,12 +162,8 @@ public class Enemy : MonoBehaviour
 
         healthBar.UpdateHealthBar(health, maxHealth);
 
-        Debug.Log("Enemy took damage: " + amount + ", current health: " + health);
-
         if (health <= 0)
         {
-            Debug.Log("Enemy defeated!");
-
             // Mark the enemy as defeated so further pellets don't count it again
             isDefeated = true;
 
