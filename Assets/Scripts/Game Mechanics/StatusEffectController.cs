@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class StatusEffectController : MonoBehaviour
 {
+    [SerializeField]
+    public StatusEffectData ReloadBoost;
+
     // List of active effects.
     private List<StatusEffectData> activeEffects = new List<StatusEffectData>();
 
@@ -60,32 +63,34 @@ public class StatusEffectController : MonoBehaviour
     // Applies the effect based on its type.
     private void ApplyEffect(StatusEffectData effectData)
     {
+        Debug.Log("Applying effect: " + effectData.effectName + " with magnitude: " + effectData.magnitude + " and strength type: " + effectData.effectStrengthType);
+
         switch (effectData.effectType)
         {
             // PowerUps
             case EffectType.HopFury:
-                playerStats.AdjustHopSpeed(effectData.magnitude);
+                playerStats.AdjustHopSpeed(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.ReloadBoost:
                 playerStats.AdjustReloadTime(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.ShotgunOvercharge:
-                playerStats.AdjustShotgunDamage(effectData.magnitude);
+                playerStats.AdjustShotgunDamage(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.PelletIncrease:
-                playerStats.AdjustPelletCount((int)effectData.magnitude);
+                playerStats.AdjustPelletCount((int)effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.ExtraClip:
-                playerStats.AdjustClipSize((int)effectData.magnitude);
+                playerStats.AdjustClipSize((int)effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.SpreadPlus:
-                playerStats.AdjustSpread(effectData.magnitude);
+                playerStats.AdjustSpread(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.Shield:
                 playerStats.AddShield(effectData.magnitude);
                 break;
             case EffectType.HopWindowUp:
-                playerStats.AdjustHopWindow(effectData.magnitude);
+                playerStats.AdjustHopWindow(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.HealthRegen:
                 playerStats.StartHealthRegen(effectData.magnitude);
@@ -96,35 +101,35 @@ public class StatusEffectController : MonoBehaviour
 
             // Debuffs
             case EffectType.MovementDown:
-                playerStats.AdjustMovementSpeed(-effectData.magnitude);
+                playerStats.AdjustMovementSpeed(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.HeavyReload:
                 playerStats.AdjustReloadTime(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.LessDamage:
-                playerStats.AdjustShotgunDamage(-effectData.magnitude);
+                playerStats.AdjustShotgunDamage(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.ShotgunJam:
                 // Here magnitude represents the chance (e.g., 0.2 for 20% chance to jam)
                 playerStats.SetShotgunJamChance(effectData.magnitude);
                 break;
             case EffectType.PelletDecrease:
-                playerStats.AdjustPelletCount(-(int)effectData.magnitude);
+                playerStats.AdjustPelletCount((int)effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.SpreadMinus:
-                playerStats.AdjustSpread(-effectData.magnitude);
+                playerStats.AdjustSpread(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.RangeDown:
-                playerStats.AdjustShotgunRange(-effectData.magnitude);
+                playerStats.AdjustShotgunRange(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.HopWindowDown:
-                playerStats.AdjustHopWindow(-effectData.magnitude);
+                playerStats.AdjustHopWindow(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.BloodLoss:
                 playerStats.StartHealthDrain(effectData.magnitude);
                 break;
             case EffectType.Clipless:
-                playerStats.AdjustClipSize(-(int)effectData.magnitude);
+                playerStats.AdjustClipSize(effectData.magnitude, effectData.effectStrengthType);
                 break;
         }
     }
@@ -132,32 +137,41 @@ public class StatusEffectController : MonoBehaviour
     // Reverses the effect applied.
     private void ReverseEffect(StatusEffectData effectData)
     {
+        float magnitude = effectData.magnitude;
+
+        if (effectData.effectStrengthType == EffectStrengthType.Multiplicative)
+        {
+            magnitude = 1 / effectData.magnitude;
+        }
+
+        Debug.Log($"Reversing effect: {effectData.effectName} with magnitude: {magnitude} and strength type: {effectData.effectStrengthType}");
+
         switch (effectData.effectType)
         {
             // PowerUps - reverse by subtracting what was added (or vice versa).
             case EffectType.HopFury:
-                playerStats.AdjustHopSpeed(-effectData.magnitude);
+                playerStats.AdjustHopSpeed(magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.ReloadBoost:
-                playerStats.AdjustReloadTime(effectData.magnitude, effectData.effectStrengthType);
+                playerStats.AdjustReloadTime(magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.ShotgunOvercharge:
-                playerStats.AdjustShotgunDamage(-effectData.magnitude);
+                playerStats.AdjustShotgunDamage(magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.PelletIncrease:
-                playerStats.AdjustPelletCount(-(int)effectData.magnitude);
+                playerStats.AdjustPelletCount(magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.ExtraClip:
-                playerStats.AdjustClipSize(-(int)effectData.magnitude);
+                playerStats.AdjustClipSize(magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.SpreadPlus:
-                playerStats.AdjustSpread(-effectData.magnitude);
+                playerStats.AdjustSpread(magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.Shield:
-                playerStats.RemoveShield(effectData.magnitude);
+                playerStats.RemoveShield(magnitude);
                 break;
             case EffectType.HopWindowUp:
-                playerStats.AdjustHopWindow(-effectData.magnitude);
+                playerStats.AdjustHopWindow(magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.HealthRegen:
                 playerStats.StopHealthRegen();
@@ -168,34 +182,34 @@ public class StatusEffectController : MonoBehaviour
 
             // Debuffs - reverse changes in the opposite direction.
             case EffectType.MovementDown:
-                playerStats.AdjustMovementSpeed(effectData.magnitude);
+                playerStats.AdjustMovementSpeed(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.HeavyReload:
                 playerStats.AdjustReloadTime(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.LessDamage:
-                playerStats.AdjustShotgunDamage(effectData.magnitude);
+                playerStats.AdjustShotgunDamage(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.ShotgunJam:
                 playerStats.ResetShotgunJamChance();
                 break;
             case EffectType.PelletDecrease:
-                playerStats.AdjustPelletCount((int)effectData.magnitude);
+                playerStats.AdjustPelletCount(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.SpreadMinus:
-                playerStats.AdjustSpread(effectData.magnitude);
+                playerStats.AdjustSpread(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.RangeDown:
-                playerStats.AdjustShotgunRange(effectData.magnitude);
+                playerStats.AdjustShotgunRange(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.HopWindowDown:
-                playerStats.AdjustHopWindow(effectData.magnitude);
+                playerStats.AdjustHopWindow(effectData.magnitude, effectData.effectStrengthType);
                 break;
             case EffectType.BloodLoss:
                 playerStats.StopHealthDrain();
                 break;
             case EffectType.Clipless:
-                playerStats.AdjustClipSize((int)effectData.magnitude);
+                playerStats.AdjustClipSize(effectData.magnitude, effectData.effectStrengthType);
                 break;
         }
     }

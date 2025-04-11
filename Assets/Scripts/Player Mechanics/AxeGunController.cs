@@ -85,12 +85,12 @@ public class AxeGunController : MonoBehaviour
 
         float reloadTimer = stats.reloadTime;
 
-        if (player.hasReloadBuff) {
-            reloadTimer *= 0.5f;
-        } else
-        {
-            reloadTimer = stats.reloadTime;
-        }
+        //if (player.hasReloadBuff) {
+        //    reloadTimer *= 0.5f;
+        //} else
+        //{
+        //    reloadTimer = stats.reloadTime;
+        //}
 
         while (reloadTimer > 0)
         {

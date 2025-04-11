@@ -59,6 +59,6 @@ public class Enemy : MonoBehaviour
 
     void enemyAttack()
     {
-        Debug.Log("Enemy attacked player");
+        //Debug.Log("Enemy attacked player");
     }
 }

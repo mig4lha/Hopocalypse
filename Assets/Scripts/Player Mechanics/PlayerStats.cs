@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public class PlayerStats : MonoBehaviour
@@ -41,6 +42,8 @@ public class PlayerStats : MonoBehaviour
     public float spreadAngleY = 25f;
     [SerializeField, Tooltip("Range máximo de cada bala do tiro")]
     public float maxRange = 15f;
+    [SerializeField, Tooltip("Dano de cada bala do tiro")]
+    public float pelletDamage = 10f;
 
     [Header("Fire Rate Settings")]
     [SerializeField, Tooltip("Tempo de delay entre cada tiro")]
@@ -52,6 +55,17 @@ public class PlayerStats : MonoBehaviour
     [SerializeField, Tooltip("AxeGun Reload Time")]
     public float reloadTime = 2f;
 
+    private UIController UIController;
+
+    private void Awake()
+    {
+        UIController = FindAnyObjectByType<UIController>();
+        if (UIController == null)
+        {
+            Debug.LogError("UIController not found in the scene.");
+        }
+    }
+
     internal void AdjustReloadTime(float magnitude, EffectStrengthType effectStrengthType)
     {
         if(effectStrengthType == EffectStrengthType.Additive)
@@ -61,49 +75,120 @@ public class PlayerStats : MonoBehaviour
 
         if (reloadTime < 0.1f)
             reloadTime = 0.1f;
+
+        UIController.UpdateCurrentReloadTime(reloadTime);
+
+        Debug.Log("Reload time adjusted: " + reloadTime);
     }
 
+    internal void AdjustClipSize(float magnitude, EffectStrengthType effectStrengthType)
+    {
+        float maxAmmoTemp = maxAmmo;
+
+        if (effectStrengthType == EffectStrengthType.Additive)
+            maxAmmoTemp += magnitude;
+        else if (effectStrengthType == EffectStrengthType.Multiplicative)
+            maxAmmoTemp *= magnitude;
+
+        if (maxAmmoTemp <= 0)
+            maxAmmoTemp = 1;
+
+        maxAmmo = (int)maxAmmoTemp;
+
+    }
+
+    internal void AdjustHopSpeed(float magnitude, EffectStrengthType effectStrengthType)
+    {
+        if (effectStrengthType == EffectStrengthType.Additive)
+            maxBhopMultiplier += magnitude;
+        else if (effectStrengthType == EffectStrengthType.Multiplicative)
+            maxBhopMultiplier *= magnitude;
+
+        if (maxBhopMultiplier < 0.1f)
+            maxBhopMultiplier = 0.1f;
+    }
+
+    internal void AdjustHopWindow(float magnitude, EffectStrengthType effectStrengthType)
+    {
+        if (effectStrengthType == EffectStrengthType.Additive)
+            consecutiveJumpWindow += magnitude;
+        else if (effectStrengthType == EffectStrengthType.Multiplicative)
+            consecutiveJumpWindow *= magnitude;
+
+        if (consecutiveJumpWindow < 0.1f)
+            consecutiveJumpWindow = 0.1f;
+    }
+
+    internal void AdjustMovementSpeed(float magnitude, EffectStrengthType effectStrengthType)
+    {
+        if (effectStrengthType == EffectStrengthType.Additive)
+            moveSpeed += magnitude;
+        else if (effectStrengthType == EffectStrengthType.Multiplicative)
+            moveSpeed *= magnitude;
+
+        if (moveSpeed <= 0)
+            moveSpeed = 1f;
+    }
+
+    internal void AdjustPelletCount(float magnitude, EffectStrengthType effectStrengthType)
+    {
+        float pelletCountTemp = pelletCount;
+
+        if (effectStrengthType == EffectStrengthType.Additive)
+            pelletCountTemp += magnitude;
+        else if (effectStrengthType == EffectStrengthType.Multiplicative)
+            pelletCountTemp *= magnitude;
+
+        if (pelletCountTemp <= 0)
+            pelletCountTemp = 1;
+
+        pelletCount = (int)pelletCountTemp;
+    }
+
+    internal void AdjustShotgunDamage(float magnitude, EffectStrengthType effectStrengthType)
+    {
+        if (effectStrengthType == EffectStrengthType.Additive)
+            pelletDamage += magnitude;
+        else if (effectStrengthType == EffectStrengthType.Multiplicative)
+            pelletDamage *= magnitude;
+
+        if (pelletDamage < 0.1f)
+            pelletDamage = 0.1f;
+    }
+
+    internal void AdjustShotgunRange(float magnitude, EffectStrengthType effectStrengthType)
+    {
+        if (effectStrengthType == EffectStrengthType.Additive)
+            pelletDamage += magnitude;
+        else if (effectStrengthType == EffectStrengthType.Multiplicative)
+            pelletDamage *= magnitude;
+
+        if (pelletDamage < 0.1f)
+            pelletDamage = 0.1f;
+    }
+
+    internal void AdjustSpread(float magnitude, EffectStrengthType effectStrengthType)
+    {
+        if (effectStrengthType == EffectStrengthType.Additive)
+        {
+            spreadAngleX += magnitude;
+            spreadAngleY += magnitude;
+        }
+        else if (effectStrengthType == EffectStrengthType.Multiplicative)
+        {
+            spreadAngleX *= magnitude;
+            spreadAngleY *= magnitude;
+        }
+
+        if (spreadAngleX < 0.1f) 
+            spreadAngleX = 0.1f;
+        if (spreadAngleY < 0.1f)
+            spreadAngleY = 0.1f;
+    }
+
+
+    // Buffs/Debuffs mais complexos
     internal void AddShield(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void AdjustClipSize(int magnitude)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void AdjustHopSpeed(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void AdjustHopWindow(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void AdjustMovementSpeed(float v)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void AdjustPelletCount(int magnitude)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void AdjustShotgunDamage(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void AdjustShotgunRange(float v)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void AdjustSpread(float magnitude)
     {
         throw new NotImplementedException();
     }
@@ -127,7 +212,6 @@ public class PlayerStats : MonoBehaviour
     {
         throw new NotImplementedException();
     }
-
     internal void StartHealthDrain(float magnitude)
     {
         throw new NotImplementedException();

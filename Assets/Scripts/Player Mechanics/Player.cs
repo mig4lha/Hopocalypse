@@ -1,5 +1,5 @@
 using System;
-using TMPro;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -22,7 +22,9 @@ public class Player : MonoBehaviour
     private Vector3 moveDirection;
 
     // Buffs
-    public bool hasReloadBuff = false;
+    //public bool hasReloadBuff = false;
+
+    public bool testing = false;
 
     [Header("AxeGun Data")]
     [SerializeField]
@@ -35,11 +37,18 @@ public class Player : MonoBehaviour
     // Reference to the PlayerStats component, which holds all the base stat values.
     public PlayerStats stats;
 
+    public StatusEffectController statusEffectController;
+
     private void Awake()
     {
         if (stats == null)
         {
             stats = FindAnyObjectByType<PlayerStats>();
+        }
+
+        if (statusEffectController == null)
+        {
+            statusEffectController = FindAnyObjectByType<StatusEffectController>();
         }
     }
 
@@ -166,13 +175,28 @@ public class Player : MonoBehaviour
         }
 
         // Bonus effects para pensar no futuro
-        if (currentBhopMultiplier >= 2f)
+        //if (currentBhopMultiplier >= 2f)
+        //{
+        //    hasReloadBuff = true;
+        //}
+        //else
+        //{
+        //    hasReloadBuff = false;
+        //}
+    }
+
+    internal void TestInteraction()
+    {
+        // Toggle the status effect on click
+        if (!testing)
         {
-            hasReloadBuff = true;
+            statusEffectController.ApplyStatusEffect(statusEffectController.ReloadBoost);
+            testing = true;
         }
         else
         {
-            hasReloadBuff = false;
+            statusEffectController.RemoveStatusEffect(statusEffectController.ReloadBoost);
+            testing = false;
         }
     }
 }

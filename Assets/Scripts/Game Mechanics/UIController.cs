@@ -10,6 +10,8 @@ public class UIController : MonoBehaviour
     private TMP_Text currentSpeedText;
     [SerializeField, Tooltip("TextMesh da Hop Mult")]
     private TMP_Text currentHopMultiplierText;
+    [SerializeField, Tooltip("TextMesh de Reload Time")]
+    private TMP_Text currentReloadTime;
     [SerializeField, Tooltip("TextMesh de Saltos")]
     private TMP_Text currentConsecutiveJumpsText;
     [SerializeField, Tooltip("TextMesh de Enemies Defeated")]
@@ -39,6 +41,14 @@ public class UIController : MonoBehaviour
         string formattedTime = string.Format("{0:D2}:{1:D2}", (int)time.TotalMinutes, time.Seconds);
         if (currentTimePassed != null)
             currentTimePassed.text = $"Time Passed:\n{formattedTime}";
+    }
+
+    public void UpdateCurrentReloadTime(float reloadTime)
+    {
+        // formatar o reload time para uma string com 2 casas decimais
+        string formattedReloadTime = reloadTime.ToString("F2");
+        if (currentReloadTime != null)
+            currentReloadTime.text = $"Reload Time: {reloadTime}s";
     }
 
     public void UpdateEnemiesSpawned(int enemiesSpawned)

@@ -151,6 +151,15 @@ public class PlayerController : MonoBehaviour
         player.isSprinting = value.Get<float>() > 0;
     }
 
+    private void OnTestInteraction(InputValue value)
+    {
+        if (value.Get<float>() > 0)
+        {
+            Debug.Log("Test Interaction Triggered");
+            player.TestInteraction();
+        }
+    }
+
     #endregion
 
     private void Update()

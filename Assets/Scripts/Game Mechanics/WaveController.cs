@@ -67,7 +67,7 @@ public class WaveController : MonoBehaviour
 
         UIController.UpdateEnemiesSpawned(enemiesSpawned);
 
-        Debug.Log("Spawned enemy at position: " + randomPosition);
+        //Debug.Log("Spawned enemy at position: " + randomPosition);
     }
 
     Vector3 GetRandomPositionInCollider(Collider collider)
@@ -108,7 +108,7 @@ public class WaveController : MonoBehaviour
 
         UIController.UpdateEnemiesSpawned(enemiesSpawned);
 
-        Debug.Log("Spawned Boss at position: " + randomPosition);
+        //Debug.Log("Spawned Boss at position: " + randomPosition);
     }
 
     private void Update()
