@@ -7,6 +7,10 @@ public class MainMenuManager : MonoBehaviour
 
     private void Awake()
     {
+        // Lock e hide do cursor do rato no jogo
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
         gameManager = GameManager.instance;
         if (gameManager == null)
         {

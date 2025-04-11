@@ -51,6 +51,12 @@ public class Player : MonoBehaviour
             statusEffectController = FindAnyObjectByType<StatusEffectController>();
         }
     }
+    [Header("Flashlight Data")]
+    [SerializeField, Tooltip("Flashlight GameObject")]
+    private Light flashLight;
+
+    // public float batteryLife = 100f;
+    // public float drainRate = 5f;
 
     public void TakeDamage(float damage)
     {
@@ -98,32 +104,32 @@ public class Player : MonoBehaviour
         // Calcular base speed com sprint multiplier
         float baseSpeed = isSprinting ? stats.moveSpeed * stats.sprintSpeedMultiplier : stats.moveSpeed;
 
-        // Aplicar o multiplicador de hop atual SE O MULTIPLIER FOR MAIOR QUE 1 ( fiquei preso no chão sem entender porque :) )
+        // Aplicar o multiplicador de hop atual SE O MULTIPLIER FOR MAIOR QUE 1 ( fiquei preso no chï¿½o sem entender porque :) )
         float currentSpeed = baseSpeed * currentBhopMultiplier;
 
         // Criar vetor de movimento
         Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
 
-        // Normalizar para que diagonais não sejam mais rápidas senão fica estranho de controlar
+        // Normalizar para que diagonais nï¿½o sejam mais rï¿½pidas senï¿½o fica estranho de controlar
         if (move.magnitude > 1f)
             move.Normalize();
 
-        // Calcular direção do movimento com velocidade atual
+        // Calcular direï¿½ï¿½o do movimento com velocidade atual
         moveDirection = move * currentSpeed;
 
         // Testes para melhorar controlo do hop, tenho de validar melhor....
         if (!characterController.isGrounded)
         {
-            // Preserva algum momentum da velocidade durante o hop ao interpolar entre a velocidade atual e a direção do movimento
+            // Preserva algum momentum da velocidade durante o hop ao interpolar entre a velocidade atual e a direï¿½ï¿½o do movimento
             moveDirection = Vector3.Lerp(velocity, moveDirection, stats.airControl * Time.deltaTime * 10f);
             moveDirection.y = 0; // Manter apenas o componente horizontal
         }
 
-        // Processar o salto APENAS se estiver no chão e o tempo desde o último salto for maior que o cooldown definido!
+        // Processar o salto APENAS se estiver no chï¿½o e o tempo desde o ï¿½ltimo salto for maior que o cooldown definido!
         bool canJump = characterController.isGrounded && (Time.time - landingTime) >= stats.jumpCooldown;
         if ((canJump || timeSinceGrounded <= stats.coyoteTime) && coyoteTimeCounter > 0)
         {
-            // Aplicar força de salto
+            // Aplicar forï¿½a de salto
             velocity.y = Mathf.Sqrt(stats.jumpForce * -2f * stats.gravity);
             coyoteTimeCounter = 0; // Resetar o coyote time
             lastJumpTime = Time.time;
@@ -135,7 +141,7 @@ public class Player : MonoBehaviour
             }
             else
             {
-                consecutiveJumps = 1; // Resetar para 1 se o timing não foi consecutivo
+                consecutiveJumps = 1; // Resetar para 1 se o timing nï¿½o foi consecutivo
             }
         }
 
@@ -170,7 +176,7 @@ public class Player : MonoBehaviour
             float targetMultiplier = 1.0f + (consecutiveJumps - 1) * stats.bhopMultiplierIncrement;
             targetMultiplier = Mathf.Min(targetMultiplier, stats.maxBhopMultiplier);
 
-            // Interpolar o multiplier gradualmente (se for isntantâneo, o bhop fica muito rígido e difícil de controlar)
+            // Interpolar o multiplier gradualmente (se for isntantï¿½neo, o bhop fica muito rï¿½gido e difï¿½cil de controlar)
             currentBhopMultiplier = Mathf.Lerp(currentBhopMultiplier, targetMultiplier, 0.5f);
         }
 
@@ -198,5 +204,24 @@ public class Player : MonoBehaviour
             statusEffectController.RemoveStatusEffect(statusEffectController.ReloadBoost);
             testing = false;
         }
+    }
+
+    public void ToggleFlashlight()
+    {
+        // Toggling the flashlight
+        flashLight.enabled = !flashLight.enabled;
+
+        Debug.Log("Flashlight toggled: " + flashLight.enabled);
+
+        //if(flashLight.enabled)
+        //{
+        //    batteryLife -= drainRate * Time.deltaTime;
+        //    if(batteryLife <= 0)
+        //    {
+        //        batteryLife = 0;
+        //        flashLight.enabled = false;
+        //        // Optionally: trigger a low battery warning or recharge behavior.
+        //    }
+        //}
     }
 }

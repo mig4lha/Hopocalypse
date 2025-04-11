@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using static UnityEngine.Rendering.DebugUI;
 
 [RequireComponent(typeof(CharacterController))]
@@ -18,7 +19,7 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Sensibilidade do Rato")]
     [SerializeField] private float mouseSensitivity = 0.1f;
 
-    // Não funciona direito
+    // Nï¿½o funciona direito
     [Header("Controller Settings")]
     [Tooltip("Controller sensitivity multiplier.")]
     [SerializeField] private float controllerSensitivity = 5f;
@@ -39,6 +40,8 @@ public class PlayerController : MonoBehaviour
 
     private PlayerInput playerInput;
     private string currentControlScheme;
+
+    private GameManager gameManager;
 
     private void Awake()
     {
@@ -61,10 +64,12 @@ public class PlayerController : MonoBehaviour
         // Lock e hide do cursor do rato no jogo
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        gameManager = GameManager.instance;
     }
 
-    // Player Input behavior tá set para 'Send Messages' (métodos usam InputValue e não o CallbackContext)
-    #region Métodos_InputSystem
+    // Player Input behavior tï¿½ set para 'Send Messages' (mï¿½todos usam InputValue e nï¿½o o CallbackContext)
+    #region Mï¿½todos_InputSystem
 
     private void OnMove(InputValue value)
     {
@@ -94,7 +99,7 @@ public class PlayerController : MonoBehaviour
             deltaX = rawInput.x * mouseSensitivity;
             deltaY = rawInput.y * mouseSensitivity;
         }
-        // Não funciona direito pra controller...
+        // Nï¿½o funciona direito pra controller...
         else if (currentScheme.Contains("Gamepad") || currentScheme.Contains("Controller"))
         {
             if (rawInput.magnitude < controllerDeadzone)
@@ -159,13 +164,28 @@ public class PlayerController : MonoBehaviour
             player.TestInteraction();
         }
     }
+    
+    private void OnReturnToMainMenu(InputValue value)
+    {
+        if (value.Get<float>() > 0)
+        {
+            gameManager.LoadScene("MainMenu");
+        }
+    }
+    private void OnFlashlight(InputValue value)
+    {
+        if (value.Get<float>() > 0)
+        {
+            player.ToggleFlashlight();
+        }
+    }
 
     #endregion
 
     private void Update()
     {
-        // O movimento do player está no Update pois não inclui um RigidBody nem cálculos de física precisos
-        // logo não vi a necessidade de o colocar no FixedUpdate
+        // O movimento do player estï¿½ no Update pois nï¿½o inclui um RigidBody nem cï¿½lculos de fï¿½sica precisos
+        // logo nï¿½o vi a necessidade de o colocar no FixedUpdate
         // Caso problemas surjam, mudar para FixedUpdate e testar
 
         currentControlScheme = playerInput.currentControlScheme;
@@ -174,26 +194,26 @@ public class PlayerController : MonoBehaviour
         player.HandleBunnyHopping();
         //HandleMouseLook();
 
-        // Atualizar estado anterior do chão para o próximo frame
+        // Atualizar estado anterior do chï¿½o para o prï¿½ximo frame
         player.wasGrounded = player.characterController.isGrounded;
     }
 
-    // Função para controlar a first-person camera
+    // Funï¿½ï¿½o para controlar a first-person camera
     //void HandleMouseLook()
     //{
     //    // Get do movimento do rato
     //    float mouseX = Input.GetAxis("Mouse X") * mouseSensitivityX;
     //    float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivityY;
 
-    //    // Atualizar as rotações
+    //    // Atualizar as rotaï¿½ï¿½es
     //    rotationX += mouseX;
     //    rotationY -= mouseY;
     //    rotationY = Mathf.Clamp(rotationY, minY, maxY);
 
-    //    // Aplicar a rotação ao corpo do jogador (somente em Y para rotação horizontal)
+    //    // Aplicar a rotaï¿½ï¿½o ao corpo do jogador (somente em Y para rotaï¿½ï¿½o horizontal)
     //    transform.localRotation = Quaternion.Euler(0f, rotationX, 0f);
 
-    //    // Aplicar a rotação à câmera (somente em X para rotação vertical)
+    //    // Aplicar a rotaï¿½ï¿½o ï¿½ cï¿½mera (somente em X para rotaï¿½ï¿½o vertical)
     //    Camera.main.transform.localRotation = Quaternion.Euler(rotationY, 0f, 0f);
     //}
 }
