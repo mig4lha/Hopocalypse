@@ -87,9 +87,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ReturnToMainMenu",
+                    "name": "TestInteraction",
                     "type": "Button",
-                    "id": "5ba0bd63-78a6-49b8-8c6c-b8f43680ccb9",
+                    "id": "fb76b046-e202-4e2a-90e2-3d819182bb21",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -99,6 +99,15 @@
                     "name": "Flashlight",
                     "type": "Button",
                     "id": "61f7bd59-63d4-4aef-804e-0a0ebb27f2c8",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ReturnToMainMenu",
+                    "type": "Button",
+                    "id": "2ee707c0-cb36-438b-9036-33a166d1c6aa",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -449,12 +458,12 @@
                 },
                 {
                     "name": "",
-                    "id": "592a65f7-2c7b-42aa-ad3f-c3be519be9e0",
-                    "path": "<Keyboard>/escape",
+                    "id": "7a4d8aa5-4bb5-4a84-96a9-7eefa10dc2d6",
+                    "path": "<Keyboard>/q",
                     "interactions": "",
                     "processors": "",
-                    "groups": "",
-                    "action": "ReturnToMainMenu",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "TestInteraction",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -466,6 +475,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Flashlight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ba9f9029-bb92-4c0e-a3ea-25f3d46d60df",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard&Mouse",
+                    "action": "ReturnToMainMenu",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
