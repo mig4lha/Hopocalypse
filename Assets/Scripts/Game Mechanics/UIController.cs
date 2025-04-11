@@ -45,10 +45,8 @@ public class UIController : MonoBehaviour
 
     public void UpdateCurrentReloadTime(float reloadTime)
     {
-        // formatar o reload time para uma string com 2 casas decimais
-        string formattedReloadTime = reloadTime.ToString("F2");
         if (currentReloadTime != null)
-            currentReloadTime.text = $"Reload Time: {reloadTime}s";
+            currentReloadTime.text = $"Current Reload Time: {reloadTime}s";
     }
 
     public void UpdateEnemiesSpawned(int enemiesSpawned)

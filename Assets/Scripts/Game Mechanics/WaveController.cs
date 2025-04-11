@@ -236,7 +236,7 @@ public class WaveController : MonoBehaviour
         randomPosition.y += 0.9f;
         Instantiate(levelData.bossPrefab, randomPosition, Quaternion.identity);
 
-        UIController.UpdateEnemiesSpawned(enemiesSpawned);
+        UIController.UpdateEnemiesSpawned(totalEnemiesSpawned);
 
         //Debug.Log("Spawned Boss at position: " + randomPosition);
         // Place any logic here that should run when the wave system ends,
