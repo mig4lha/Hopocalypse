@@ -7,6 +7,8 @@ public class StatusEffectController : MonoBehaviour
     [SerializeField]
     public StatusEffectData ReloadBoost;
 
+    private UIController UIController;
+
     // List of active effects.
     private List<StatusEffectData> activeEffects = new List<StatusEffectData>();
 
@@ -20,6 +22,12 @@ public class StatusEffectController : MonoBehaviour
         {
             Debug.LogError("StatusEffectController requires a PlayerStats GameObject!");
         }
+
+        UIController = FindAnyObjectByType<UIController>();
+        if (UIController == null)
+        {
+            Debug.LogError("StatusEffectController requires a UIController GameObject!");
+        }
     }
 
     /// <summary>
@@ -32,6 +40,8 @@ public class StatusEffectController : MonoBehaviour
 
         // Immediately modify stats according to the effect.
         ApplyEffect(effectData);
+
+        UIController.AddStatusEffect(effectData.icon, effectData.name);
 
         // If the effect is temporary, schedule it for removal.
         if (effectData.duration > 0f)
@@ -50,6 +60,7 @@ public class StatusEffectController : MonoBehaviour
             // Reverse the effect's impact on player stats.
             ReverseEffect(effectData);
             activeEffects.Remove(effectData);
+            UIController.RemoveStatusEffect(effectData.name);
         }
     }
 

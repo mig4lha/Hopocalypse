@@ -1294,6 +1294,68 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 246377345}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &254038840
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 254038841}
+  - component: {fileID: 254038842}
+  m_Layer: 5
+  m_Name: Status Effects Bar
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &254038841
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254038840}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 1042447941}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 960, y: 71}
+  m_SizeDelta: {x: 1900, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &254038842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254038840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 3
+  m_Spacing: 20
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
+  m_ChildControlWidth: 0
+  m_ChildControlHeight: 0
+  m_ChildScaleWidth: 0
+  m_ChildScaleHeight: 0
+  m_ReverseArrangement: 0
 --- !u!1 &255197683
 GameObject:
   m_ObjectHideFlags: 0
@@ -2169,7 +2231,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 20, y: -368}
+  m_AnchoredPosition: {x: 20, y: -206.96472}
   m_SizeDelta: {x: 400, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &417639114
@@ -2720,7 +2782,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 20, y: 50}
+  m_AnchoredPosition: {x: 20, y: 705}
   m_SizeDelta: {x: 400, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &711741496
@@ -3645,7 +3707,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -200, y: 407}
+  m_AnchoredPosition: {x: -200, y: 375}
   m_SizeDelta: {x: 400, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &920212858
@@ -4731,6 +4793,7 @@ RectTransform:
   - {fileID: 417639113}
   - {fileID: 212444213}
   - {fileID: 749370577}
+  - {fileID: 254038841}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -4760,6 +4823,9 @@ MonoBehaviour:
   ammoTextMesh: {fileID: 1248642462}
   reloadCountdownText: {fileID: 1027671626}
   crosshair: {fileID: 212444212}
+  healthBar: {fileID: 749370576}
+  statusEffectsContainer: {fileID: 254038841}
+  statusEffectIconPrefab: {fileID: 4789339671860001553, guid: ab6d82f07f219ed45a07403f58ea443d, type: 3}
   player: {fileID: 1863830246}
   axeGunController: {fileID: 3469287838632551789}
 --- !u!1 &1044654151
@@ -9869,7 +9935,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 20, y: 95}
+  m_AnchoredPosition: {x: 20, y: 750}
   m_SizeDelta: {x: 400, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1110223502
@@ -11002,6 +11068,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
+  maxHealth: 100
   moveSpeed: 6
   sprintSpeedMultiplier: 1.5
   jumpForce: 2.5
@@ -11016,8 +11083,8 @@ MonoBehaviour:
   spreadAngleX: 50
   spreadAngleY: 25
   maxRange: 15
-  pelletDamage: 10
-  fireRate: 0.3
+  pelletDamage: 30
+  fireRate: 0.8
   maxAmmo: 12
   reloadTime: 2
 --- !u!1 &1403798426
@@ -11054,7 +11121,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 20, y: -408}
+  m_AnchoredPosition: {x: 20, y: -246.96472}
   m_SizeDelta: {x: 400, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1403798428
@@ -11715,7 +11782,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 20, y: -328}
+  m_AnchoredPosition: {x: 20, y: -166.96472}
   m_SizeDelta: {x: 400, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1630215885
@@ -13188,9 +13255,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a34ce8176b3e0448aa46c2914926e1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isDead: 0
   testing: 0
   axeGunController: {fileID: 3469287838632551789}
   UIController: {fileID: 1042447942}
+  waveController: {fileID: 1702964488}
   stats: {fileID: 1285016407}
   statusEffectController: {fileID: 221623197}
   flashLight: {fileID: 804133095}
@@ -13455,7 +13524,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 20, y: -450.03528}
+  m_AnchoredPosition: {x: 20, y: -289}
   m_SizeDelta: {x: 400, y: 50}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1964276325

@@ -1,6 +1,9 @@
 using System;
 using TMPro;
+using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
@@ -28,6 +31,12 @@ public class UIController : MonoBehaviour
     private TMP_Text reloadCountdownText;
     [SerializeField, Tooltip("Crosshair GameObject")]
     private GameObject crosshair;
+    [SerializeField, Tooltip("Health Bar GameObject")]
+    private GameObject healthBar;
+    [SerializeField] 
+    private Transform statusEffectsContainer;
+    [SerializeField] 
+    private GameObject statusEffectIconPrefab;
 
     [Header("Player Data")]
     [SerializeField] private Player player;
@@ -111,5 +120,54 @@ public class UIController : MonoBehaviour
 
         if (crosshair != null)
             crosshair.SetActive(true);
+    }
+
+    internal void UpdateHealthBar(float health, float maxHealth)
+    {
+        // Atualizar a barra de vida
+        if (healthBar != null)
+        {
+            // get the reference to the health bar image object that is a child of the healthBar object and is named "Health"
+            Image healthBarImage = healthBar.transform.Find("Health").GetComponent<Image>();
+
+            healthBarImage.fillAmount = health / maxHealth;
+
+            Debug.Log("Health bar updated: " + health);
+        }
+    }
+
+    public void AddStatusEffect(Sprite iconSprite, string effectName)
+    {
+        // Instantiate the prefab as a child of the container
+        GameObject newIcon = Instantiate(statusEffectIconPrefab, statusEffectsContainer);
+
+        // Pass false for the second parameter to preserve local scale and anchoring
+        newIcon.transform.SetParent(statusEffectsContainer, false);
+        newIcon.name = effectName;
+
+
+        // Set the sprite on the Image component
+        Image newIconImage = newIcon.GetComponent<Image>();
+        if (newIconImage != null)
+        {
+            newIconImage.sprite = iconSprite;
+        }
+    }
+
+    public void RemoveStatusEffect(string effectName)
+    {
+        // find the icon gameobject by its name
+        Transform icon = statusEffectsContainer.Find(effectName);
+        GameObject iconGameObject = icon.gameObject;
+
+        if(iconGameObject != null)
+        {
+            // Destroy the icon gameobject
+            Destroy(iconGameObject);
+        }
+        else
+        {
+            Debug.LogWarning("Status effect icon not found: " + effectName);
+        }
     }
 }

@@ -278,9 +278,16 @@ public class WaveController : MonoBehaviour
         StartCoroutine(LoadEndScene());
     }
 
+    public void OnGameOver()
+    {
+        // Stop the timer
+        timerStopped = true;
+        StartCoroutine(LoadEndScene());
+    }
+
     IEnumerator LoadEndScene()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
         GameManager.instance.LoadScene("PrototipoEndScene");
     }
 

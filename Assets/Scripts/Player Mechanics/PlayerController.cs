@@ -190,6 +190,9 @@ public class PlayerController : MonoBehaviour
 
         currentControlScheme = playerInput.currentControlScheme;
 
+        if (player.isDead)
+            return; // do nothing if the player is dead
+
         player.HandleMovement();
         player.HandleBunnyHopping();
         //HandleMouseLook();

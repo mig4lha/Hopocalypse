@@ -123,6 +123,8 @@ public class Enemy : MonoBehaviour
         }
 
         nextTimeToFire = Time.time + fireRateEnemy;
+
+        Debug.Log("Enemy attacked");
         player.TakeDamage(attackDamage);
         
 
