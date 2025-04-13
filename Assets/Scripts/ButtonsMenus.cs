@@ -1,13 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenuManager : MonoBehaviour
+public class ButtonMenus : MonoBehaviour
 {
     private GameManager gameManager;
 
     private void Awake()
     {
-        // Lock e hide do cursor do rato no jogo
+        // Mostrar o cursor nos menus
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
@@ -18,14 +18,17 @@ public class MainMenuManager : MonoBehaviour
         }
     }
 
-    public void OpenCredits()
-    {
-        SceneManager.LoadScene("Credits");
-    }
-
+    // MAIN MENU
     public void PlayGame()
     {
-        gameManager.LoadLevel(0);
+        if (gameManager != null)
+        {
+            gameManager.LoadLevel(0);
+        }
+        else
+        {
+            Debug.LogWarning("GameManager is null, can't load level.");
+        }
     }
 
     public void OpenOptions()
@@ -33,9 +36,22 @@ public class MainMenuManager : MonoBehaviour
         SceneManager.LoadScene("Options");
     }
 
+    public void OpenCredits()
+    {
+        SceneManager.LoadScene("Credits");
+    }
+
     public void ExitGame()
     {
-        Application.Quit();
         Debug.Log("Game closed");
+        Application.Quit();
+    }
+
+    // Return Main MENU
+    public void ReturnToMainMenu()
+    {
+        Debug.Log("Returning to Main Menu");
+        SceneManager.LoadScene("MainMenu");
     }
 }
+
