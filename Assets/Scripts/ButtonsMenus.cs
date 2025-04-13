@@ -53,5 +53,17 @@ public class ButtonMenus : MonoBehaviour
         Debug.Log("Returning to Main Menu");
         SceneManager.LoadScene("MainMenu");
     }
+
+    // PAUSE MENU
+    public void ResumeGame()
+    {
+        PauseManager.ResumeGame();
+    }
+
+    public void ReturnToMainMenuFromPause()
+    {
+        PauseManager.ResumeGame(); // retoma o jogo antes de mudar de scene
+        SceneManager.LoadScene("MainMenu");
+    }
 }
 
