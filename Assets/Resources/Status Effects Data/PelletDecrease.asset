@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5f835b18acce5040a15e9e4be9e9329, type: 3}
-  m_Name: HeavyReload
+  m_Name: PelletDecrease
   m_EditorClassIdentifier: 
-  effectName: HeavyReload
-  effectType: 11
+  effectName: PelletDecrease
+  effectType: 14
   duration: 0
-  magnitude: 2
+  magnitude: 0.5
   effectStrengthType: 1
   description: 
-  icon: {fileID: 0}
+  icon: {fileID: 7482667652216324306, guid: 96064859b4909444693d508ccec38754, type: 3}

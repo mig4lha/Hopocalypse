@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class StatusEffectController : MonoBehaviour
@@ -8,6 +10,9 @@ public class StatusEffectController : MonoBehaviour
     public StatusEffectData ReloadBoost;
 
     private UIController UIController;
+
+    // List of all possible status effects.
+    private List<StatusEffectData> allEffects = new List<StatusEffectData>();
 
     // List of active effects.
     private List<StatusEffectData> activeEffects = new List<StatusEffectData>();
@@ -28,11 +33,20 @@ public class StatusEffectController : MonoBehaviour
         {
             Debug.LogError("StatusEffectController requires a UIController GameObject!");
         }
+
+        PopulateAllStatusEffectsList();
     }
 
-    /// <summary>
-    /// Applies an effect to the player.
-    /// </summary>
+    private void PopulateAllStatusEffectsList()
+    {
+        // Populate the list with all possible status effects.
+        foreach (StatusEffectData effect in Resources.LoadAll<StatusEffectData>("Status Effects Data"))
+        {
+            allEffects.Add(effect);
+            //Debug.Log("Loaded effect: " + effect.effectName);
+        }
+    }
+
     public void ApplyStatusEffect(StatusEffectData effectData)
     {
         // Add the effect to our active list.
@@ -41,7 +55,7 @@ public class StatusEffectController : MonoBehaviour
         // Immediately modify stats according to the effect.
         ApplyEffect(effectData);
 
-        UIController.AddStatusEffect(effectData.icon, effectData.name);
+        UIController.AddStatusEffect(effectData);
 
         // If the effect is temporary, schedule it for removal.
         if (effectData.duration > 0f)
@@ -50,9 +64,6 @@ public class StatusEffectController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Removes an active effect from the player.
-    /// </summary>
     public void RemoveStatusEffect(StatusEffectData effectData)
     {
         if (activeEffects.Contains(effectData))
@@ -60,7 +71,7 @@ public class StatusEffectController : MonoBehaviour
             // Reverse the effect's impact on player stats.
             ReverseEffect(effectData);
             activeEffects.Remove(effectData);
-            UIController.RemoveStatusEffect(effectData.name);
+            UIController.RemoveStatusEffect(effectData);
         }
     }
 
@@ -224,4 +235,25 @@ public class StatusEffectController : MonoBehaviour
                 break;
         }
     }
+    
+    public void ApplyRandomStatusEffect()
+    {
+        // Filter out effects that are already active
+        List<StatusEffectData> availableEffects = allEffects.FindAll(effect => !activeEffects.Contains(effect));
+
+        if (availableEffects.Count == 0)
+        {
+            Debug.LogWarning("No available status effects to apply.");
+            return;
+        }
+
+        // Get a random effect from the available ones
+        StatusEffectData randomEffect = availableEffects[UnityEngine.Random.Range(0, availableEffects.Count)];
+
+        // Apply the random effect
+        ApplyStatusEffect(randomEffect);
+    }
+
+
+   
 }

@@ -227,16 +227,18 @@ public class Player : MonoBehaviour
     internal void TestInteraction()
     {
         // Toggle the status effect on click
-        if (!testing)
-        {
-            statusEffectController.ApplyStatusEffect(statusEffectController.ReloadBoost);
-            testing = true;
-        }
-        else
-        {
-            statusEffectController.RemoveStatusEffect(statusEffectController.ReloadBoost);
-            testing = false;
-        }
+        //if (!testing)
+        //{
+        //    statusEffectController.ApplyStatusEffect(statusEffectController.ReloadBoost);
+        //    testing = true;
+        //}
+        //else
+        //{
+        //    statusEffectController.RemoveStatusEffect(statusEffectController.ReloadBoost);
+        //    testing = false;
+        //}
+
+        statusEffectController.ApplyRandomStatusEffect();
     }
 
     public void ToggleFlashlight()
