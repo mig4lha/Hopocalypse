@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: faefced0d8b047a4ba83ad6faf85f68b
+guid: 8da4f3134dd27fc4ca149d7a55eb17b2
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -8,32 +8,37 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: eyeball_texture.png
-    second: {fileID: 2100000, guid: 5681a8502daf6ba4ababbdd6e3089401, type: 2}
+    second: {fileID: 2100000, guid: 6b850e7f9d355034ab11ad3bd478bce8, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: eyeball_texture.png1
+    second: {fileID: 2100000, guid: cbda27fc653414345a9af27a3fa94791, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: standardSurface1
-    second: {fileID: 2100000, guid: b53f22a906ae081448ab373058964052, type: 2}
+    second: {fileID: 2100000, guid: 13e90293a8a96ba498a76337833ec17e, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: eyeball_texture
-    second: {fileID: 2800000, guid: 9d4c2e9a5fd3e77408c3294c01441302, type: 3}
+    second: {fileID: 2800000, guid: c6db391377502b043a87ccd7641fea7d, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: ring_standardSurface1_BaseColor
-    second: {fileID: 2800000, guid: d358a9e9437845c4a8e41858fd5ed043, type: 3}
+    second: {fileID: 2800000, guid: 079675dd8ea1dbe48a3cf8748c74486e, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: ring_standardSurface1_Emissive
-    second: {fileID: 2800000, guid: bbc98ce12befa9044b61f707a375988a, type: 3}
+    second: {fileID: 2800000, guid: e8c31105b4e46bd42bfb35de1475a6ea, type: 3}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: ring_standardSurface1_Roughness
-    second: {fileID: 2800000, guid: 2dc86395648c64d4cb8af2b015fd9acc, type: 3}
+    second: {fileID: 2800000, guid: 78b4a6a84ce400949a9f5bef2f65f029, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -59,94 +64,7 @@ ModelImporter:
     animationWrapMode: 0
     extraExposedTransformPaths: []
     extraUserProperties: []
-    clipAnimations:
-    - serializedVersion: 16
-      name: Idle
-      takeName: Take 001
-      internalID: 1827226128182048838
-      firstFrame: 0
-      lastFrame: 120
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
-      name: Attack1
-      takeName: Take 001
-      internalID: 9067093048684652814
-      firstFrame: 121
-      lastFrame: 130
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
-      name: Attack2
-      takeName: Take 001
-      internalID: -8481709605947105597
-      firstFrame: 140
-      lastFrame: 160
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
+    clipAnimations: []
     isReadable: 0
   meshes:
     lODScreenPercentages: []

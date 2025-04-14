@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: level1
   m_EditorClassIdentifier: 
   levelName: Level1
-  waveCount: 4
+  waveCount: 3
   baseWaveEnemyCount: 20
   enemyPerWaveIncrementMult: 10
   enemyHealthMult: 1
