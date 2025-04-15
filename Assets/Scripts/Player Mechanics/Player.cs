@@ -53,6 +53,8 @@ public class Player : MonoBehaviour
     [SerializeField, Tooltip("Flashlight GameObject")]
     private Light flashLight;
 
+    private SlotMachineController slotMachine;
+
     // public float batteryLife = 100f;
     // public float drainRate = 5f;
 
@@ -76,6 +78,11 @@ public class Player : MonoBehaviour
         if (player == null)
         {
             player = GetComponent<Player>();
+        }
+
+        if (slotMachine == null)
+        {
+            slotMachine = FindAnyObjectByType<SlotMachineController>();
         }
     }
 
@@ -258,5 +265,10 @@ public class Player : MonoBehaviour
         //        // Optionally: trigger a low battery warning or recharge behavior.
         //    }
         //}
+    }
+
+    internal void Interact()
+    {
+        slotMachine.CheckDistanceAndInteract();
     }
 }

@@ -180,6 +180,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnInteract(InputValue value)
+    {
+        if (value.Get<float>() > 0)
+        {
+            player.Interact();
+        }
+    }
+
     #endregion
 
     private void Update()

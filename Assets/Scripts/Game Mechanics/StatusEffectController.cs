@@ -107,18 +107,18 @@ public class StatusEffectController : MonoBehaviour
             case EffectType.SpreadPlus:
                 playerStats.AdjustSpread(effectData.magnitude, effectData.effectStrengthType);
                 break;
-            case EffectType.Shield:
-                playerStats.AddShield(effectData.magnitude);
-                break;
-            case EffectType.HopWindowUp:
-                playerStats.AdjustHopWindow(effectData.magnitude, effectData.effectStrengthType);
-                break;
-            case EffectType.HealthRegen:
-                playerStats.StartHealthRegen(effectData.magnitude);
-                break;
-            case EffectType.RicochetPellets:
-                playerStats.SetRicochetPellets(true);
-                break;
+            //case EffectType.Shield:
+            //    playerStats.AddShield(effectData.magnitude);
+            //    break;
+            //case EffectType.HopWindowUp:
+            //    playerStats.AdjustHopWindow(effectData.magnitude, effectData.effectStrengthType);
+            //    break;
+            //case EffectType.HealthRegen:
+            //    playerStats.StartHealthRegen(effectData.magnitude);
+            //    break;
+            //case EffectType.RicochetPellets:
+            //    playerStats.SetRicochetPellets(true);
+            //    break;
 
             // Debuffs
             case EffectType.MovementDown:
@@ -130,10 +130,10 @@ public class StatusEffectController : MonoBehaviour
             case EffectType.LessDamage:
                 playerStats.AdjustShotgunDamage(effectData.magnitude, effectData.effectStrengthType);
                 break;
-            case EffectType.ShotgunJam:
-                // Here magnitude represents the chance (e.g., 0.2 for 20% chance to jam)
-                playerStats.SetShotgunJamChance(effectData.magnitude);
-                break;
+            //case EffectType.ShotgunJam:
+            //    // Here magnitude represents the chance (e.g., 0.2 for 20% chance to jam)
+            //    playerStats.SetShotgunJamChance(effectData.magnitude);
+            //    break;
             case EffectType.PelletDecrease:
                 playerStats.AdjustPelletCount((int)effectData.magnitude, effectData.effectStrengthType);
                 break;
@@ -143,12 +143,12 @@ public class StatusEffectController : MonoBehaviour
             case EffectType.RangeDown:
                 playerStats.AdjustShotgunRange(effectData.magnitude, effectData.effectStrengthType);
                 break;
-            case EffectType.HopWindowDown:
-                playerStats.AdjustHopWindow(effectData.magnitude, effectData.effectStrengthType);
-                break;
-            case EffectType.BloodLoss:
-                playerStats.StartHealthDrain(effectData.magnitude);
-                break;
+            //case EffectType.HopWindowDown:
+            //    playerStats.AdjustHopWindow(effectData.magnitude, effectData.effectStrengthType);
+            //    break;
+            //case EffectType.BloodLoss:
+            //    playerStats.StartHealthDrain(effectData.magnitude);
+            //    break;
             case EffectType.Clipless:
                 playerStats.AdjustClipSize(effectData.magnitude, effectData.effectStrengthType);
                 break;

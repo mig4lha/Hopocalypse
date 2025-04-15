@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 8da4f3134dd27fc4ca149d7a55eb17b2
+guid: 94431a33fe5c5b545844e9c6f145a3f9
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,38 +7,18 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
+      name: Goodbyewing1
+    second: {fileID: 2100000, guid: 99563eb8a05e338439ed76266e125c93, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
       name: eyeball_texture.png
-    second: {fileID: 2100000, guid: 6b850e7f9d355034ab11ad3bd478bce8, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: eyeball_texture.png1
-    second: {fileID: 2100000, guid: cbda27fc653414345a9af27a3fa94791, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: standardSurface1
-    second: {fileID: 2100000, guid: 13e90293a8a96ba498a76337833ec17e, type: 2}
+    second: {fileID: 2100000, guid: 7fbb69042ef8f7443b0666168e95bf3f, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: eyeball_texture
-    second: {fileID: 2800000, guid: c6db391377502b043a87ccd7641fea7d, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: ring_standardSurface1_BaseColor
-    second: {fileID: 2800000, guid: 079675dd8ea1dbe48a3cf8748c74486e, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: ring_standardSurface1_Emissive
-    second: {fileID: 2800000, guid: e8c31105b4e46bd42bfb35de1475a6ea, type: 3}
-  - first:
-      type: UnityEngine:Texture2D
-      assembly: UnityEngine.CoreModule
-      name: ring_standardSurface1_Roughness
-    second: {fileID: 2800000, guid: 78b4a6a84ce400949a9f5bef2f65f029, type: 3}
+    second: {fileID: 2800000, guid: b0e175bf9f35b5545bed8f78d0d7c370, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

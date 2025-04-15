@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d5f53e0883f61194f8c689c05dcb9711
+guid: 28a4a3817f76efa42b0c9f77b21aa268
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,18 +7,38 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Goodbyewing1
-    second: {fileID: 2100000, guid: 99563eb8a05e338439ed76266e125c93, type: 2}
+      name: eyeball_texture.png
+    second: {fileID: 2100000, guid: 6b850e7f9d355034ab11ad3bd478bce8, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: eyeball_texture.png
-    second: {fileID: 2100000, guid: 7fbb69042ef8f7443b0666168e95bf3f, type: 2}
+      name: eyeball_texture.png1
+    second: {fileID: 2100000, guid: cbda27fc653414345a9af27a3fa94791, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: standardSurface1
+    second: {fileID: 2100000, guid: 13e90293a8a96ba498a76337833ec17e, type: 2}
   - first:
       type: UnityEngine:Texture2D
       assembly: UnityEngine.CoreModule
       name: eyeball_texture
-    second: {fileID: 2800000, guid: 77bbced4f179c1141b2e47604386ebd0, type: 3}
+    second: {fileID: 2800000, guid: c65ec1b86cdf4cc45b3c06f5c13daabf, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: ring_standardSurface1_BaseColor
+    second: {fileID: 2800000, guid: a77de702c5e15ac4ab82d445b60ede2a, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: ring_standardSurface1_Emissive
+    second: {fileID: 2800000, guid: cc9a8efb549285340b528918e978adc6, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: ring_standardSurface1_Roughness
+    second: {fileID: 2800000, guid: 6d76d2f5a1a417049be06cddd4746389, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

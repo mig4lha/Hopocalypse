@@ -23,6 +23,8 @@ public class WaveController : MonoBehaviour
     // Reference to UIController for updating any UI elements
     private UIController UIController;
 
+    private SlotMachineController slotMachine;
+
     // Flag to determine if the boss is defeated (set this from your boss enemy when it dies)
     private bool isBossDefeated = false;
 
@@ -36,6 +38,12 @@ public class WaveController : MonoBehaviour
         if (UIController == null)
         {
             Debug.LogError("UIController not found in the scene.");
+        }
+
+        slotMachine = FindAnyObjectByType<SlotMachineController>();
+        if (slotMachine == null)
+        {
+            Debug.LogError("SlotMachineController not found in the scene.");
         }
 
         // Retrieve the level data from the GameManager singleton
@@ -186,9 +194,8 @@ public class WaveController : MonoBehaviour
             return;
         }
 
-        Vector3 spawnPosition = GetRandomPositionInCollider(spawnAreaCollider);
-        // Adjust boss spawn position if necessary
-        spawnPosition.y += 0.9f;
+        // create a spawnPosition vector that is (0,3,0)
+        Vector3 spawnPosition = new Vector3(0, 3, 0);
 
         GameObject boss = Instantiate(levelData.bossPrefab, spawnPosition, Quaternion.identity);
 
@@ -275,7 +282,10 @@ public class WaveController : MonoBehaviour
 
         // Stop the timer
         timerStopped = true;
-        StartCoroutine(LoadEndScene());
+
+        slotMachine.Drop();
+
+        //StartCoroutine(LoadEndScene());
     }
 
     public void OnGameOver()
@@ -285,7 +295,7 @@ public class WaveController : MonoBehaviour
         StartCoroutine(LoadEndScene());
     }
 
-    IEnumerator LoadEndScene()
+    public IEnumerator LoadEndScene()
     {
         yield return new WaitForSeconds(3f);
         GameManager.instance.LoadScene("PrototipoEndScene");
