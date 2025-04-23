@@ -4,19 +4,18 @@ using UnityEngine.InputSystem;
 
 public class PauseManager : MonoBehaviour
 {
-    public static bool IsPaused = false;
+    public static bool IsPaused { get; private set; } = false;
     private const string pauseSceneName = "PauseMenu";
 
     private static PauseManager instance;
 
-    // Referência à ação "Pause" no Input System (por ex. tecla ESC)
     [SerializeField] private InputActionReference pauseAction;
 
     private void Awake()
     {
         if (instance != null && instance != this)
         {
-            Destroy(gameObject); // já existe um, destrói este
+            Destroy(gameObject);
             return;
         }
 
@@ -44,18 +43,17 @@ public class PauseManager : MonoBehaviour
 
     private void TogglePause(InputAction.CallbackContext context)
     {
-        if (context.performed)
-        {
-            if (!IsPaused)
-                PauseGame();
-            else
-                ResumeGame();
-        }
+        if (!context.performed) return;
+
+        // Evita pausar se já estiver na PauseMenu
+        if (IsPaused) return;
+
+        PauseGame();
     }
 
     public static void PauseGame()
     {
-        if (SceneManager.GetSceneByName(pauseSceneName).isLoaded) return;
+        if (IsPaused) return;
 
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
@@ -67,7 +65,7 @@ public class PauseManager : MonoBehaviour
 
     public static void ResumeGame()
     {
-        if (!SceneManager.GetSceneByName(pauseSceneName).isLoaded) return;
+        if (!IsPaused) return;
 
         Time.timeScale = 1f;
         Cursor.lockState = CursorLockMode.Locked;
@@ -76,8 +74,7 @@ public class PauseManager : MonoBehaviour
         SceneManager.UnloadSceneAsync(pauseSceneName);
         IsPaused = false;
 
-        InputSystem.ResetHaptics(); // limpa vibração (se usarem gamepad)
-        InputSystem.Update();       // força o refresh do estado de input
+        InputSystem.ResetHaptics();
+        InputSystem.Update();
     }
 }
-
