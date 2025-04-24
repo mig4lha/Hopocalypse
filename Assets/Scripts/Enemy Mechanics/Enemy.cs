@@ -23,7 +23,7 @@ public class Enemy : MonoBehaviour
     private float fireRateEnemy = 2.0f; // Customizable time between attacks
     private static float nextTimeToFire = 0f;
 
-    [SerializeField] private float jumpForce = 10f;    // Force for the jump
+    [SerializeField] private float jumpForceEnemy = 0.5f;    // Force for the jump
     [SerializeField] private LayerMask groundLayer;    // Layer mask to check for ground
     private bool isGrounded = false;                   // Flag for checking if on ground
 
@@ -33,12 +33,21 @@ public class Enemy : MonoBehaviour
     public bool isDefeated = false;
     public bool isBoss = false;
 
- 
+    // temporario apagar depois de teste
+    public bool testJump = false;
+    private float timeBetweenDoingSomething = 5f;  //Wait 5 seconds after we do something to do something again
+    private float timeWhenWeNextDoSomething;  //The next time we do something
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // apagar, Temporario
+        timeWhenWeNextDoSomething = Time.time + timeBetweenDoingSomething;
+
+
+
         rb = GetComponent<Rigidbody>();
+
         waveController = FindAnyObjectByType<WaveController>();
 
         // Find the canvas first
@@ -68,47 +77,27 @@ public class Enemy : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Jogador não encontrado! Verifica se tem a tag 'Player'");
+            Debug.LogWarning("Jogador nï¿½o encontrado! Verifica se tem a tag 'Player'");
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (player == null) return;
+       
 
-        // Ground check (raycast or spherecast)
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.1f, groundLayer);    
 
-        // Direction to the player
-        Vector3 direction = player.transform.position - transform.position;
-        direction.y = 0; // Ignore vertical difference (optional)
-
-        // Rotate toward the player
-        if (direction.magnitude > 0)
+        if (timeWhenWeNextDoSomething <= Time.time)
         {
-            Quaternion toRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
+            //Do something here
+            rb.AddForce(Vector3.up * jumpForceEnemy, ForceMode.Impulse);
+            //rb.AddForce(Vector3.up * jumpForceEnemy, ForceMode.VelocityChange);
+            //rb.velocity = new Vector3(rb.velocity.x, jumpForceEnemy, rb.velocity.z);
+            Debug.Log("jump");
+            timeWhenWeNextDoSomething = Time.time + timeBetweenDoingSomething;
         }
-
-        // Move forward if not too close
-        // OR, attack player
-        if (direction.magnitude > stoppingDistance)
-        {
-            Vector3 newPosition = rb.position + transform.forward * moveSpeed * Time.deltaTime;
-            rb.MovePosition(newPosition);
-        }
-        else
-        {
-            enemyAttack();
-        }
-
-        // Handle jump logic (if necessary, can be added to specific obstacle logic)
-        if (!isGrounded && direction.magnitude > stoppingDistance)
-        {
-            // Apply jump when obstacle detected (simplified logic for demonstration)
-            TryJumpOverObstacle();
-        }
+        
+        
     }
 
     private void enemyAttack()
@@ -152,7 +141,7 @@ public class Enemy : MonoBehaviour
         {
             Debug.Log("jump");
             // Apply a force upwards to simulate the jump
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            rb.AddForce(Vector3.up * jumpForceEnemy, ForceMode.Impulse);
         }
     }
 
