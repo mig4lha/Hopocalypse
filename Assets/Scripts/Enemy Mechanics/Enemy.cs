@@ -23,7 +23,7 @@ public class Enemy : MonoBehaviour
     private float fireRateEnemy = 2.0f; // Customizable time between attacks
     private static float nextTimeToFire = 0f;
 
-    [SerializeField] private float jumpForceEnemy = 0.5f;    // Force for the jump
+    [SerializeField] private float jumpForceEnemy = 2f;    // Force for the jump
     [SerializeField] private LayerMask groundLayer;    // Layer mask to check for ground
     private bool isGrounded = false;                   // Flag for checking if on ground
 
@@ -90,7 +90,9 @@ public class Enemy : MonoBehaviour
         if (timeWhenWeNextDoSomething <= Time.time)
         {
             //Do something here
+            Debug.Log("velocidade antes do salto: " + rb.linearVelocity);
             rb.AddForce(Vector3.up * jumpForceEnemy, ForceMode.Impulse);
+            
             //rb.AddForce(Vector3.up * jumpForceEnemy, ForceMode.VelocityChange);
             //rb.velocity = new Vector3(rb.velocity.x, jumpForceEnemy, rb.velocity.z);
             Debug.Log("jump");

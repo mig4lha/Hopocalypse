@@ -318,7 +318,7 @@ MonoBehaviour:
   rotationSpeed: 5
   stoppingDistance: 4
   fireRateEnemy: 2
-  jumpForceEnemy: 100000
+  jumpForceEnemy: 2
   groundLayer:
     serializedVersion: 2
     m_Bits: 0
