@@ -180,6 +180,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnInteract(InputValue value)
+    {
+        if (value.Get<float>() > 0)
+        {
+            player.Interact();
+        }
+    }
+
     #endregion
 
     private void Update()
@@ -189,6 +197,9 @@ public class PlayerController : MonoBehaviour
         // Caso problemas surjam, mudar para FixedUpdate e testar
 
         currentControlScheme = playerInput.currentControlScheme;
+
+        if (player.isDead)
+            return; // do nothing if the player is dead
 
         player.HandleMovement();
         player.HandleBunnyHopping();

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,11 @@ public class StatusEffectController : MonoBehaviour
 {
     [SerializeField]
     public StatusEffectData ReloadBoost;
+
+    private UIController UIController;
+
+    // List of all possible status effects.
+    private List<StatusEffectData> allEffects = new List<StatusEffectData>();
 
     // List of active effects.
     private List<StatusEffectData> activeEffects = new List<StatusEffectData>();
@@ -20,11 +26,26 @@ public class StatusEffectController : MonoBehaviour
         {
             Debug.LogError("StatusEffectController requires a PlayerStats GameObject!");
         }
+
+        UIController = FindAnyObjectByType<UIController>();
+        if (UIController == null)
+        {
+            Debug.LogError("StatusEffectController requires a UIController GameObject!");
+        }
+
+        PopulateAllStatusEffectsList();
     }
 
-    /// <summary>
-    /// Applies an effect to the player.
-    /// </summary>
+    private void PopulateAllStatusEffectsList()
+    {
+        // Populate the list with all possible status effects.
+        foreach (StatusEffectData effect in Resources.LoadAll<StatusEffectData>("Status Effects Data"))
+        {
+            allEffects.Add(effect);
+            //Debug.Log("Loaded effect: " + effect.effectName);
+        }
+    }
+
     public void ApplyStatusEffect(StatusEffectData effectData)
     {
         // Add the effect to our active list.
@@ -33,6 +54,8 @@ public class StatusEffectController : MonoBehaviour
         // Immediately modify stats according to the effect.
         ApplyEffect(effectData);
 
+        UIController.AddStatusEffect(effectData);
+
         // If the effect is temporary, schedule it for removal.
         if (effectData.duration > 0f)
         {
@@ -40,9 +63,6 @@ public class StatusEffectController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Removes an active effect from the player.
-    /// </summary>
     public void RemoveStatusEffect(StatusEffectData effectData)
     {
         if (activeEffects.Contains(effectData))
@@ -50,6 +70,7 @@ public class StatusEffectController : MonoBehaviour
             // Reverse the effect's impact on player stats.
             ReverseEffect(effectData);
             activeEffects.Remove(effectData);
+            UIController.RemoveStatusEffect(effectData);
         }
     }
 
@@ -86,18 +107,18 @@ public class StatusEffectController : MonoBehaviour
             case EffectType.SpreadPlus:
                 playerStats.AdjustSpread(effectData.magnitude, effectData.effectStrengthType);
                 break;
-            case EffectType.Shield:
-                playerStats.AddShield(effectData.magnitude);
-                break;
-            case EffectType.HopWindowUp:
-                playerStats.AdjustHopWindow(effectData.magnitude, effectData.effectStrengthType);
-                break;
-            case EffectType.HealthRegen:
-                playerStats.StartHealthRegen(effectData.magnitude);
-                break;
-            case EffectType.RicochetPellets:
-                playerStats.SetRicochetPellets(true);
-                break;
+            //case EffectType.Shield:
+            //    playerStats.AddShield(effectData.magnitude);
+            //    break;
+            //case EffectType.HopWindowUp:
+            //    playerStats.AdjustHopWindow(effectData.magnitude, effectData.effectStrengthType);
+            //    break;
+            //case EffectType.HealthRegen:
+            //    playerStats.StartHealthRegen(effectData.magnitude);
+            //    break;
+            //case EffectType.RicochetPellets:
+            //    playerStats.SetRicochetPellets(true);
+            //    break;
 
             // Debuffs
             case EffectType.MovementDown:
@@ -109,10 +130,10 @@ public class StatusEffectController : MonoBehaviour
             case EffectType.LessDamage:
                 playerStats.AdjustShotgunDamage(effectData.magnitude, effectData.effectStrengthType);
                 break;
-            case EffectType.ShotgunJam:
-                // Here magnitude represents the chance (e.g., 0.2 for 20% chance to jam)
-                playerStats.SetShotgunJamChance(effectData.magnitude);
-                break;
+            //case EffectType.ShotgunJam:
+            //    // Here magnitude represents the chance (e.g., 0.2 for 20% chance to jam)
+            //    playerStats.SetShotgunJamChance(effectData.magnitude);
+            //    break;
             case EffectType.PelletDecrease:
                 playerStats.AdjustPelletCount((int)effectData.magnitude, effectData.effectStrengthType);
                 break;
@@ -122,12 +143,12 @@ public class StatusEffectController : MonoBehaviour
             case EffectType.RangeDown:
                 playerStats.AdjustShotgunRange(effectData.magnitude, effectData.effectStrengthType);
                 break;
-            case EffectType.HopWindowDown:
-                playerStats.AdjustHopWindow(effectData.magnitude, effectData.effectStrengthType);
-                break;
-            case EffectType.BloodLoss:
-                playerStats.StartHealthDrain(effectData.magnitude);
-                break;
+            //case EffectType.HopWindowDown:
+            //    playerStats.AdjustHopWindow(effectData.magnitude, effectData.effectStrengthType);
+            //    break;
+            //case EffectType.BloodLoss:
+            //    playerStats.StartHealthDrain(effectData.magnitude);
+            //    break;
             case EffectType.Clipless:
                 playerStats.AdjustClipSize(effectData.magnitude, effectData.effectStrengthType);
                 break;
@@ -213,4 +234,25 @@ public class StatusEffectController : MonoBehaviour
                 break;
         }
     }
+    
+    public void ApplyRandomStatusEffect()
+    {
+        // Filter out effects that are already active
+        List<StatusEffectData> availableEffects = allEffects.FindAll(effect => !activeEffects.Contains(effect));
+
+        if (availableEffects.Count == 0)
+        {
+            Debug.LogWarning("No available status effects to apply.");
+            return;
+        }
+
+        // Get a random effect from the available ones
+        StatusEffectData randomEffect = availableEffects[UnityEngine.Random.Range(0, availableEffects.Count)];
+
+        // Apply the random effect
+        ApplyStatusEffect(randomEffect);
+    }
+
+
+   
 }

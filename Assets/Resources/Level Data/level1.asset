@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51688d7b6c88afc4687aefa2e79e57df, type: 3}
+  m_Name: level1
+  m_EditorClassIdentifier: 
+  levelName: Level1
+  waveCount: 1
+  baseWaveEnemyCount: 20
+  enemyPerWaveIncrementMult: 5
+  enemyHealthMult: 1
+  enemyDamageMult: 1
+  enemySpeedMult: 1
+  enemyPrefab: {fileID: 1260209709937276824, guid: e805e19d18721584ba49b60f1058520b, type: 3}
+  bossPrefab: {fileID: 6141990467259916314, guid: cec0900e2f60d7542afa93af61dc01f8, type: 3}

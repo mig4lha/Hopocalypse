@@ -7,6 +7,8 @@ public class PlayerStats : MonoBehaviour
     [Header("Player Stats")]
     [SerializeField, Tooltip("Vida do player")]
     public float health = 100f;
+    [SerializeField, Tooltip("Vida Max do player")]
+    public float maxHealth = 100f;
     [SerializeField, Tooltip("Valor de velocidade ao andar")]
     public float moveSpeed = 6f;
     [SerializeField, Tooltip("Multiplicador de velocidade de sprint")]
@@ -43,7 +45,7 @@ public class PlayerStats : MonoBehaviour
     [SerializeField, Tooltip("Range máximo de cada bala do tiro")]
     public float maxRange = 15f;
     [SerializeField, Tooltip("Dano de cada bala do tiro")]
-    public float pelletDamage = 10f;
+    public float pelletDamage = 40f;
 
     [Header("Fire Rate Settings")]
     [SerializeField, Tooltip("Tempo de delay entre cada tiro")]

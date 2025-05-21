@@ -1,16 +1,20 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
     // Player variables
+    internal Player player;
     internal CharacterController characterController;
+    internal PlayerInput playerInput;
     private Vector3 velocity;
     internal Vector2 moveInput;
     internal float coyoteTimeCounter;
     internal bool isSprinting = false;
     private bool isMoving;
+    public bool isDead = false;
 
     // Hop variables
     private float currentBhopMultiplier = 1.0f;
@@ -34,10 +38,25 @@ public class Player : MonoBehaviour
     [SerializeField]
     private UIController UIController;
 
+    [Header("Wave Controller Data")]
+    [SerializeField]
+    private WaveController waveController;
+
+    [Header("Player Stats Data")]
     // Reference to the PlayerStats component, which holds all the base stat values.
     public PlayerStats stats;
 
+    [Header("Status Effect Controller Data")]
     public StatusEffectController statusEffectController;
+
+    [Header("Flashlight Data")]
+    [SerializeField, Tooltip("Flashlight GameObject")]
+    private Light flashLight;
+
+    private SlotMachineController slotMachine;
+
+    // public float batteryLife = 100f;
+    // public float drainRate = 5f;
 
     private void Awake()
     {
@@ -50,17 +69,31 @@ public class Player : MonoBehaviour
         {
             statusEffectController = FindAnyObjectByType<StatusEffectController>();
         }
-    }
-    [Header("Flashlight Data")]
-    [SerializeField, Tooltip("Flashlight GameObject")]
-    private Light flashLight;
 
-    // public float batteryLife = 100f;
-    // public float drainRate = 5f;
+        if(playerInput == null)
+        {
+            playerInput = GetComponent<PlayerInput>();
+        }
+
+        if (player == null)
+        {
+            player = GetComponent<Player>();
+        }
+
+        if (slotMachine == null)
+        {
+            slotMachine = FindAnyObjectByType<SlotMachineController>();
+        }
+    }
 
     public void TakeDamage(float damage)
     {
+        if(isDead) return;
+
         stats.health -= damage;
+        UIController.UpdateHealthBar(stats.health, stats.maxHealth);
+        Debug.Log("Player took damage: " + damage + ", Health: " + stats.health);
+
         if (stats.health <= 0)
         {
             Die();
@@ -79,6 +112,13 @@ public class Player : MonoBehaviour
 
     public void Die()
     {
+        isDead = true;
+        playerInput.enabled = false;
+
+        // Rotate the player -90 degrees on the Z axis
+        player.transform.Rotate(0, 0, -90);
+
+        waveController.OnGameOver();
         Debug.Log("Player has died.");
     }
 
@@ -194,16 +234,18 @@ public class Player : MonoBehaviour
     internal void TestInteraction()
     {
         // Toggle the status effect on click
-        if (!testing)
-        {
-            statusEffectController.ApplyStatusEffect(statusEffectController.ReloadBoost);
-            testing = true;
-        }
-        else
-        {
-            statusEffectController.RemoveStatusEffect(statusEffectController.ReloadBoost);
-            testing = false;
-        }
+        //if (!testing)
+        //{
+        //    statusEffectController.ApplyStatusEffect(statusEffectController.ReloadBoost);
+        //    testing = true;
+        //}
+        //else
+        //{
+        //    statusEffectController.RemoveStatusEffect(statusEffectController.ReloadBoost);
+        //    testing = false;
+        //}
+
+        statusEffectController.ApplyRandomStatusEffect();
     }
 
     public void ToggleFlashlight()
@@ -223,5 +265,10 @@ public class Player : MonoBehaviour
         //        // Optionally: trigger a low battery warning or recharge behavior.
         //    }
         //}
+    }
+
+    internal void Interact()
+    {
+        slotMachine.CheckDistanceAndInteract();
     }
 }

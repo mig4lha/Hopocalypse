@@ -1,6 +1,9 @@
 using System;
 using TMPro;
+using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
@@ -28,6 +31,12 @@ public class UIController : MonoBehaviour
     private TMP_Text reloadCountdownText;
     [SerializeField, Tooltip("Crosshair GameObject")]
     private GameObject crosshair;
+    [SerializeField, Tooltip("Health Bar GameObject")]
+    private GameObject healthBar;
+    [SerializeField] 
+    private Transform statusEffectsContainer;
+    [SerializeField] 
+    private GameObject statusEffectIconPrefab;
 
     [Header("Player Data")]
     [SerializeField] private Player player;
@@ -111,5 +120,123 @@ public class UIController : MonoBehaviour
 
         if (crosshair != null)
             crosshair.SetActive(true);
+    }
+
+    internal void UpdateHealthBar(float health, float maxHealth)
+    {
+        // Atualizar a barra de vida
+        if (healthBar != null)
+        {
+            // get the reference to the health bar image object that is a child of the healthBar object and is named "Health"
+            Image healthBarImage = healthBar.transform.Find("Health").GetComponent<Image>();
+
+            healthBarImage.fillAmount = health / maxHealth;
+
+            Debug.Log("Health bar updated: " + health);
+        }
+    }
+
+    public void AddStatusEffect(StatusEffectData effectData)
+    {
+        string effectName = effectData.name;
+        Sprite iconSprite = effectData.icon;
+
+        // Instantiate the prefab as a child of the container
+        GameObject newIcon = Instantiate(statusEffectIconPrefab, statusEffectsContainer);
+
+        // Pass false for the second parameter to preserve local scale and anchoring
+        newIcon.transform.SetParent(statusEffectsContainer, false);
+        newIcon.name = effectName;
+
+
+        // Set the sprite on the Image component
+        Image newIconImage = newIcon.GetComponent<Image>();
+        if (newIconImage != null)
+        {
+            newIconImage.sprite = iconSprite;
+            newIconImage.color = DEBUG_GetColorForStatusEffect(effectData);
+        }
+    }
+
+    private Color DEBUG_GetColorForStatusEffect(StatusEffectData effectData)
+    {
+        switch (effectData.effectType)
+        {
+            // PowerUps
+            case EffectType.HopFury:
+                return Color.green;
+            case EffectType.ReloadBoost:
+                return Color.yellow;
+            case EffectType.ShotgunOvercharge:
+                return Color.red;
+            case EffectType.PelletIncrease:
+                return Color.blue;
+            case EffectType.ExtraClip:
+                return Color.cyan;
+            case EffectType.SpreadPlus:
+                return Color.magenta;
+            case EffectType.Shield:
+                // return rgb(92, 76, 54)
+                return new Color(0.36f, 0.3f, 0.21f); // Dark Brown
+            case EffectType.HopWindowUp:
+                return Color.grey;
+            case EffectType.HealthRegen:
+                return Color.black;
+            case EffectType.RicochetPellets:
+                return new Color(0.01f, 1, 0.83f); // Light Cyan
+
+            // Debuffs
+            case EffectType.MovementDown:
+                // return color purple
+                return new Color(0.5f, 0, 0.5f); // Purple
+            case EffectType.HeavyReload:
+                // return color orange
+                return new Color(1, 0.5f, 0); // Orange
+            case EffectType.LessDamage:
+                // return color pink
+                return new Color(1, 0.75f, 0.8f); // Pink
+            case EffectType.ShotgunJam:
+                //return color dark pink
+                return new Color(1, 0.2f, 0.6f); // Dark Pink
+            case EffectType.PelletDecrease:
+                // return dark green
+                return new Color(0, 0.5f, 0); // Dark Green
+            case EffectType.SpreadMinus:
+                // return light green
+                return new Color(0.5f, 1, 0.5f); // Light Green
+            case EffectType.RangeDown:
+                // return dark red
+                return new Color(0.5f, 0, 0); // Dark Red
+            case EffectType.HopWindowDown:
+                // return dark blue
+                return new Color(0, 0, 0.5f); // Dark Blue
+            case EffectType.BloodLoss:
+                // return rgb(115, 42, 86)
+                return new Color(0.45f, 0.16f, 0.34f); // Dark Red
+            case EffectType.Clipless:
+                // return rgb(82, 120, 50)
+                return new Color(0.32f, 0.47f, 0.2f); // Dark Green
+        }
+
+        return Color.white;
+    }
+
+    public void RemoveStatusEffect(StatusEffectData effectData)
+    {
+        string effectName = effectData.name;
+
+        // find the icon gameobject by its name
+        Transform icon = statusEffectsContainer.Find(effectName);
+        GameObject iconGameObject = icon.gameObject;
+
+        if(iconGameObject != null)
+        {
+            // Destroy the icon gameobject
+            Destroy(iconGameObject);
+        }
+        else
+        {
+            Debug.LogWarning("Status effect icon not found: " + effectName);
+        }
     }
 }

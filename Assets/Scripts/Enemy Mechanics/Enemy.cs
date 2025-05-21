@@ -4,39 +4,39 @@ using static UnityEngine.EventSystems.EventTrigger;
 
 public class Enemy : MonoBehaviour
 {
-    private Rigidbody rb;
+    protected Rigidbody rb;
 
     [Header("Player Data")]
-    private Player player;
+    protected Player player;
 
     [Header("Wave Controller")]
-    private WaveController waveController;
+    protected WaveController waveController;
 
     [Header("Enemy Stats")]
-    [SerializeField] private float health, maxHealth = 100f;
-    [SerializeField] private float attackDamage = 5f;
-    [SerializeField] private float moveSpeed = 5f;
-    [SerializeField] private float rotationSpeed = 5f;
-    [SerializeField] private float stoppingDistance = 4f;
+    [SerializeField] protected float health, maxHealth = 100f;
+    [SerializeField] protected float attackDamage = 5f;
+    [SerializeField] protected float moveSpeed = 5f;
+    [SerializeField] protected float rotationSpeed = 5f;
+    [SerializeField] protected float stoppingDistance = 4f;
 
     [SerializeField, Tooltip("Tempo de delay entre cada ataque")]
-    private float fireRateEnemy = 2.0f; // Customizable time between attacks
-    private static float nextTimeToFire = 0f;
+    protected float fireRateEnemy = 2.0f; // Customizable time between attacks
+    protected static float nextTimeToFire = 0f;
 
-    [SerializeField] private float jumpForce = 10f;    // Force for the jump
-    [SerializeField] private LayerMask groundLayer;    // Layer mask to check for ground
-    private bool isGrounded = false;                   // Flag for checking if on ground
+    [SerializeField] protected float jumpForce = 10f;    // Force for the jump
+    [SerializeField] protected LayerMask groundLayer;    // Layer mask to check for ground
+    protected bool isGrounded = false;                   // Flag for checking if on ground
 
     FloatingHealthBar healthBar;
     Transform healthBarTransform;
 
     public bool isDefeated = false;
-    public bool isBoss = false;
+    protected bool isBoss = false;
 
- 
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    protected virtual void Start()
     {
         rb = GetComponent<Rigidbody>();
         waveController = FindAnyObjectByType<WaveController>();
@@ -73,7 +73,7 @@ public class Enemy : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         if (player == null) return;
 
@@ -111,7 +111,7 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    private void enemyAttack()
+    protected virtual void enemyAttack()
     {
         
         // Prevenir tiros antes do delay da fire rate
@@ -123,12 +123,14 @@ public class Enemy : MonoBehaviour
         }
 
         nextTimeToFire = Time.time + fireRateEnemy;
+
+        Debug.Log("Enemy attacked");
         player.TakeDamage(attackDamage);
         
 
     }
 
-    private void TryJumpOverObstacle()
+    protected virtual void TryJumpOverObstacle()
     {
         // Cast a ray or use a boxcast to detect obstacles ahead
         RaycastHit hit;
@@ -145,7 +147,7 @@ public class Enemy : MonoBehaviour
     }
 
 
-    private void TryJump()
+    protected virtual void TryJump()
     {
         // If grounded, allow jump
         if (!isGrounded)
