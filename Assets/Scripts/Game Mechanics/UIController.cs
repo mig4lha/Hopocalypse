@@ -154,7 +154,7 @@ public class UIController : MonoBehaviour
         if (newIconImage != null)
         {
             newIconImage.sprite = iconSprite;
-            newIconImage.color = DEBUG_GetColorForStatusEffect(effectData);
+            //newIconImage.color = DEBUG_GetColorForStatusEffect(effectData);
         }
     }
 
