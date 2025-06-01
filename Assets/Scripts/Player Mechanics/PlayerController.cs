@@ -172,6 +172,17 @@ public class PlayerController : MonoBehaviour
             gameManager.LoadScene("MainMenu");
         }
     }
+    //private void OnPause(InputValue value)
+    //{
+    //    if (value.Get<float>() > 0)
+    //    {
+    //        if (!PauseManager.IsPaused)
+    //            PauseManager.PauseGame();
+    //        else
+    //            PauseManager.ResumeGame();
+    //    }
+    //}
+
     private void OnFlashlight(InputValue value)
     {
         if (value.Get<float>() > 0)

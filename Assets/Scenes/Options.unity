@@ -742,7 +742,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1231297716}
-        m_TargetAssemblyTypeName: OptionsMenuManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonMenus, Assembly-CSharp
         m_MethodName: ReturnToMainMenu
         m_Mode: 1
         m_Arguments:
@@ -876,7 +876,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1231297711}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb5221c9db2d2d74197d4ad7957c5317, type: 3}
+  m_Script: {fileID: 11500000, guid: fecf1cc3ff3a8fd43b2170ffe84d3cee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1699135501
@@ -1025,7 +1025,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1699135501}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb5221c9db2d2d74197d4ad7957c5317, type: 3}
+  m_Script: {fileID: 11500000, guid: fecf1cc3ff3a8fd43b2170ffe84d3cee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &2112125886
