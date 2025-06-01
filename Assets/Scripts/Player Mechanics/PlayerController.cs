@@ -87,6 +87,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnLook(InputValue value)
     {
+        if (PauseManager.IsPaused) return;
+
         Vector2 rawInput = value.Get<Vector2>();
 
         string currentScheme = playerInput.currentControlScheme;
@@ -144,6 +146,8 @@ public class PlayerController : MonoBehaviour
 
     private void OnShoot(InputValue value)
     {
+        if (PauseManager.IsPaused) return;
+
         if (value.Get<float>() > 0)
         {
             player.Shoot();
@@ -172,6 +176,17 @@ public class PlayerController : MonoBehaviour
             gameManager.LoadScene("MainMenu");
         }
     }
+    //private void OnPause(InputValue value)
+    //{
+    //    if (value.Get<float>() > 0)
+    //    {
+    //        if (!PauseManager.IsPaused)
+    //            PauseManager.PauseGame();
+    //        else
+    //            PauseManager.ResumeGame();
+    //    }
+    //}
+
     private void OnFlashlight(InputValue value)
     {
         if (value.Get<float>() > 0)
@@ -192,7 +207,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        // O movimento do player est� no Update pois n�o inclui um RigidBody nem c�lculos de f�sica precisos
+        // O movimento do player est� no Update pois n�o inclui c�lculos de f�sica precisos
         // logo n�o vi a necessidade de o colocar no FixedUpdate
         // Caso problemas surjam, mudar para FixedUpdate e testar
 

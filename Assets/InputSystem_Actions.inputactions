@@ -96,9 +96,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ReturnToMainMenu",
+                    "name": "Pause",
                     "type": "Button",
-                    "id": "2ee707c0-cb36-438b-9036-33a166d1c6aa",
+                    "id": "76d15233-9c98-49f5-840d-4f0fb7e799c2",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -107,7 +107,7 @@
                 {
                     "name": "Interact",
                     "type": "Button",
-                    "id": "f2ff37d8-60b5-4927-bcbb-9c0752732731",
+                    "id": "b127c8a6-3391-4eba-a89e-fe4846ab5326",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -458,22 +458,22 @@
                 },
                 {
                     "name": "",
-                    "id": "ba9f9029-bb92-4c0e-a3ea-25f3d46d60df",
+                    "id": "0afe6c8e-fbbc-4932-a57d-1519a1efd61f",
                     "path": "<Keyboard>/escape",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
-                    "action": "ReturnToMainMenu",
+                    "groups": "",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "1a23fe8d-acda-4450-a64c-f9e9a3daf46b",
+                    "id": "cbda80fe-6759-4f88-b640-236cf8356b3d",
                     "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard&Mouse",
+                    "groups": "",
                     "action": "Interact",
                     "isComposite": false,
                     "isPartOfComposite": false

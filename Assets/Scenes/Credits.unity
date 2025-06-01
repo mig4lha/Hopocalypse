@@ -339,7 +339,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 2081335376}
-        m_TargetAssemblyTypeName: CreditsManager, Assembly-CSharp
+        m_TargetAssemblyTypeName: ButtonMenus, Assembly-CSharp
         m_MethodName: ReturnToMainMenu
         m_Mode: 1
         m_Arguments:
@@ -1286,7 +1286,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2081335372}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e1e79ac11a7e6484cbcc59a55df47338, type: 3}
+  m_Script: {fileID: 11500000, guid: fecf1cc3ff3a8fd43b2170ffe84d3cee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807

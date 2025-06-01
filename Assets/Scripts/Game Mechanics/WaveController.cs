@@ -229,33 +229,6 @@ public class WaveController : MonoBehaviour
     {
         int currentLevel = GameManager.instance.GetCurrentLevelIndex() + 1;
 
-        // Debug apenas para level1
-        GameObject groundObject = GameObject.Find("floor0_ground");
-
-        if (groundObject == null)
-        {
-            Debug.LogError("Ground object is null. Cannot spawn enemy.");
-            return;
-        }
-
-        GameObject spawnArea = groundObject;
-        Collider spawnAreaCollider = spawnArea.GetComponent<Collider>();
-
-        if (spawnAreaCollider == null)
-        {
-            Debug.LogError("Spawn area does not have a Collider component.");
-            return;
-        }
-
-        Vector3 randomPosition = GetRandomPositionInCollider(spawnAreaCollider);
-        randomPosition.y += 0.9f;
-        Instantiate(levelData.bossPrefab, randomPosition, Quaternion.identity);
-
-        UIController.UpdateEnemiesSpawned(totalEnemiesSpawned);
-
-        //Debug.Log("Spawned Boss at position: " + randomPosition);
-        // Place any logic here that should run when the wave system ends,
-        // for example, progressing to the next level or displaying a victory screen.
         Debug.Log("Wave system complete for this level!");
     }
 
