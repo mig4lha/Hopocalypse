@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SlotMachineController : MonoBehaviour
 {
+    [SerializeField] private Animator slotMachineAnimator;
+
     public Transform dropPoint;
     private Rigidbody rb;
     private bool hasLanded = false;
@@ -65,6 +67,7 @@ public class SlotMachineController : MonoBehaviour
         if (iz.playerInside && !hasInteracted)
         {
             // Animação de rodar slot machine
+            slotMachineAnimator.SetTrigger("Spin");
 
             statusEffectController.ApplyRandomStatusEffect();
 
@@ -72,7 +75,7 @@ public class SlotMachineController : MonoBehaviour
 
             Debug.Log("Slot Machine Interacted. Applied Random Effect");
 
-            StartCoroutine(waveController.LoadEndScene());
+            //StartCoroutine(waveController.LoadEndScene());
         } 
     }
 }
