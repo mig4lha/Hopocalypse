@@ -158,6 +158,14 @@ public class PlayerStats : MonoBehaviour
             pelletDamage = 0.1f;
     }
 
+    private void OnCollisionEnter(Collision batatas)
+    {
+        GameObject col = this.gameObject;
+
+        Destroy(col.gameObject);
+        Destroy(batatas.gameObject);
+    }
+
     internal void AdjustShotgunRange(float magnitude, EffectStrengthType effectStrengthType)
     {
         if (effectStrengthType == EffectStrengthType.Additive)
