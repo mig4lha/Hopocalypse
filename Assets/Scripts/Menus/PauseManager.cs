@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class PauseManager : MonoBehaviour
 {
@@ -10,6 +12,9 @@ public class PauseManager : MonoBehaviour
     private static PauseManager instance;
 
     [SerializeField] private InputActionReference pauseAction;
+    private Volume pauseBlurVolume;
+    private GameObject UI;
+    private Coroutine resumeCoroutine;
 
     private void Awake()
     {
@@ -17,6 +22,17 @@ public class PauseManager : MonoBehaviour
         {
             Destroy(gameObject);
             return;
+        }
+
+        if (pauseBlurVolume == null)
+        {
+            GameObject blurObj = GameObject.FindWithTag("PauseBlur");
+            if (blurObj != null)
+            {
+                pauseBlurVolume = blurObj.GetComponent<Volume>();
+            }
+                
+
         }
 
         instance = this;
@@ -45,11 +61,16 @@ public class PauseManager : MonoBehaviour
     {
         if (!context.performed) return;
 
-        // Evita pausar se já estiver na PauseMenu
-        if (IsPaused) return;
-
-        PauseGame();
+        if (IsPaused)
+        {
+            ResumeGame();
+        }
+        else
+        {
+            PauseGame();
+        }
     }
+
 
     public static void PauseGame()
     {
@@ -58,6 +79,19 @@ public class PauseManager : MonoBehaviour
         Time.timeScale = 0f;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+
+        if (instance.pauseBlurVolume != null)
+            instance.pauseBlurVolume.enabled = true;
+
+
+        if (instance.UI != null) {
+            instance.UI.SetActive(false);
+        } 
+        else {
+            GameObject uiObject = GameObject.FindWithTag("UI");
+            instance.UI = uiObject;
+            instance.UI.SetActive(false);
+        }
 
         SceneManager.LoadSceneAsync(pauseSceneName, LoadSceneMode.Additive);
         IsPaused = true;
@@ -71,10 +105,19 @@ public class PauseManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        if (instance.pauseBlurVolume != null)
+            instance.pauseBlurVolume.enabled = false;
+
+        if (instance.UI != null)
+        {
+            instance.UI.SetActive(true);
+        }
+
         SceneManager.UnloadSceneAsync(pauseSceneName);
         IsPaused = false;
 
         InputSystem.ResetHaptics();
-        InputSystem.Update();
     }
+
+
 }

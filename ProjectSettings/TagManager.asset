@@ -7,6 +7,8 @@ TagManager:
   - Enemy
   - Ground
   - Slot
+  - PauseBlur
+  - UI
   layers:
   - Default
   - TransparentFX

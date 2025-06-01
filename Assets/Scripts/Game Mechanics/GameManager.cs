@@ -2,12 +2,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System;
+using UnityEngine.Rendering;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public List<LevelData> levels;
     public int currentLevelIndex = 0;
+    [SerializeField] private Volume pauseBlurVolume;
 
     void Awake()
     {
@@ -15,6 +17,9 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+
+            if (pauseBlurVolume != null)
+                DontDestroyOnLoad(pauseBlurVolume.gameObject);
         }
         else
         {
