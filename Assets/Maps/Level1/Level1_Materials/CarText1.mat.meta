@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/boss/MaterialsBoss/standardSurface1.mat.meta
+guid: ae98177b05ce3eb4eb43e78986973551
+========
+guid: f7c9f2459dbdc56499e5788c761a6b9e
+>>>>>>>> main:Assets/Maps/Level1_Materials/CarText1.mat.meta
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

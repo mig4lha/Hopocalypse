@@ -1,0 +1,12 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Prefabs/boss/MaterialsBoss/eyeball_texture.png.mat.meta
+guid: 46b43bed5e61a5f4d9ebfbda8ea75246
+========
+guid: ee1fce29abd424c438efebbc27773435
+>>>>>>>> main:Assets/Maps/Level1_Materials/Builds.mat.meta
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

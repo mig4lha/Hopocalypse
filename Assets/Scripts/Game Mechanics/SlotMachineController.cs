@@ -6,6 +6,7 @@ public class SlotMachineController : MonoBehaviour
 {
     [SerializeField] private SlotMachineIconDisplay iconDisplay;
     [SerializeField] private Animator slotMachineAnimator;
+    [SerializeField] private Animator gateAnimator;
 
     public Transform dropPoint;
     private Rigidbody rb;
@@ -60,6 +61,7 @@ public class SlotMachineController : MonoBehaviour
             hasInteracted = true;
 
             slotMachineAnimator.SetTrigger("Spin");
+            gateAnimator.SetTrigger("Open");
             iconDisplay.StartSpinning();
 
             Invoke(nameof(EndSpinAndApplyEffect), 2f); // tempo da animação
