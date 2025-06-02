@@ -110,28 +110,6 @@ public class PlayerStats : MonoBehaviour
             maxBhopMultiplier = 0.1f;
     }
 
-    internal void AdjustHopWindow(float magnitude, EffectStrengthType effectStrengthType)
-    {
-        if (effectStrengthType == EffectStrengthType.Additive)
-            consecutiveJumpWindow += magnitude;
-        else if (effectStrengthType == EffectStrengthType.Multiplicative)
-            consecutiveJumpWindow *= magnitude;
-
-        if (consecutiveJumpWindow < 0.1f)
-            consecutiveJumpWindow = 0.1f;
-    }
-
-    internal void AdjustMovementSpeed(float magnitude, EffectStrengthType effectStrengthType)
-    {
-        if (effectStrengthType == EffectStrengthType.Additive)
-            moveSpeed += magnitude;
-        else if (effectStrengthType == EffectStrengthType.Multiplicative)
-            moveSpeed *= magnitude;
-
-        if (moveSpeed <= 0)
-            moveSpeed = 1f;
-    }
-
     internal void AdjustPelletCount(float magnitude, EffectStrengthType effectStrengthType)
     {
         float pelletCountTemp = pelletCount;
@@ -156,14 +134,6 @@ public class PlayerStats : MonoBehaviour
 
         if (pelletDamage < 0.1f)
             pelletDamage = 0.1f;
-    }
-
-    private void OnCollisionEnter(Collision batatas)
-    {
-        GameObject col = this.gameObject;
-
-        Destroy(col.gameObject);
-        Destroy(batatas.gameObject);
     }
 
     internal void AdjustShotgunRange(float magnitude, EffectStrengthType effectStrengthType)
@@ -196,49 +166,4 @@ public class PlayerStats : MonoBehaviour
             spreadAngleY = 0.1f;
     }
 
-
-    // Buffs/Debuffs mais complexos
-    internal void AddShield(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void RemoveShield(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void ResetShotgunJamChance()
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void SetRicochetPellets(bool v)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void SetShotgunJamChance(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
-    internal void StartHealthDrain(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void StartHealthRegen(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void StopHealthDrain()
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void StopHealthRegen()
-    {
-        throw new NotImplementedException();
-    }
 }

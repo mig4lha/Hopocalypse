@@ -175,29 +175,14 @@ public class UIController : MonoBehaviour
                 return Color.cyan;
             case EffectType.SpreadPlus:
                 return Color.magenta;
-            case EffectType.Shield:
-                // return rgb(92, 76, 54)
-                return new Color(0.36f, 0.3f, 0.21f); // Dark Brown
-            case EffectType.HopWindowUp:
-                return Color.grey;
-            case EffectType.HealthRegen:
-                return Color.black;
-            case EffectType.RicochetPellets:
-                return new Color(0.01f, 1, 0.83f); // Light Cyan
 
             // Debuffs
-            case EffectType.MovementDown:
-                // return color purple
-                return new Color(0.5f, 0, 0.5f); // Purple
             case EffectType.HeavyReload:
                 // return color orange
                 return new Color(1, 0.5f, 0); // Orange
             case EffectType.LessDamage:
                 // return color pink
                 return new Color(1, 0.75f, 0.8f); // Pink
-            case EffectType.ShotgunJam:
-                //return color dark pink
-                return new Color(1, 0.2f, 0.6f); // Dark Pink
             case EffectType.PelletDecrease:
                 // return dark green
                 return new Color(0, 0.5f, 0); // Dark Green
@@ -207,12 +192,6 @@ public class UIController : MonoBehaviour
             case EffectType.RangeDown:
                 // return dark red
                 return new Color(0.5f, 0, 0); // Dark Red
-            case EffectType.HopWindowDown:
-                // return dark blue
-                return new Color(0, 0, 0.5f); // Dark Blue
-            case EffectType.BloodLoss:
-                // return rgb(115, 42, 86)
-                return new Color(0.45f, 0.16f, 0.34f); // Dark Red
             case EffectType.Clipless:
                 // return rgb(82, 120, 50)
                 return new Color(0.32f, 0.47f, 0.2f); // Dark Green

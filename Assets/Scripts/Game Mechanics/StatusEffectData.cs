@@ -16,21 +16,13 @@ public enum EffectType
     PelletIncrease,      // Extra pellets per shot
     ExtraClip,           // Increase number of shotgun shots before reload
     SpreadPlus,          // Increase spread by a set amount
-    Shield,              // Temporary energy shield (absorbs damage)
-    HopWindowUp,         // Extend maximum hop window (fewer jumps needed)
-    HealthRegen,         // Regenerate health continuously over time
-    RicochetPellets,     // Pellets bounce off surfaces
 
     // Debuffs
-    MovementDown,        // Reduce player movement speed
     HeavyReload,         // Increase reload time
     LessDamage,          // Lower shotgun pellet damage
-    ShotgunJam,          // Chance for the shotgun to jam (not fire)
     PelletDecrease,      // Fewer pellets per shot
     SpreadMinus,         // Decrease spread by a set amount
     RangeDown,           // Reduce range of the shotgun shots
-    HopWindowDown,       // Shorten maximum hop window (more frequent jumps)
-    BloodLoss,           // Player loses health over time
     Clipless             // Fewer bullets before reloading
 }
 
