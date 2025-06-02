@@ -18,4 +18,4 @@ MonoBehaviour:
   magnitude: 0.5
   effectStrengthType: 1
   description: 
-  icon: {fileID: 7482667652216324306, guid: 96064859b4909444693d508ccec38754, type: 3}
+  icon: {fileID: 21300000, guid: c91f8976ee2cdb6458a25311b9f75d04, type: 3}

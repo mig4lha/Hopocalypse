@@ -45,7 +45,7 @@ public class UIController : MonoBehaviour
 
     public void UpdateTimePassed(float timePassed)
     {
-        // Atualizar tempo passado no ecrã no fomarto "Time: MM:SS"
+        // Atualizar tempo passado no ecrï¿½ no fomarto "Time: MM:SS"
         TimeSpan time = TimeSpan.FromSeconds(timePassed);
         string formattedTime = string.Format("{0:D2}:{1:D2}", (int)time.TotalMinutes, time.Seconds);
         if (currentTimePassed != null)
@@ -60,14 +60,14 @@ public class UIController : MonoBehaviour
 
     public void UpdateEnemiesSpawned(int enemiesSpawned)
     {
-        // Atualizar enemies spawned no ecrã
+        // Atualizar enemies spawned no ecrï¿½
         if (currentEnemiesSpawned != null)
             currentEnemiesSpawned.text = $"Enemies Spawned: {enemiesSpawned}";
     }
 
     public void UpdateEnemiesDefeated(int enemiesDefeated)
     {
-        // Atualizar enemies defeated no ecrã
+        // Atualizar enemies defeated no ecrï¿½
         if (currentEnemiesDefeated != null)
             currentEnemiesDefeated.text = $"Enemies Defeated: {enemiesDefeated}";
     }
@@ -91,7 +91,7 @@ public class UIController : MonoBehaviour
 
     public void UpdateReloadTimer(float reloadTimer)
     {
-        // Atualizar timer de reload no ecrã
+        // Atualizar timer de reload no ecrï¿½
         reloadCountdownText.text = reloadTimer.ToString("F2");
     }
 
@@ -154,7 +154,6 @@ public class UIController : MonoBehaviour
         if (newIconImage != null)
         {
             newIconImage.sprite = iconSprite;
-            newIconImage.color = DEBUG_GetColorForStatusEffect(effectData);
         }
     }
 
