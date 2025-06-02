@@ -20,9 +20,7 @@ public class WaveController : MonoBehaviour
     [SerializeField] private float timeBetweenWaves = 5f;
     [SerializeField] private float spawnDelay = 1f; // Delay between spawning individual enemies
 
-    // Reference to UIController for updating any UI elements
     private UIController UIController;
-
     private SlotMachineController slotMachine;
 
     // Flag to determine if the boss is defeated (set this from your boss enemy when it dies)
@@ -33,7 +31,6 @@ public class WaveController : MonoBehaviour
 
     void Start()
     {
-        // Locate and assign UIController (if not assigned via Inspector)
         UIController = FindAnyObjectByType<UIController>();
         if (UIController == null)
         {
@@ -102,9 +99,12 @@ public class WaveController : MonoBehaviour
             {
                 // Call a specific mechanic for this wave
                 Level1SpecificMechanic();
+            } else if (currentLevel == 2)
+            {
+                Level1SpecificMechanic();
             }
 
-            yield return new WaitUntil(() => checkpointTriggered);
+                yield return new WaitUntil(() => checkpointTriggered);
             Debug.Log("Checkpoint reached! Spawning boss.");
             SpawnBoss();
 
@@ -114,8 +114,7 @@ public class WaveController : MonoBehaviour
         }
 
         // Wave system for this level has ended.
-        Debug.Log("All waves and boss completed for this level!");
-        EndWaveSystem();
+        Debug.Log("Wave system complete for this level!");
         yield return null;
     }
 
@@ -224,14 +223,6 @@ public class WaveController : MonoBehaviour
         return new Vector3(randomX, randomY, randomZ);
     }
 
-
-    void EndWaveSystem()
-    {
-        int currentLevel = GameManager.instance.GetCurrentLevelIndex() + 1;
-
-        Debug.Log("Wave system complete for this level!");
-    }
-
     private void Update()
     {
         if (timerStopped == false)
@@ -272,6 +263,26 @@ public class WaveController : MonoBehaviour
     {
         yield return new WaitForSeconds(3f);
         GameManager.instance.LoadScene("PrototipoEndScene");
+    }
+
+    public IEnumerator LoadNextLevel()
+    {
+        GameManager.instance.IncrementLevelIndex();
+        int newCurrentLevelIndex = GameManager.instance.GetCurrentLevelIndex();
+
+        GameManager.instance.SavePlayerState();
+
+        yield return new WaitForSeconds(3f);
+
+        if (newCurrentLevelIndex >= GameManager.instance.levels.Count)
+        {
+            Debug.Log("No more levels to load.");
+            GameManager.instance.LoadScene("PrototipoEndScene");
+            yield break;
+        } else
+        {
+            GameManager.instance.LoadLevel(newCurrentLevelIndex);
+        }
     }
 
     public void OnCheckpointReached()

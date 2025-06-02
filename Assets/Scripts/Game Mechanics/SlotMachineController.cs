@@ -72,7 +72,8 @@ public class SlotMachineController : MonoBehaviour
 
             Debug.Log("Slot Machine Interacted. Applied Random Effect");
 
-            StartCoroutine(waveController.LoadEndScene());
+            //StartCoroutine(waveController.LoadEndScene());
+            StartCoroutine(waveController.LoadNextLevel());
         } 
     }
 }

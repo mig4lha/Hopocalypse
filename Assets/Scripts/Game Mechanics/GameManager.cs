@@ -12,10 +12,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Volume pauseBlurVolume;
     public PlayerData playerData = new PlayerData();
 
-    [SerializeField] private GameObject playerPrefab;
-    [SerializeField] private GameObject uiControllerPrefab;
-    [SerializeField] private GameObject waveControllerPrefab;
-    [SerializeField] private GameObject debugLineManagerPrefab;
+    private PlayerStats playerStats;
+    private AxeGunController axeGunController;
+    private StatusEffectController statusEffectController;
+    private UIController uiController;
 
     void Awake()
     {
@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
 
             if (pauseBlurVolume != null)
                 DontDestroyOnLoad(pauseBlurVolume.gameObject);
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -38,6 +40,41 @@ public class GameManager : MonoBehaviour
         // Automatically load the first level (index 0)
         LoadMainMenu();
         //LoadLevel(0);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name.StartsWith("Level"))
+        {
+            playerStats = FindAnyObjectByType<PlayerStats>();
+            if (playerStats == null)
+            {
+                Debug.LogError("PlayerStats not found in the scene.");
+            }
+
+            axeGunController = FindAnyObjectByType<AxeGunController>();
+            if (axeGunController == null)
+            {
+                Debug.LogError("AxeGunController not found in the scene.");
+            }
+
+            statusEffectController = FindAnyObjectByType<StatusEffectController>();
+            if (statusEffectController == null)
+            {
+                Debug.LogError("StatusEffectController not found in the scene.");
+            }
+
+            uiController = FindAnyObjectByType<UIController>();
+            if (uiController == null)
+            {
+                Debug.LogError("UIController not found in the scene.");
+            }
+
+            if (scene.name != "Level1")
+            {
+                LoadPlayerState();
+            }
+        }
     }
 
     private void LoadMainMenu()
@@ -59,12 +96,20 @@ public class GameManager : MonoBehaviour
         return currentLevelIndex;
     }
 
+    // Increment the level index
+    public void IncrementLevelIndex()
+    {
+        currentLevelIndex++;
+        Debug.Log("Current Level Index: " + currentLevelIndex);
+    }
+
     // Load a level by index
     public void LoadLevel(int levelIndex)
     {
         if (levelIndex >= 0 && levelIndex < levels.Count)
         {
             currentLevelIndex = levelIndex;
+            Debug.Log(GetCurrentLevelIndex() + " - " + levels[currentLevelIndex].levelName);
             SceneManager.LoadScene(levels[currentLevelIndex].levelName);
         }
         else
@@ -78,26 +123,28 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(sceneName);
     }
 
-    public void SavePlayerState(PlayerStats player, AxeGunController gun, StatusEffectController effects)
+    public void SavePlayerState()
     {
-        playerData.health = player.health;
-        playerData.currentAmmo = gun.currentAmmo;
-        playerData.activeEffects = effects.GetActiveEffects();
+        playerData.health = playerStats.health;
+        playerData.activeEffects = statusEffectController.GetActiveEffects();
         Debug.Log("Player state saved: " +
                   "Health: " + playerData.health + ", " +
-                  "Ammo: " + playerData.currentAmmo + ", " +
                   "Effects: " + playerData.activeEffects.ToString());
     }
 
-    public void LoadPlayerState(PlayerStats player, AxeGunController gun, StatusEffectController effects)
+    public void LoadPlayerState()
     {
-        player.health = playerData.health;
-        gun.currentAmmo = playerData.currentAmmo;
-        effects.ApplyEffectsByList(playerData.activeEffects);
+        playerStats.health = playerData.health;
+        statusEffectController.ApplyEffectsByList(playerData.activeEffects);
+
+        if (uiController != null)
+        {
+            uiController.UpdateHealthBar(playerStats.health, playerStats.maxHealth);
+        }
+
         Debug.Log("Player state loaded: " +
-                  "Health: " + player.health + ", " +
-                  "Ammo: " + gun.currentAmmo + ", " +
-                  "Effects: " + effects.GetActiveEffects().ToString());
+                  "Health: " + playerStats.health + ", " +
+                  "Effects: " + statusEffectController.GetActiveEffects().ToString());
     }
 
 }
