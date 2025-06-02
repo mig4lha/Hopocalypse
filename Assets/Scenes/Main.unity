@@ -217,6 +217,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f9723d3de9e7bd44d9c5867cc19a6c0a, type: 2}
   currentLevelIndex: -1
   pauseBlurVolume: {fileID: 1396562011}
+  playerData:
+    health: 0
+    currentAmmo: 0
+    activeEffects: []
+  playerPrefab: {fileID: 2293629800374924892, guid: 7a64e0c6c9be19f4d859333eb05fa32f, type: 3}
+  uiControllerPrefab: {fileID: 7119381405148239758, guid: 88f06ad97254955438d60e4b82704bca, type: 3}
+  waveControllerPrefab: {fileID: 6145862007174868481, guid: c4bd3bd8b8d648f45bf85fd2de4cacbb, type: 3}
+  debugLineManagerPrefab: {fileID: 3955210241597140441, guid: 57d2383874a58be4a91ea95dcb58c326, type: 3}
 --- !u!114 &1702964491
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -253,6 +253,16 @@ public class StatusEffectController : MonoBehaviour
         ApplyStatusEffect(randomEffect);
     }
 
+    public List<StatusEffectData> GetActiveEffects()
+    {
+        return new List<StatusEffectData>(activeEffects);
+    }
 
-   
+    public void ApplyEffectsByList(List<StatusEffectData> effects)
+    {
+        foreach (var effect in effects)
+        {
+            ApplyStatusEffect(effect);
+        }
+    }
 }

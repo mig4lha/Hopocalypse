@@ -10,6 +10,12 @@ public class GameManager : MonoBehaviour
     public List<LevelData> levels;
     public int currentLevelIndex = 0;
     [SerializeField] private Volume pauseBlurVolume;
+    public PlayerData playerData = new PlayerData();
+
+    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject uiControllerPrefab;
+    [SerializeField] private GameObject waveControllerPrefab;
+    [SerializeField] private GameObject debugLineManagerPrefab;
 
     void Awake()
     {
@@ -71,4 +77,27 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(sceneName);
     }
+
+    public void SavePlayerState(PlayerStats player, AxeGunController gun, StatusEffectController effects)
+    {
+        playerData.health = player.health;
+        playerData.currentAmmo = gun.currentAmmo;
+        playerData.activeEffects = effects.GetActiveEffects();
+        Debug.Log("Player state saved: " +
+                  "Health: " + playerData.health + ", " +
+                  "Ammo: " + playerData.currentAmmo + ", " +
+                  "Effects: " + playerData.activeEffects.ToString());
+    }
+
+    public void LoadPlayerState(PlayerStats player, AxeGunController gun, StatusEffectController effects)
+    {
+        player.health = playerData.health;
+        gun.currentAmmo = playerData.currentAmmo;
+        effects.ApplyEffectsByList(playerData.activeEffects);
+        Debug.Log("Player state loaded: " +
+                  "Health: " + player.health + ", " +
+                  "Ammo: " + gun.currentAmmo + ", " +
+                  "Effects: " + effects.GetActiveEffects().ToString());
+    }
+
 }
