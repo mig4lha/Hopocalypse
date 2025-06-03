@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
@@ -37,13 +38,13 @@ public class PlayerStats : MonoBehaviour
 
     [Header("AxeGun Settings")]
     [SerializeField, Tooltip("Número balas por tiro")]
-    public int pelletCount = 30;
+    public int pelletCount = 20;
     [SerializeField, Tooltip("Ângulo máximo do spread em X")]
     public float spreadAngleX = 50f;
     [SerializeField, Tooltip("Ângulo máximo do spread em Y")]
     public float spreadAngleY = 25f;
     [SerializeField, Tooltip("Range máximo de cada bala do tiro")]
-    public float maxRange = 15f;
+    public float maxRange = 10f;
     [SerializeField, Tooltip("Dano de cada bala do tiro")]
     public float pelletDamage = 40f;
 
@@ -110,28 +111,6 @@ public class PlayerStats : MonoBehaviour
             maxBhopMultiplier = 0.1f;
     }
 
-    internal void AdjustHopWindow(float magnitude, EffectStrengthType effectStrengthType)
-    {
-        if (effectStrengthType == EffectStrengthType.Additive)
-            consecutiveJumpWindow += magnitude;
-        else if (effectStrengthType == EffectStrengthType.Multiplicative)
-            consecutiveJumpWindow *= magnitude;
-
-        if (consecutiveJumpWindow < 0.1f)
-            consecutiveJumpWindow = 0.1f;
-    }
-
-    internal void AdjustMovementSpeed(float magnitude, EffectStrengthType effectStrengthType)
-    {
-        if (effectStrengthType == EffectStrengthType.Additive)
-            moveSpeed += magnitude;
-        else if (effectStrengthType == EffectStrengthType.Multiplicative)
-            moveSpeed *= magnitude;
-
-        if (moveSpeed <= 0)
-            moveSpeed = 1f;
-    }
-
     internal void AdjustPelletCount(float magnitude, EffectStrengthType effectStrengthType)
     {
         float pelletCountTemp = pelletCount;
@@ -158,23 +137,15 @@ public class PlayerStats : MonoBehaviour
             pelletDamage = 0.1f;
     }
 
-    private void OnCollisionEnter(Collision batatas)
-    {
-        GameObject col = this.gameObject;
-
-        Destroy(col.gameObject);
-        Destroy(batatas.gameObject);
-    }
-
     internal void AdjustShotgunRange(float magnitude, EffectStrengthType effectStrengthType)
     {
         if (effectStrengthType == EffectStrengthType.Additive)
-            pelletDamage += magnitude;
+            maxRange += magnitude;
         else if (effectStrengthType == EffectStrengthType.Multiplicative)
-            pelletDamage *= magnitude;
+            maxRange *= magnitude;
 
-        if (pelletDamage < 0.1f)
-            pelletDamage = 0.1f;
+        if (maxRange < 0.1f)
+            maxRange = 0.1f;
     }
 
     internal void AdjustSpread(float magnitude, EffectStrengthType effectStrengthType)
@@ -196,49 +167,41 @@ public class PlayerStats : MonoBehaviour
             spreadAngleY = 0.1f;
     }
 
+    public void PrintEffectedStats()
+    {
+        // Get current level name (or index)
+        string levelInfo = "Unknown Level";
+        if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().IsValid())
+        {
+            levelInfo = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        }
 
-    // Buffs/Debuffs mais complexos
-    internal void AddShield(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
+        string statsReport =
+            $"Level: {levelInfo}\n" +
+            "=== Player Stats Affected by Effects ===\n" +
+            $"Health: {health}/{maxHealth}\n" +
+            $"Reload Time: {reloadTime}\n" +
+            $"Max Ammo: {maxAmmo}\n" +
+            $"Max Bhop Multiplier: {maxBhopMultiplier}\n" +
+            $"Pellet Count: {pelletCount}\n" +
+            $"Pellet Damage: {pelletDamage}\n" +
+            $"Spread Angle X: {spreadAngleX}\n" +
+            $"Spread Angle Y: {spreadAngleY}\n" +
+            $"Max Range: {maxRange}\n" +
+            "========================================\n\n";
 
-    internal void RemoveShield(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void ResetShotgunJamChance()
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void SetRicochetPellets(bool v)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void SetShotgunJamChance(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
-    internal void StartHealthDrain(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void StartHealthRegen(float magnitude)
-    {
-        throw new NotImplementedException();
-    }
-
-    internal void StopHealthDrain()
-    {
-        throw new NotImplementedException();
+        string filePath = Path.Combine(Application.persistentDataPath, "effects.txt");
+        Debug.Log("Writing effects.txt to: " + filePath);
+        try
+        {
+            File.AppendAllText(filePath, statsReport + "\n");
+            Debug.Log($"Player stats appended to {filePath}");
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError($"Failed to write player stats to file: {ex.Message}");
+        }
     }
 
-    internal void StopHealthRegen()
-    {
-        throw new NotImplementedException();
-    }
+
 }

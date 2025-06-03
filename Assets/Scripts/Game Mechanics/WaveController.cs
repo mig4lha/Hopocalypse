@@ -20,9 +20,7 @@ public class WaveController : MonoBehaviour
     [SerializeField] private float timeBetweenWaves = 5f;
     [SerializeField] private float spawnDelay = 1f; // Delay between spawning individual enemies
 
-    // Reference to UIController for updating any UI elements
     private UIController UIController;
-
     private SlotMachineController slotMachine;
 
     // Flag to determine if the boss is defeated (set this from your boss enemy when it dies)
@@ -33,7 +31,8 @@ public class WaveController : MonoBehaviour
 
     void Start()
     {
-        // Locate and assign UIController (if not assigned via Inspector)
+        isBossDefeated = false;
+
         UIController = FindAnyObjectByType<UIController>();
         if (UIController == null)
         {
@@ -102,20 +101,22 @@ public class WaveController : MonoBehaviour
             {
                 // Call a specific mechanic for this wave
                 Level1SpecificMechanic();
+                yield return new WaitUntil(() => checkpointTriggered);
+                Debug.Log("Checkpoint reached! Spawning boss.");
+                SpawnBoss();
+            } else if (currentLevel == 2)
+            {
+                SpawnBoss();
             }
 
-            yield return new WaitUntil(() => checkpointTriggered);
-            Debug.Log("Checkpoint reached! Spawning boss.");
-            SpawnBoss();
-
+            Debug.Log("Waiting for boss defeat...");
 
             // Wait until the boss is defeated.
             yield return new WaitUntil(() => isBossDefeated);
         }
 
         // Wave system for this level has ended.
-        Debug.Log("All waves and boss completed for this level!");
-        EndWaveSystem();
+        Debug.Log("Wave system complete for this level!");
         yield return null;
     }
 
@@ -140,8 +141,6 @@ public class WaveController : MonoBehaviour
 
     void SpawnEnemy()
     {
-        // Example: Find the ground object (assumed to be the same across levels) by name.
-        // Here it searches for a GameObject called "floor0_ground".
         GameObject groundObject = GameObject.Find("floor0_ground");
         if (groundObject == null)
         {
@@ -158,17 +157,7 @@ public class WaveController : MonoBehaviour
 
         Vector3 spawnPosition = GetRandomPositionInCollider(spawnAreaCollider);
 
-        // Instantiate the enemy. Optionally, you could apply the enemy stat multipliers here,
-        // e.g., by passing them to an enemy component on the spawned prefab.
         GameObject enemy = Instantiate(levelData.enemyPrefab, spawnPosition, Quaternion.identity);
-
-        //Debug.Log("Spawned enemy at position: " + randomPosition);
-        // Example of applying multipliers if your enemy script supports it.
-        Enemy enemyScript = enemy.GetComponent<Enemy>();
-        if (enemyScript != null)
-        {
-            //enemyScript.ApplyMultipliers(levelData.enemyHealthMult, levelData.enemyDamageMult, levelData.enemySpeedMult);
-        }
 
         enemiesSpawnedInCurrentWave++;
         totalEnemiesSpawned++;
@@ -179,8 +168,17 @@ public class WaveController : MonoBehaviour
 
     void SpawnBoss()
     {
-        // Find the same ground object to pick a spawn area
-        GameObject groundObject = GameObject.Find("floor1_ground");
+        GameObject groundObject = null;
+        if (currentLevel == 1)
+        {
+            // Find the same ground object to pick a spawn area
+            groundObject = GameObject.Find("floor1_ground");
+        }
+        else if (currentLevel == 2)
+        {
+            groundObject = GameObject.Find("floor0_ground");
+        }
+
         if (groundObject == null)
         {
             Debug.LogError("Ground object not found. Cannot spawn boss.");
@@ -194,8 +192,14 @@ public class WaveController : MonoBehaviour
             return;
         }
 
-        // create a spawnPosition vector that is (0,3,0)
-        Vector3 spawnPosition = new Vector3(0, 3, 0);
+        Vector3 spawnPosition = new Vector3(0,0,0);
+        if (currentLevel == 1)
+        {
+            spawnPosition = new Vector3(0, 3, 0);
+        } else if (currentLevel == 2)
+        {
+            spawnPosition = new Vector3(0, 10, 0);
+        }
 
         GameObject boss = Instantiate(levelData.bossPrefab, spawnPosition, Quaternion.identity);
 
@@ -208,7 +212,7 @@ public class WaveController : MonoBehaviour
 
     Vector3 GetRandomPositionInCollider(Collider collider)
     {
-        float margin = 2f;  // Adjust as needed to ensure enemies spawn safely away from edges.
+        float margin = 4f;  // Adjust as needed to ensure enemies spawn safely away from edges.
 
         // Ensure we don't sample too close to the edges by offsetting the bounds.
         Vector3 boundsMin = collider.bounds.min;
@@ -222,14 +226,6 @@ public class WaveController : MonoBehaviour
         float randomY = boundsMax.y + 2f;
 
         return new Vector3(randomX, randomY, randomZ);
-    }
-
-
-    void EndWaveSystem()
-    {
-        int currentLevel = GameManager.instance.GetCurrentLevelIndex() + 1;
-
-        Debug.Log("Wave system complete for this level!");
     }
 
     private void Update()
@@ -251,12 +247,14 @@ public class WaveController : MonoBehaviour
 
     public void OnBossDefeated()
     {
+        Debug.Log("Boss defeated!");
         isBossDefeated = true;
 
         // Stop the timer
         timerStopped = true;
 
         slotMachine.Drop();
+        Debug.Log("Dropping slot machine");
 
         //StartCoroutine(LoadEndScene());
     }
@@ -270,8 +268,28 @@ public class WaveController : MonoBehaviour
 
     public IEnumerator LoadEndScene()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(5f);
         GameManager.instance.LoadScene("PrototipoEndScene");
+    }
+
+    public IEnumerator LoadNextLevel()
+    {
+        GameManager.instance.IncrementLevelIndex();
+        int newCurrentLevelIndex = GameManager.instance.GetCurrentLevelIndex();
+
+        GameManager.instance.SavePlayerState();
+
+        yield return new WaitForSeconds(5f);
+
+        if (newCurrentLevelIndex >= GameManager.instance.levels.Count)
+        {
+            Debug.Log("No more levels to load.");
+            GameManager.instance.LoadScene("PrototipoEndScene");
+            yield break;
+        } else
+        {
+            GameManager.instance.LoadLevel(newCurrentLevelIndex);
+        }
     }
 
     public void OnCheckpointReached()

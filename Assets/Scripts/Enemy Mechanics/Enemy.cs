@@ -33,7 +33,7 @@ public class Enemy : MonoBehaviour
     public bool isDefeated = false;
     protected bool isBoss = false;
 
-
+    private Transform safeSpawnTransform;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
@@ -70,12 +70,43 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogWarning("Jogador não encontrado! Verifica se tem a tag 'Player'");
         }
+
+        GameObject safeSpawnGO = GameObject.Find("SafeSpawn");
+        if (safeSpawnGO != null)
+        {
+            safeSpawnTransform = safeSpawnGO.transform;
+        }
+        else
+        {
+            Debug.LogWarning("SafeSpawn GameObject not found in the scene. Enemies will not be teleported correctly if they fall out.");
+        }
     }
+
+    private void TeleportToSafePosition()
+    {
+        if (safeSpawnTransform != null)
+        {
+            Debug.Log($"{gameObject.name} fell out of the map. Teleporting to SafeSpawn at {safeSpawnTransform.position}.");
+            rb.linearVelocity = Vector3.zero;
+            transform.position = safeSpawnTransform.position;
+        }
+        else
+        {
+            Debug.LogWarning($"{gameObject.name} fell out of the map, but SafeSpawn is not set.");
+        }
+    }
+
+
 
     // Update is called once per frame
     protected virtual void Update()
     {
         if (player == null) return;
+
+        if (transform.position.y < -20f) // Adjust threshold as needed
+        {
+            TeleportToSafePosition();
+        }
 
         // Ground check (raycast or spherecast)
         isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.1f, groundLayer);    
@@ -175,6 +206,7 @@ public class Enemy : MonoBehaviour
             //if the enemy defeated is the boss
             if (isBoss)
             {
+                Debug.Log("Boss morto");
                 waveController.OnBossDefeated();
             }
         }

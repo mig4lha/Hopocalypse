@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
@@ -45,7 +46,7 @@ public class UIController : MonoBehaviour
 
     public void UpdateTimePassed(float timePassed)
     {
-        // Atualizar tempo passado no ecrã no fomarto "Time: MM:SS"
+        // Atualizar tempo passado no ecrï¿½ no fomarto "Time: MM:SS"
         TimeSpan time = TimeSpan.FromSeconds(timePassed);
         string formattedTime = string.Format("{0:D2}:{1:D2}", (int)time.TotalMinutes, time.Seconds);
         if (currentTimePassed != null)
@@ -60,14 +61,14 @@ public class UIController : MonoBehaviour
 
     public void UpdateEnemiesSpawned(int enemiesSpawned)
     {
-        // Atualizar enemies spawned no ecrã
+        // Atualizar enemies spawned no ecrï¿½
         if (currentEnemiesSpawned != null)
             currentEnemiesSpawned.text = $"Enemies Spawned: {enemiesSpawned}";
     }
 
     public void UpdateEnemiesDefeated(int enemiesDefeated)
     {
-        // Atualizar enemies defeated no ecrã
+        // Atualizar enemies defeated no ecrï¿½
         if (currentEnemiesDefeated != null)
             currentEnemiesDefeated.text = $"Enemies Defeated: {enemiesDefeated}";
     }
@@ -91,7 +92,7 @@ public class UIController : MonoBehaviour
 
     public void UpdateReloadTimer(float reloadTimer)
     {
-        // Atualizar timer de reload no ecrã
+        // Atualizar timer de reload no ecrï¿½
         reloadCountdownText.text = reloadTimer.ToString("F2");
     }
 
@@ -154,7 +155,6 @@ public class UIController : MonoBehaviour
         if (newIconImage != null)
         {
             newIconImage.sprite = iconSprite;
-            newIconImage.color = DEBUG_GetColorForStatusEffect(effectData);
         }
     }
 
@@ -175,29 +175,14 @@ public class UIController : MonoBehaviour
                 return Color.cyan;
             case EffectType.SpreadPlus:
                 return Color.magenta;
-            case EffectType.Shield:
-                // return rgb(92, 76, 54)
-                return new Color(0.36f, 0.3f, 0.21f); // Dark Brown
-            case EffectType.HopWindowUp:
-                return Color.grey;
-            case EffectType.HealthRegen:
-                return Color.black;
-            case EffectType.RicochetPellets:
-                return new Color(0.01f, 1, 0.83f); // Light Cyan
 
             // Debuffs
-            case EffectType.MovementDown:
-                // return color purple
-                return new Color(0.5f, 0, 0.5f); // Purple
             case EffectType.HeavyReload:
                 // return color orange
                 return new Color(1, 0.5f, 0); // Orange
             case EffectType.LessDamage:
                 // return color pink
                 return new Color(1, 0.75f, 0.8f); // Pink
-            case EffectType.ShotgunJam:
-                //return color dark pink
-                return new Color(1, 0.2f, 0.6f); // Dark Pink
             case EffectType.PelletDecrease:
                 // return dark green
                 return new Color(0, 0.5f, 0); // Dark Green
@@ -207,12 +192,6 @@ public class UIController : MonoBehaviour
             case EffectType.RangeDown:
                 // return dark red
                 return new Color(0.5f, 0, 0); // Dark Red
-            case EffectType.HopWindowDown:
-                // return dark blue
-                return new Color(0, 0, 0.5f); // Dark Blue
-            case EffectType.BloodLoss:
-                // return rgb(115, 42, 86)
-                return new Color(0.45f, 0.16f, 0.34f); // Dark Red
             case EffectType.Clipless:
                 // return rgb(82, 120, 50)
                 return new Color(0.32f, 0.47f, 0.2f); // Dark Green
