@@ -1,10 +1,12 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class ButtonMenus : MonoBehaviour
 {
     private GameManager gameManager;
 
+    [SerializeField] private Slider volumeSlider;
     private void Awake()
     {
         // Mostrar o cursor nos menus
@@ -15,6 +17,16 @@ public class ButtonMenus : MonoBehaviour
         if (gameManager == null)
         {
             Debug.LogError("GameManager not found in the scene.");
+        }
+
+        // Volume inicial
+        if (volumeSlider != null)
+        {
+            float savedVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
+            volumeSlider.value = savedVolume;
+            AudioListener.volume = savedVolume;
+
+            volumeSlider.onValueChanged.AddListener(SetVolume);
         }
     }
 
@@ -65,5 +77,12 @@ public class ButtonMenus : MonoBehaviour
         PauseManager.ResumeGame(); // retoma o jogo antes de mudar de scene
         SceneManager.LoadScene("MainMenu");
     }
+
+    private void SetVolume(float value)
+    {
+        AudioListener.volume = value;
+        PlayerPrefs.SetFloat("MasterVolume", value);
+    }
+
 }
 
