@@ -1,0 +1,28 @@
+Level: Level1
+=== Player Stats Affected by Effects ===
+Health: 95/100
+Reload Time: 2
+Max Ammo: 12
+Max Bhop Multiplier: 3
+Pellet Count: 20
+Pellet Damage: 10
+Spread Angle X: 50
+Spread Angle Y: 25
+Max Range: 10
+========================================
+
+
+Level: Level2
+=== Player Stats Affected by Effects ===
+Health: 95/100
+Reload Time: 2
+Max Ammo: 12
+Max Bhop Multiplier: 3
+Pellet Count: 20
+Pellet Damage: 10
+Spread Angle X: 50
+Spread Angle Y: 25
+Max Range: 10
+========================================
+
+

@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 using System;
 using UnityEngine.Rendering;
+using System.IO;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class GameManager : MonoBehaviour
     public List<LevelData> levels;
     public int currentLevelIndex = 0;
     [SerializeField] private Volume pauseBlurVolume;
+    [SerializeField] private Volume filmGrainVolume;
     public PlayerData playerData = new PlayerData();
 
     private PlayerStats playerStats;
@@ -26,6 +28,8 @@ public class GameManager : MonoBehaviour
 
             if (pauseBlurVolume != null)
                 DontDestroyOnLoad(pauseBlurVolume.gameObject);
+            if (filmGrainVolume != null)
+                DontDestroyOnLoad(filmGrainVolume.gameObject);
 
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -40,8 +44,23 @@ public class GameManager : MonoBehaviour
         // Automatically load the first level (index 0)
         LoadMainMenu();
         //LoadLevel(0);
+
+        DeleteEffectsFile();
     }
 
+    public void DeleteEffectsFile()
+    {
+        string filePath = Path.Combine(Application.persistentDataPath, "effects.txt");
+        if (File.Exists(filePath))
+        {
+            File.Delete(filePath);
+            Debug.Log($"Deleted file: {filePath}");
+        }
+        else
+        {
+            Debug.LogWarning($"File not found: {filePath}");
+        }
+    }
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         if (scene.name.StartsWith("Level"))
@@ -74,6 +93,8 @@ public class GameManager : MonoBehaviour
             {
                 LoadPlayerState();
             }
+
+            playerStats.PrintEffectedStats();
         }
     }
 
@@ -127,9 +148,10 @@ public class GameManager : MonoBehaviour
     {
         playerData.health = playerStats.health;
         playerData.activeEffects = statusEffectController.GetActiveEffects();
-        Debug.Log("Player state saved: " +
-                  "Health: " + playerData.health + ", " +
-                  "Effects: " + playerData.activeEffects.ToString());
+
+        //Debug.Log("Player state saved: " +
+        //          "Health: " + playerData.health + ", " +
+        //          "Effects: " + playerData.activeEffects.ToString());
     }
 
     public void LoadPlayerState()
@@ -142,9 +164,9 @@ public class GameManager : MonoBehaviour
             uiController.UpdateHealthBar(playerStats.health, playerStats.maxHealth);
         }
 
-        Debug.Log("Player state loaded: " +
-                  "Health: " + playerStats.health + ", " +
-                  "Effects: " + statusEffectController.GetActiveEffects().ToString());
+        //Debug.Log("Player state loaded: " +
+        //          "Health: " + playerStats.health + ", " +
+        //          "Effects: " + statusEffectController.GetActiveEffects().ToString());
     }
 
 }

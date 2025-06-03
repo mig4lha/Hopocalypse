@@ -119,6 +119,55 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &955650689
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 955650691}
+  - component: {fileID: 955650690}
+  m_Layer: 0
+  m_Name: FilmGrainVolume
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &955650690
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955650689}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 1134314e867814441b3d3dd9a9ff380f, type: 2}
+--- !u!4 &955650691
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955650689}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -18.8, y: -11.214999, z: -36.19}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1396562010
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,14 +267,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 539c765ca42b04f4eb779dba973ea8e3, type: 2}
   currentLevelIndex: -1
   pauseBlurVolume: {fileID: 1396562011}
+  filmGrainVolume: {fileID: 955650690}
   playerData:
     health: 0
-    currentAmmo: 0
     activeEffects: []
-  playerPrefab: {fileID: 2293629800374924892, guid: 7a64e0c6c9be19f4d859333eb05fa32f, type: 3}
-  uiControllerPrefab: {fileID: 7119381405148239758, guid: 88f06ad97254955438d60e4b82704bca, type: 3}
-  waveControllerPrefab: {fileID: 6145862007174868481, guid: c4bd3bd8b8d648f45bf85fd2de4cacbb, type: 3}
-  debugLineManagerPrefab: {fileID: 3955210241597140441, guid: 57d2383874a58be4a91ea95dcb58c326, type: 3}
 --- !u!114 &1702964491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,3 +290,4 @@ SceneRoots:
   m_Roots:
   - {fileID: 1702964489}
   - {fileID: 1396562012}
+  - {fileID: 955650691}

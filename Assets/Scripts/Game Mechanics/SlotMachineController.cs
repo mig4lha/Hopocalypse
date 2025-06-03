@@ -50,7 +50,7 @@ public class SlotMachineController : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
             rb.constraints = RigidbodyConstraints.FreezeAll;
 
-            Debug.Log("Slot Machine pousou no ch�o.");
+            Debug.Log("Slot Machine pousou no chao.");
         }
     }
 
@@ -61,14 +61,14 @@ public class SlotMachineController : MonoBehaviour
             hasInteracted = true;
 
             slotMachineAnimator.SetTrigger("Spin");
-            gateAnimator.SetTrigger("Open");
+            //gateAnimator.SetTrigger("Open");
             iconDisplay.StartSpinning();
 
             //StartCoroutine(waveController.LoadEndScene());
-            StartCoroutine(waveController.LoadNextLevel());
+            //StartCoroutine(waveController.LoadNextLevel());
         } 
             Invoke(nameof(EndSpinAndApplyEffect), 2f); // tempo da anima��o
-        }
+        
     }
 
     private void EndSpinAndApplyEffect()
@@ -82,6 +82,8 @@ public class SlotMachineController : MonoBehaviour
 
             statusEffectController.ApplyStatusEffect(prize.effectData);
             Debug.Log("Efeito aplicado: " + prize.effectData.name);
+
+            StartCoroutine(waveController.LoadNextLevel());
         }
     }
 

@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: level2
   m_EditorClassIdentifier: 
   levelName: Level2
-  waveCount: 1
-  baseWaveEnemyCount: 1
-  enemyPerWaveIncrementMult: 5
+  waveCount: 3
+  baseWaveEnemyCount: 10
+  enemyPerWaveIncrementMult: 10
   enemyHealthMult: 1
   enemyDamageMult: 1
   enemySpeedMult: 1
-  enemyPrefab: {fileID: 1260209709937276824, guid: e805e19d18721584ba49b60f1058520b, type: 3}
-  bossPrefab: {fileID: 6141990467259916314, guid: cec0900e2f60d7542afa93af61dc01f8, type: 3}
+  enemyPrefab: {fileID: 1260209709937276824, guid: 00ccd58fc0f27d74bbdce6e8bf200432, type: 3}
+  bossPrefab: {fileID: 6141990467259916314, guid: 582ccb70c60e41a4091a0bf94916f3b3, type: 3}
