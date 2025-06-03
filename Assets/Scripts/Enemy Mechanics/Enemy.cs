@@ -1,35 +1,34 @@
 using System;
 using UnityEngine;
+using UnityEngine.AI;
 using static UnityEngine.EventSystems.EventTrigger;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class Enemy : MonoBehaviour
 {
-    protected Rigidbody rb;
-
     [Header("Player Data")]
     protected Player player;
-
-    [Header("Wave Controller")]
-    protected WaveController waveController;
 
     [Header("Enemy Stats")]
     [SerializeField] protected float health, maxHealth = 100f;
     [SerializeField] protected float attackDamage = 5f;
-    [SerializeField] protected float moveSpeed = 5f;
-    [SerializeField] protected float rotationSpeed = 5f;
-    [SerializeField] protected float stoppingDistance = 4f;
-
+    [SerializeField] protected float AttackDistance = 4f;
     [SerializeField, Tooltip("Tempo de delay entre cada ataque")]
     protected float fireRateEnemy = 2.0f; // Customizable time between attacks
     protected static float nextTimeToFire = 0f;
+    [SerializeField] protected float rotationSpeed = 5f; //boss
 
-    [SerializeField] protected float jumpForce = 10f;    // Force for the jump
-    [SerializeField] protected LayerMask groundLayer;    // Layer mask to check for ground
-    protected bool isGrounded = false;                   // Flag for checking if on ground
+    private NavMeshAgent m_Agent;
+    private float m_Distance;
 
+
+    // barra da vida
     FloatingHealthBar healthBar;
     Transform healthBarTransform;
 
+    // coisas para o wave controller / tipo de inimigo
+    [Header("Wave Controller")]
+    protected WaveController waveController;
     public bool isDefeated = false;
     protected bool isBoss = false;
 
@@ -38,8 +37,26 @@ public class Enemy : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     protected virtual void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        // wave controller
         waveController = FindAnyObjectByType<WaveController>();
+        //enemy
+        m_Agent = GetComponent<NavMeshAgent>();
+
+
+
+        //player
+        GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
+
+        if (playerGO != null)
+        {
+            player = playerGO.GetComponent<Player>();
+        }
+        else
+        {
+            Debug.LogWarning("Jogador n√£o encontrado! Verifica se tem a tag 'Player'");
+        }
+
+
 
         // Find the canvas first
         Transform canvas = transform.Find("Canvas");
@@ -59,17 +76,6 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogWarning("Canvas not found.");
         }
-
-        GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
-
-        if (playerGO != null)
-        {
-            player = playerGO.GetComponent<Player>();
-        }
-        else
-        {
-            Debug.LogWarning("Jogador n„o encontrado! Verifica se tem a tag 'Player'");
-        }
     }
 
     // Update is called once per frame
@@ -77,48 +83,30 @@ public class Enemy : MonoBehaviour
     {
         if (player == null) return;
 
-        // Ground check (raycast or spherecast)
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.1f, groundLayer);    
 
-        // Direction to the player
-        Vector3 direction = player.transform.position - transform.position;
-        direction.y = 0; // Ignore vertical difference (optional)
-
-        // Rotate toward the player
-        if (direction.magnitude > 0)
+        m_Distance = Vector3.Distance(m_Agent.transform.position, player.transform.position);
+        if (m_Distance < AttackDistance)
         {
-            Quaternion toRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
-        }
-
-        // Move forward if not too close
-        // OR, attack player
-        if (direction.magnitude > stoppingDistance)
-        {
-            Vector3 newPosition = rb.position + transform.forward * moveSpeed * Time.deltaTime;
-            rb.MovePosition(newPosition);
+            m_Agent.isStopped = true;
+            enemyAttack();
         }
         else
         {
-            enemyAttack();
+            m_Agent.isStopped = false;
+            m_Agent.destination = player.transform.position;
         }
 
-        // Handle jump logic (if necessary, can be added to specific obstacle logic)
-        if (!isGrounded && direction.magnitude > stoppingDistance)
-        {
-            // Apply jump when obstacle detected (simplified logic for demonstration)
-            TryJumpOverObstacle();
-        }
+
     }
 
     protected virtual void enemyAttack()
     {
-        
+
         // Prevenir tiros antes do delay da fire rate
         if (Time.time < nextTimeToFire)
         {
             //Debug.Log("Enemy NOT attacked");
-            
+
             return;
         }
 
@@ -126,39 +114,13 @@ public class Enemy : MonoBehaviour
 
         Debug.Log("Enemy attacked");
         player.TakeDamage(attackDamage);
-        
+
 
     }
 
-    protected virtual void TryJumpOverObstacle()
-    {
-        // Cast a ray or use a boxcast to detect obstacles ahead
-        RaycastHit hit;
-
-        if (Physics.Raycast(transform.position, transform.forward, out hit, stoppingDistance, groundLayer))
-        {
-            Debug.Log("jump over obstacle");
-            // If an obstacle is detected, jump
-            if (hit.collider != null && !isGrounded)
-            {
-                TryJump();
-            }
-        }
-    }
 
 
-    protected virtual void TryJump()
-    {
-        // If grounded, allow jump
-        if (!isGrounded)
-        {
-            Debug.Log("jump");
-            // Apply a force upwards to simulate the jump
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
-    }
-
-    public void TakeDmg( float amount)
+    public void TakeDmg(float amount)
     {
         health -= amount;
 
