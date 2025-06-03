@@ -212,7 +212,7 @@ public class WaveController : MonoBehaviour
 
     Vector3 GetRandomPositionInCollider(Collider collider)
     {
-        float margin = 2f;  // Adjust as needed to ensure enemies spawn safely away from edges.
+        float margin = 4f;  // Adjust as needed to ensure enemies spawn safely away from edges.
 
         // Ensure we don't sample too close to the edges by offsetting the bounds.
         Vector3 boundsMin = collider.bounds.min;
