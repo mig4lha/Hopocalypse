@@ -78,7 +78,20 @@ public class Enemy : MonoBehaviour
         if (player == null) return;
 
         // Ground check (raycast or spherecast)
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.1f, groundLayer);    
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 2f))
+        {
+            isGrounded = hit.collider.CompareTag("Ground");
+        }
+        else
+        {
+            Debug.Log("testes");
+            isGrounded = false;
+        }
+
+        //isGrounded = Physics.Raycast(transform.position, Vector3.down, 0.1f, groundLayer);    
+
+
 
         // Direction to the player
         Vector3 direction = player.transform.position - transform.position;
@@ -97,6 +110,19 @@ public class Enemy : MonoBehaviour
         {
             Vector3 newPosition = rb.position + transform.forward * moveSpeed * Time.deltaTime;
             rb.MovePosition(newPosition);
+
+            float x = rb.linearVelocity.x;
+            float y = rb.linearVelocity.y;
+            float velocidade = x + y;
+            velocidade = (velocidade % 1 + 1) % 1; // |velocidade| , modulo de velocidade
+            //Debug.Log("velocidade: " + velocidade);
+
+            if (isGrounded && velocidade == 0)
+            {
+                            Debug.Log("velocidade: " + velocidade);
+
+                //TryJump();
+            }
         }
         else
         {
@@ -104,11 +130,12 @@ public class Enemy : MonoBehaviour
         }
 
         // Handle jump logic (if necessary, can be added to specific obstacle logic)
-        if (!isGrounded && direction.magnitude > stoppingDistance)
-        {
-            // Apply jump when obstacle detected (simplified logic for demonstration)
-            TryJumpOverObstacle();
-        }
+        // if (isGrounded && direction.magnitude > stoppingDistance)
+        // {
+        //     //Debug.Log("tesgte");
+        //     // Apply jump when obstacle detected (simplified logic for demonstration)
+        //     TryJump();
+        // }
     }
 
     private void enemyAttack()
@@ -148,7 +175,7 @@ public class Enemy : MonoBehaviour
     private void TryJump()
     {
         // If grounded, allow jump
-        if (!isGrounded)
+        if (isGrounded)
         {
             Debug.Log("jump");
             // Apply a force upwards to simulate the jump
