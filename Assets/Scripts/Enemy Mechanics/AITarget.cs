@@ -1,13 +1,11 @@
-using System;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.EventSystems.EventTrigger;
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class Enemy : MonoBehaviour
+public class AITarget : MonoBehaviour
 {
     [Header("Player Data")]
-    protected Player player;
+    private Player player;
 
     [Header("Enemy Stats")]
     [SerializeField] protected float health, maxHealth = 100f;
@@ -16,7 +14,6 @@ public class Enemy : MonoBehaviour
     [SerializeField, Tooltip("Tempo de delay entre cada ataque")]
     protected float fireRateEnemy = 2.0f; // Customizable time between attacks
     protected static float nextTimeToFire = 0f;
-    [SerializeField] protected float rotationSpeed = 5f; //boss
 
     private NavMeshAgent m_Agent;
     private float m_Distance;
@@ -95,18 +92,18 @@ public class Enemy : MonoBehaviour
             m_Agent.isStopped = false;
             m_Agent.destination = player.transform.position;
         }
-
-
     }
+    
+
 
     protected virtual void enemyAttack()
     {
-
+        
         // Prevenir tiros antes do delay da fire rate
         if (Time.time < nextTimeToFire)
         {
             //Debug.Log("Enemy NOT attacked");
-
+            
             return;
         }
 
@@ -114,7 +111,7 @@ public class Enemy : MonoBehaviour
 
         Debug.Log("Enemy attacked");
         player.TakeDamage(attackDamage);
-
+        
 
     }
 
