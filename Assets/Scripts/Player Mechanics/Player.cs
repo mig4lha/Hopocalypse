@@ -91,7 +91,8 @@ public class Player : MonoBehaviour
         if(isDead) return;
 
         stats.health -= damage;
-        UIController.UpdateHealthBar(stats.health, stats.maxHealth);
+        //UIController.UpdateHealthBar(stats.health, stats.maxHealth);
+        UIController.UpdateHealthText(stats.health, stats.maxHealth);
         Debug.Log("Player took damage: " + damage + ", Health: " + stats.health);
 
         if (stats.health <= 0)

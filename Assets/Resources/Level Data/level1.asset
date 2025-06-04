@@ -15,7 +15,7 @@ MonoBehaviour:
   levelName: Level1
   waveCount: 1
   baseWaveEnemyCount: 1
-  enemyPerWaveIncrementMult: 5
+  enemyPerWaveIncrementMult: 1
   enemyHealthMult: 1
   enemyDamageMult: 1
   enemySpeedMult: 1

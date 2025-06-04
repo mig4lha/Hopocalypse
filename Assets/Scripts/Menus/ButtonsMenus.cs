@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -6,6 +7,7 @@ public class ButtonMenus : MonoBehaviour
 {
     private GameManager gameManager;
 
+    [SerializeField] private AudioMixer audioMixer;
     [SerializeField] private Slider volumeSlider;
     private void Awake()
     {
@@ -24,7 +26,8 @@ public class ButtonMenus : MonoBehaviour
         {
             float savedVolume = PlayerPrefs.GetFloat("MasterVolume", 1f);
             volumeSlider.value = savedVolume;
-            AudioListener.volume = savedVolume;
+            float dB = Mathf.Log10(Mathf.Clamp(savedVolume, 0.0001f, 1f)) * 20f;
+            audioMixer.SetFloat("MasterVolume", dB);
 
             volumeSlider.onValueChanged.AddListener(SetVolume);
         }
@@ -80,9 +83,10 @@ public class ButtonMenus : MonoBehaviour
 
     private void SetVolume(float value)
     {
-        AudioListener.volume = value;
+        // Logarithmic conversion for perceived loudness
+        float dB = Mathf.Log10(Mathf.Clamp(value, 0.0001f, 1f)) * 20f;
+        audioMixer.SetFloat("MasterVolume", dB);
         PlayerPrefs.SetFloat("MasterVolume", value);
     }
-
 }
 
