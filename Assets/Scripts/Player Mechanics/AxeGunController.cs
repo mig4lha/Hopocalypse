@@ -19,6 +19,7 @@ public class AxeGunController : MonoBehaviour
     private Transform muzzleTransform;
     [SerializeField, Tooltip("Particle system para muzzle flash")]
     private ParticleSystem muzzleFlash;
+    [SerializeField] private Material tracerMaterial;
 
     [Header("AxeGun SFX")]
     [SerializeField]
@@ -175,8 +176,9 @@ public class AxeGunController : MonoBehaviour
             Vector3 pelletDirection = centerDirection;
             Vector3 endPoint = origin + pelletDirection * currentRange;
 
-            debugLine.DrawLine(origin, endPoint, 1f);
-            Debug.DrawRay(origin, pelletDirection * currentRange, Color.red, 1f);
+            //debugLine.DrawLine(origin, endPoint, 1f);
+            //Debug.DrawRay(origin, pelletDirection * currentRange, Color.red, 1f);
+            SpawnTracer(origin, endPoint);
 
             CheckIfEnemyIsHitAndApplyDamage(origin, pelletDirection, currentRange);
         }
@@ -195,8 +197,9 @@ public class AxeGunController : MonoBehaviour
             Vector3 endPoint = origin + pelletDirection * currentRange;
 
             // Debug lines pra ver trajetoria das balas
-            debugLine.DrawLine(origin, endPoint, 1f);
-            Debug.DrawRay(origin, pelletDirection * currentRange, Color.red, 1f);
+            //debugLine.DrawLine(origin, endPoint, 1f);
+            //Debug.DrawRay(origin, pelletDirection * currentRange, Color.red, 1f);
+            SpawnTracer(origin, endPoint);
 
             // Verificar se os raycasts colidem com inimigos e processar interação
             CheckIfEnemyIsHitAndApplyDamage(origin, pelletDirection, currentRange);
@@ -207,6 +210,42 @@ public class AxeGunController : MonoBehaviour
         {
             gunFire.Play();
         }
+    }
+
+
+    private void SpawnTracer(Vector3 start, Vector3 end, float width = 0.04f, float duration = 0.08f)
+    {
+        GameObject tracer = new GameObject("ShotgunTracer");
+        var lr = tracer.AddComponent<LineRenderer>();
+        lr.positionCount = 2;
+        lr.SetPosition(0, start);
+        lr.SetPosition(1, end);
+        lr.startWidth = width;
+        lr.endWidth = width;
+        lr.material = tracerMaterial;
+        lr.startColor = lr.endColor = Color.white; // Or set to your preferred color
+        lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        lr.receiveShadows = false;
+        lr.numCapVertices = 4;
+
+        StartCoroutine(FadeAndDestroyTracer(lr, duration));
+    }
+
+    private IEnumerator FadeAndDestroyTracer(LineRenderer lr, float duration)
+    {
+        float elapsed = 0f;
+        Color startColor = lr.startColor;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
+            Color c = startColor;
+            c.a = alpha;
+            lr.startColor = c;
+            lr.endColor = c;
+            yield return null;
+        }
+        Destroy(lr.gameObject);
     }
 
     #endregion

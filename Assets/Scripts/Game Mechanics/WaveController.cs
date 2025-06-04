@@ -250,6 +250,8 @@ public class WaveController : MonoBehaviour
 
     public void OnBossDefeated()
     {
+        MusicManager.instance?.FadeOutMusic();
+
         Debug.Log("Boss defeated!");
         isBossDefeated = true;
 

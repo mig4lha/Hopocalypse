@@ -73,14 +73,19 @@ public class MusicManager : MonoBehaviour
         }
     }
 
-    private void FadeToMusic(AudioClip newClip)
+    public void FadeOutMusic()
+    {
+        FadeToMusic(null);
+    }
+
+    public void FadeToMusic(AudioClip newClip, bool skipFadeIn = false)
     {
         if (fadeCoroutine != null)
             StopCoroutine(fadeCoroutine);
-        fadeCoroutine = StartCoroutine(FadeMusicCoroutine(newClip));
+        fadeCoroutine = StartCoroutine(FadeMusicCoroutine(newClip, skipFadeIn));
     }
 
-    private IEnumerator FadeMusicCoroutine(AudioClip newClip)
+    private IEnumerator FadeMusicCoroutine(AudioClip newClip, bool skipFadeIn)
     {
         // Fade out
         float startVolume = audioSource.volume;
@@ -91,9 +96,22 @@ public class MusicManager : MonoBehaviour
         }
         audioSource.volume = 0f;
 
+        if (newClip == null)
+        {
+            audioSource.Stop();
+            audioSource.clip = null;
+            yield break;
+        }
+
         // Switch clip
         audioSource.clip = newClip;
         audioSource.Play();
+
+        if (skipFadeIn)
+        {
+            audioSource.volume = musicVolume;
+            yield break;
+        }
 
         // Fade in
         for (float t = 0; t < fadeDuration; t += Time.unscaledDeltaTime)
@@ -103,4 +121,5 @@ public class MusicManager : MonoBehaviour
         }
         audioSource.volume = musicVolume;
     }
+
 }
