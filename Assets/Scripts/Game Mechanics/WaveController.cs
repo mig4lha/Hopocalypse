@@ -208,6 +208,9 @@ public class WaveController : MonoBehaviour
 
         UIController.UpdateEnemiesSpawned(totalEnemiesSpawned);
         Debug.Log("Spawned Boss at position: " + spawnPosition);
+
+        // Play boss music
+        MusicManager.instance?.PlayBossMusic();
     }
 
     Vector3 GetRandomPositionInCollider(Collider collider)
@@ -263,13 +266,19 @@ public class WaveController : MonoBehaviour
     {
         // Stop the timer
         timerStopped = true;
-        StartCoroutine(LoadEndScene());
+        StartCoroutine(LoadGameOverScene());
     }
 
     public IEnumerator LoadEndScene()
     {
         yield return new WaitForSeconds(5f);
-        GameManager.instance.LoadScene("PrototipoEndScene");
+        GameManager.instance.LoadScene("EndScene");
+    }
+
+    public IEnumerator LoadGameOverScene()
+    {
+        yield return new WaitForSeconds(5f);
+        GameManager.instance.LoadScene("GameOver");
     }
 
     public IEnumerator LoadNextLevel()
@@ -279,15 +288,14 @@ public class WaveController : MonoBehaviour
 
         GameManager.instance.SavePlayerState();
 
-        yield return new WaitForSeconds(5f);
-
         if (newCurrentLevelIndex >= GameManager.instance.levels.Count)
         {
             Debug.Log("No more levels to load.");
-            GameManager.instance.LoadScene("PrototipoEndScene");
+            StartCoroutine(LoadEndScene());
             yield break;
         } else
         {
+            yield return new WaitForSeconds(5f);
             GameManager.instance.LoadLevel(newCurrentLevelIndex);
         }
     }

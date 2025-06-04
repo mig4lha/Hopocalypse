@@ -9,6 +9,7 @@ TagManager:
   - Slot
   - PauseBlur
   - UI
+  - VolumeSlider
   layers:
   - Default
   - TransparentFX

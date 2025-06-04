@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.Rendering;
 using System.IO;
+using System.Collections;
 
 public class GameManager : MonoBehaviour
 {
@@ -12,12 +13,15 @@ public class GameManager : MonoBehaviour
     public int currentLevelIndex = 0;
     [SerializeField] private Volume pauseBlurVolume;
     [SerializeField] private Volume filmGrainVolume;
+    [SerializeField] private CanvasGroup fadeCanvasGroup;
     public PlayerData playerData = new PlayerData();
 
     private PlayerStats playerStats;
     private AxeGunController axeGunController;
     private StatusEffectController statusEffectController;
     private UIController uiController;
+
+    private bool isFading = false;
 
     void Awake()
     {
@@ -30,6 +34,8 @@ public class GameManager : MonoBehaviour
                 DontDestroyOnLoad(pauseBlurVolume.gameObject);
             if (filmGrainVolume != null)
                 DontDestroyOnLoad(filmGrainVolume.gameObject);
+            if (fadeCanvasGroup != null)
+                DontDestroyOnLoad(fadeCanvasGroup.gameObject.transform.parent.gameObject);
 
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -131,7 +137,8 @@ public class GameManager : MonoBehaviour
         {
             currentLevelIndex = levelIndex;
             Debug.Log(GetCurrentLevelIndex() + " - " + levels[currentLevelIndex].levelName);
-            SceneManager.LoadScene(levels[currentLevelIndex].levelName);
+            //SceneManager.LoadScene(levels[currentLevelIndex].levelName);
+            FadeAndLoadScene(levels[currentLevelIndex].levelName);
         }
         else
         {
@@ -141,7 +148,8 @@ public class GameManager : MonoBehaviour
 
     internal void LoadScene(string sceneName)
     {
-        SceneManager.LoadScene(sceneName);
+        FadeAndLoadScene(sceneName);
+        //SceneManager.LoadScene(sceneName);
     }
 
     public void SavePlayerState()
@@ -169,4 +177,42 @@ public class GameManager : MonoBehaviour
         //          "Effects: " + statusEffectController.GetActiveEffects().ToString());
     }
 
+    public void FadeAndLoadScene(string sceneName, float fadeDuration = 0.5f)
+    {
+        if (!isFading)
+            StartCoroutine(FadeAndSwitchSceneCoroutine(sceneName, fadeDuration));
+    }
+
+    private IEnumerator FadeAndSwitchSceneCoroutine(string sceneName, float fadeDuration)
+    {
+        isFading = true;
+        // Fade out
+        yield return StartCoroutine(Fade(0f, 1f, fadeDuration));
+
+        // Load scene
+        SceneManager.LoadScene(sceneName);
+
+        // Wait one frame for scene to load
+        yield return null;
+
+        // Fade in
+        yield return StartCoroutine(Fade(1f, 0f, fadeDuration));
+
+        isFading = false;
+    }
+
+    private IEnumerator Fade(float startAlpha, float endAlpha, float duration)
+    {
+        float elapsed = 0f;
+        fadeCanvasGroup.blocksRaycasts = true;
+        while (elapsed < duration)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            fadeCanvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, t);
+            yield return null;
+        }
+        fadeCanvasGroup.alpha = endAlpha;
+        fadeCanvasGroup.blocksRaycasts = endAlpha > 0.5f;
+    }
 }
