@@ -2,7 +2,7 @@
 - Project name: Hopocalypse
 - Unity version: Unity 6000.0.37f1
 - Active game object:
-  - Name: CloseButton
-  - Tag: Untagged
+  - Name: UIController
+  - Tag: UI
   - Layer: UI
 <!-- UNITY CODE ASSIST INSTRUCTIONS END -->
