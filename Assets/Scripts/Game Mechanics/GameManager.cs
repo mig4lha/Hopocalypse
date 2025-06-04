@@ -169,7 +169,7 @@ public class GameManager : MonoBehaviour
 
         if (uiController != null)
         {
-            uiController.UpdateHealthBar(playerStats.health, playerStats.maxHealth);
+            UIController.UpdateHealthText(playerStats.health, playerStats.maxHealth);
         }
 
         //Debug.Log("Player state loaded: " +
