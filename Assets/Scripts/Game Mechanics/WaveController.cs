@@ -279,7 +279,7 @@ public class WaveController : MonoBehaviour
 
     public IEnumerator LoadGameOverScene()
     {
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(3f);
         GameManager.instance.LoadScene("GameOver");
     }
 
