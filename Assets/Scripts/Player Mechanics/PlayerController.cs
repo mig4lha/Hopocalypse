@@ -68,8 +68,8 @@ public class PlayerController : MonoBehaviour
         gameManager = GameManager.instance;
     }
 
-    // Player Input behavior t� set para 'Send Messages' (m�todos usam InputValue e n�o o CallbackContext)
-    #region M�todos_InputSystem
+    // Player Input behavior ta set para 'Send Messages' (metodos usam InputValue e nao o CallbackContext)
+    #region Metodos_InputSystem
 
     private void OnMove(InputValue value)
     {
@@ -134,16 +134,6 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //public void OnSprint(InputValue value)
-    //{
-    //    // Mudar estado de sprinting baseado no valor do input (0 ou 1)
-    //    if (value.Get<float>() > 0)
-    //    {
-    //        isSprinting = true;
-    //        Debug.Log("Sprint Started");
-    //    }
-    //}
-
     private void OnShoot(InputValue value)
     {
         if (PauseManager.IsPaused) return;
@@ -176,16 +166,6 @@ public class PlayerController : MonoBehaviour
             gameManager.LoadScene("MainMenu");
         }
     }
-    //private void OnPause(InputValue value)
-    //{
-    //    if (value.Get<float>() > 0)
-    //    {
-    //        if (!PauseManager.IsPaused)
-    //            PauseManager.PauseGame();
-    //        else
-    //            PauseManager.ResumeGame();
-    //    }
-    //}
 
     private void OnFlashlight(InputValue value)
     {
@@ -207,8 +187,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        // O movimento do player est� no Update pois n�o inclui c�lculos de f�sica precisos
-        // logo n�o vi a necessidade de o colocar no FixedUpdate
+        // O movimento do player esta no Update pois nao inclui calculos de fisica precisos
+        // logo nso vi a necessidade de o colocar no FixedUpdate
         // Caso problemas surjam, mudar para FixedUpdate e testar
 
         currentControlScheme = playerInput.currentControlScheme;
@@ -220,11 +200,10 @@ public class PlayerController : MonoBehaviour
         player.HandleBunnyHopping();
         //HandleMouseLook();
 
-        // Atualizar estado anterior do ch�o para o pr�ximo frame
         player.wasGrounded = player.characterController.isGrounded;
     }
 
-    // Fun��o para controlar a first-person camera
+    // Funcao para controlar a first-person camera manualmente (quando tentei usar o joystick de gamepad...) - Uso OnLook()
     //void HandleMouseLook()
     //{
     //    // Get do movimento do rato
@@ -236,10 +215,10 @@ public class PlayerController : MonoBehaviour
     //    rotationY -= mouseY;
     //    rotationY = Mathf.Clamp(rotationY, minY, maxY);
 
-    //    // Aplicar a rota��o ao corpo do jogador (somente em Y para rota��o horizontal)
+    //    // Aplicar a rotacao ao corpo do jogador (somente em Y para rota��o horizontal)
     //    transform.localRotation = Quaternion.Euler(0f, rotationX, 0f);
 
-    //    // Aplicar a rota��o � c�mera (somente em X para rota��o vertical)
+    //    // Aplicar a rotacao a c�mera (somente em X para rota��o vertical)
     //    Camera.main.transform.localRotation = Quaternion.Euler(rotationY, 0f, 0f);
     //}
 }

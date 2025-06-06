@@ -28,16 +28,12 @@ public class Boss : Enemy
     {
         if (player == null) return;
 
-        // Record the player's position with a timestamp
         playerPositionHistory.Enqueue((Time.time, player.transform.position));
-
-        // Remove old positions from the queue
         while (playerPositionHistory.Count > 0 && Time.time - playerPositionHistory.Peek().time > 2f)
         {
             playerPositionHistory.Dequeue();
         }
 
-        // Get the delayed player position for rotation
         lastPlayerPosition = GetDelayedPlayerPosition();
         Vector3 direction = lastPlayerPosition - transform.position;
         direction.y = 0;
@@ -47,8 +43,6 @@ public class Boss : Enemy
             transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
         }
 
-
-        // Attack pattern: shoot beam every 3 seconds
         beamTimer += Time.deltaTime;
         if (beamTimer >= beamCooldown)
         {
@@ -87,15 +81,6 @@ public class Boss : Enemy
         Vector3 dir = (targetPosition - start).normalized;
         Vector3 end = start + dir * 1000f;
 
-        // Smoothly rotate the boss to face the beam direction
-        //Vector3 lookDir = dir;
-        //lookDir.y = 0;
-        //if (lookDir.sqrMagnitude > 0.001f)
-        //{
-        //    Quaternion toRotation = Quaternion.LookRotation(lookDir);
-        //    transform.rotation = Quaternion.Slerp(transform.rotation, toRotation, rotationSpeed * Time.deltaTime);
-        //}
-
         RaycastHit hit;
         if (Physics.Raycast(start, dir, out hit, Mathf.Infinity))
         {
@@ -107,7 +92,6 @@ public class Boss : Enemy
             }
         }
 
-        // Create the beam GameObject and start the fade coroutine
         currentBeam = new GameObject("BossBeam");
         currentBeam.transform.position = start;
 
@@ -123,6 +107,7 @@ public class Boss : Enemy
         lr.endColor = beamColor;
         lr.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
         lr.receiveShadows = false;
+
 
 
         var light = currentBeam.AddComponent<Light>();
@@ -174,6 +159,6 @@ public class Boss : Enemy
         if (lr.material != null)
             lr.material.color = c;
         if (light != null)
-            light.intensity = 8f * alpha; // Adjust max intensity as needed
+            light.intensity = 8f * alpha;
     }
 }

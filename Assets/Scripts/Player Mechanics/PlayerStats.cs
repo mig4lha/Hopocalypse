@@ -50,7 +50,7 @@ public class PlayerStats : MonoBehaviour
 
     [Header("Fire Rate Settings")]
     [SerializeField, Tooltip("Tempo de delay entre cada tiro")]
-    public float fireRate = 0.3f; // Customizable time between shots
+    public float fireRate = 0.3f;
 
     [Header("Ammo and Reload Settings")]
     [SerializeField, Tooltip("Max Ammo da AxeGun")]
@@ -169,7 +169,6 @@ public class PlayerStats : MonoBehaviour
 
     public void PrintEffectedStats()
     {
-        // Get current level name (or index)
         string levelInfo = "Unknown Level";
         if (UnityEngine.SceneManagement.SceneManager.GetActiveScene().IsValid())
         {
@@ -202,6 +201,4 @@ public class PlayerStats : MonoBehaviour
             Debug.LogError($"Failed to write player stats to file: {ex.Message}");
         }
     }
-
-
 }

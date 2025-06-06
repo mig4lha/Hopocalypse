@@ -7,16 +7,9 @@ public class StatusEffectController : MonoBehaviour
 {
     [SerializeField]
     public StatusEffectData ReloadBoost;
-
     private UIController UIController;
-
-    // List of all possible status effects.
     private List<StatusEffectData> allEffects = new List<StatusEffectData>();
-
-    // List of active effects.
     private List<StatusEffectData> activeEffects = new List<StatusEffectData>();
-
-    // Assume our player has a PlayerStats component that handles the actual stat modifications.
     private PlayerStats playerStats;
 
     private void Awake()
@@ -38,25 +31,17 @@ public class StatusEffectController : MonoBehaviour
 
     private void PopulateAllStatusEffectsList()
     {
-        // Populate the list with all possible status effects.
         foreach (StatusEffectData effect in Resources.LoadAll<StatusEffectData>("Status Effects Data"))
         {
             allEffects.Add(effect);
-            //Debug.Log("Loaded effect: " + effect.effectName);
         }
     }
 
     public void ApplyStatusEffect(StatusEffectData effectData)
     {
-        // Add the effect to our active list.
         activeEffects.Add(effectData);
-
-        // Immediately modify stats according to the effect.
         ApplyEffect(effectData);
-
         UIController.AddStatusEffect(effectData);
-
-        // If the effect is temporary, schedule it for removal.
         if (effectData.duration > 0f)
         {
             StartCoroutine(RemoveEffectAfter(effectData, effectData.duration));
@@ -67,21 +52,18 @@ public class StatusEffectController : MonoBehaviour
     {
         if (activeEffects.Contains(effectData))
         {
-            // Reverse the effect's impact on player stats.
             ReverseEffect(effectData);
             activeEffects.Remove(effectData);
             UIController.RemoveStatusEffect(effectData);
         }
     }
 
-    // Coroutine: wait for a delay and then remove the effect.
     private IEnumerator RemoveEffectAfter(StatusEffectData effectData, float delay)
     {
         yield return new WaitForSeconds(delay);
         RemoveStatusEffect(effectData);
     }
 
-    // Applies the effect based on its type.
     private void ApplyEffect(StatusEffectData effectData)
     {
         Debug.Log("Applying effect: " + effectData.effectName + " with magnitude: " + effectData.magnitude + " and strength type: " + effectData.effectStrengthType);
@@ -130,7 +112,7 @@ public class StatusEffectController : MonoBehaviour
         }
     }
 
-    // Reverses the effect applied.
+    // Not used, effects aren't reversed or temporary at the moment
     private void ReverseEffect(StatusEffectData effectData)
     {
         float magnitude = effectData.magnitude;
@@ -144,7 +126,7 @@ public class StatusEffectController : MonoBehaviour
 
         switch (effectData.effectType)
         {
-            // PowerUps - reverse by subtracting what was added (or vice versa).
+            // PowerUps
             case EffectType.HopFury:
                 playerStats.AdjustHopSpeed(magnitude, effectData.effectStrengthType);
                 break;
@@ -164,7 +146,7 @@ public class StatusEffectController : MonoBehaviour
                 playerStats.AdjustSpread(magnitude, effectData.effectStrengthType);
                 break;
 
-            // Debuffs - reverse changes in the opposite direction.
+            // Debuffs
             case EffectType.HeavyReload:
                 playerStats.AdjustReloadTime(effectData.magnitude, effectData.effectStrengthType);
                 break;
@@ -200,7 +182,6 @@ public class StatusEffectController : MonoBehaviour
         // Get a random effect from the available ones
         StatusEffectData randomEffect = availableEffects[UnityEngine.Random.Range(0, availableEffects.Count)];
 
-        // Apply the random effect
         ApplyStatusEffect(randomEffect);
     }
 

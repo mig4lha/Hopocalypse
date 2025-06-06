@@ -43,7 +43,6 @@ public class Player : MonoBehaviour
     private WaveController waveController;
 
     [Header("Player Stats Data")]
-    // Reference to the PlayerStats component, which holds all the base stat values.
     public PlayerStats stats;
 
     [Header("Status Effect Controller Data")]
@@ -116,7 +115,6 @@ public class Player : MonoBehaviour
         isDead = true;
         playerInput.enabled = false;
 
-        // Rotate the player -90 degrees on the Z axis
         player.transform.Rotate(0, 0, -90);
 
         waveController.OnGameOver();
@@ -166,11 +164,11 @@ public class Player : MonoBehaviour
             moveDirection.y = 0; // Manter apenas o componente horizontal
         }
 
-        // Processar o salto APENAS se estiver no ch�o e o tempo desde o �ltimo salto for maior que o cooldown definido!
+        // Processar o salto APENAS se estiver no ch�o e o tempo desde o ultimo salto for maior que o cooldown definido!
         bool canJump = characterController.isGrounded && (Time.time - landingTime) >= stats.jumpCooldown;
         if ((canJump || timeSinceGrounded <= stats.coyoteTime) && coyoteTimeCounter > 0)
         {
-            // Aplicar for�a de salto
+            // Aplicar forca de salto
             velocity.y = Mathf.Sqrt(stats.jumpForce * -2f * stats.gravity);
             coyoteTimeCounter = 0; // Resetar o coyote time
             lastJumpTime = Time.time;
@@ -221,7 +219,7 @@ public class Player : MonoBehaviour
             currentBhopMultiplier = Mathf.Lerp(currentBhopMultiplier, targetMultiplier, 0.5f);
         }
 
-        // Bonus effects para pensar no futuro
+        // Retirado porque agora é um status effect no gamble
         //if (currentBhopMultiplier >= 2f)
         //{
         //    hasReloadBuff = true;
@@ -232,9 +230,9 @@ public class Player : MonoBehaviour
         //}
     }
 
+    // Literalmente uma test interaction
     internal void TestInteraction()
     {
-        // Toggle the status effect on click
         //if (!testing)
         //{
         //    statusEffectController.ApplyStatusEffect(statusEffectController.ReloadBoost);
@@ -251,11 +249,11 @@ public class Player : MonoBehaviour
 
     public void ToggleFlashlight()
     {
-        // Toggling the flashlight
         flashLight.enabled = !flashLight.enabled;
 
         Debug.Log("Flashlight toggled: " + flashLight.enabled);
 
+        // Achei chato dar drain de bateria neste contexto...
         //if(flashLight.enabled)
         //{
         //    batteryLife -= drainRate * Time.deltaTime;
@@ -263,7 +261,6 @@ public class Player : MonoBehaviour
         //    {
         //        batteryLife = 0;
         //        flashLight.enabled = false;
-        //        // Optionally: trigger a low battery warning or recharge behavior.
         //    }
         //}
     }

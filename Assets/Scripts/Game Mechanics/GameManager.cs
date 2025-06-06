@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour
         LoadMainMenu();
         //LoadLevel(0);
 
-        DeleteEffectsFile();
+        //DeleteEffectsFile();
     }
 
     public void DeleteEffectsFile()
@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
                 LoadPlayerState();
             }
 
-            playerStats.PrintEffectedStats();
+            //playerStats.PrintEffectedStats();
         }
     }
 

@@ -56,7 +56,6 @@ public class UIController : MonoBehaviour
 
     public void UpdateTimePassed(float timePassed)
     {
-        // Atualizar tempo passado no ecr� no fomarto "Time: MM:SS"
         TimeSpan time = TimeSpan.FromSeconds(timePassed);
         string formattedTime = string.Format("{0:D2}:{1:D2}", (int)time.TotalMinutes, time.Seconds);
         if (currentTimePassed != null)
@@ -71,24 +70,21 @@ public class UIController : MonoBehaviour
 
     public void UpdateEnemiesSpawned(int enemiesSpawned)
     {
-        // Atualizar enemies spawned no ecr�
         if (currentEnemiesSpawned != null)
             currentEnemiesSpawned.text = $"{enemiesSpawned}";
     }
 
     public void UpdateEnemiesDefeated(int enemiesDefeated)
     {
-        // Atualizar enemies defeated no ecr�
         if (currentEnemiesDefeated != null)
             currentEnemiesDefeated.text = $"{enemiesDefeated}";
     }
 
     public void UpdateMovementUI(float velocity, float currentBhopMultiplier, int consecutiveJumps)
     {
-        consecutiveJumps--; // Decrementar para que o primeiro salto seja 0
+        consecutiveJumps--;
         if (consecutiveJumps == -1) consecutiveJumps = 0;
 
-        // Update no UI
         currentSpeedText.text = $"{velocity:F2} m/s";
         currentHopMultiplierText.text = $"{currentBhopMultiplier:F2}x";
         currentConsecutiveJumpsText.text = $"{consecutiveJumps}";
@@ -102,20 +98,17 @@ public class UIController : MonoBehaviour
 
     public void UpdateReloadTimer(float reloadTimer)
     {
-        // Atualizar timer de reload no ecr�
         reloadCountdownText.text = reloadTimer.ToString("F2");
     }
 
     public void HideReloadElement()
     {
-        // Esconder reload text
         if (reloadCountdownText != null)
             reloadCountdownText.gameObject.SetActive(false);
     }
 
     public void HideCrosshairShowReload()
     {
-        // Tirar crosshair durante relaod e meter countdown de reload
         if (crosshair != null)
             crosshair.SetActive(false);
         if (reloadCountdownText != null)
@@ -124,7 +117,6 @@ public class UIController : MonoBehaviour
 
     public void ResetAmmoAndReloadUI()
     {
-        // Reset do UI de reload e ammo
         reloadCountdownText.text = "";
         if (reloadCountdownText != null)
             reloadCountdownText.gameObject.SetActive(false);
@@ -160,15 +152,11 @@ public class UIController : MonoBehaviour
         string effectName = effectData.name;
         Sprite iconSprite = effectData.icon;
 
-        // Instantiate the prefab as a child of the container
         GameObject newIcon = Instantiate(statusEffectIconPrefab, statusEffectsContainer);
 
-        // Pass false for the second parameter to preserve local scale and anchoring
         newIcon.transform.SetParent(statusEffectsContainer, false);
         newIcon.name = effectName;
 
-
-        // Set the sprite on the Image component
         Image newIconImage = newIcon.GetComponent<Image>();
         if (newIconImage != null)
         {
@@ -222,13 +210,11 @@ public class UIController : MonoBehaviour
     {
         string effectName = effectData.name;
 
-        // find the icon gameobject by its name
         Transform icon = statusEffectsContainer.Find(effectName);
         GameObject iconGameObject = icon.gameObject;
 
         if(iconGameObject != null)
         {
-            // Destroy the icon gameobject
             Destroy(iconGameObject);
         }
         else
